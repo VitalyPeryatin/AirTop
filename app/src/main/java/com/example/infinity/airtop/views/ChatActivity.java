@@ -1,4 +1,4 @@
-package com.example.infinity.airtop.view;
+package com.example.infinity.airtop.views;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -8,13 +8,19 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.infinity.airtop.R;
-import com.example.infinity.airtop.controller.client.BackendClient;
-import com.example.infinity.airtop.model.Message;
-import com.example.infinity.airtop.model.User;
-import com.google.gson.Gson;
+import com.example.infinity.airtop.models.User;
+import com.example.infinity.airtop.presenters.ChatPresenter;
+import com.example.infinity.airtop.models.Message;
+import com.example.infinity.airtop.views.adapters.MessageListViewAdapter;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -28,48 +34,38 @@ import butterknife.OnClick;
  *  @author infinity_coder
  *  @version 1.0.0
  */
-public class ChatActivity extends AppCompatActivity {
+public class ChatActivity extends AppCompatActivity implements ChatView {
     private static final int LOAD_IMAGE_CODE = 1;
-    private static final int LOGIN_CODE = 2;
 
     // TODO Отрефакторить код срочно!!!
     @BindView(R.id.recyclerView)
     RecyclerView msgListView;
     @BindView(R.id.editText)
     EditText inputField;
-    private BackendClient backendClient;
-    private Gson gson = new Gson();
-    private Message message;
-    private static User user;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+
+    private ChatPresenter presenter;
+    private MessageListViewAdapter messageAdapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
-        if (user == null)
-            createUser();
         ButterKnife.bind(this);
-        message = new Message();
-        backendClient = new BackendClient(this);
-    }
 
-    private void createUser(){
-        startActivityForResult(new Intent(this, LoginActivity.class), LOGIN_CODE);
-    }
-
-    public RecyclerView getMsgListView() {
-        return msgListView;
-    }
-
-    @Override
-    protected void onResume() {
         // Set adapter AFTER restoring list of messages
         ArrayList<Message> list = new ArrayList<>(); // TODO Внутри list должны лежать сообщения из БД
-        msgListView.setAdapter(new MessageListViewAdapter(list));
+        messageAdapter = new MessageListViewAdapter(list);
+        msgListView.setAdapter(messageAdapter);
         msgListView.setLayoutManager(new LinearLayoutManager(this));
-        super.onResume();
-    }
 
+        presenter = ChatPresenter.getInstance();
+        presenter.attachActivity(this);
+
+        toolbar.setTitle(presenter.getAddresseeUser().phone);
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -77,17 +73,13 @@ public class ChatActivity extends AppCompatActivity {
         if(requestCode == LOAD_IMAGE_CODE && resultCode == RESULT_OK && data != null){
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
-                message.setImage(bitmap);
+                presenter.addImageToMsg(bitmap);
+                Toast.makeText(this, "Картинка прикреплена", Toast.LENGTH_SHORT).show();
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
 
-        }
-        if(requestCode == LOGIN_CODE && resultCode == RESULT_OK && data != null){
-            String jsonUser = data.getStringExtra("user");
-            Gson gson = new Gson();
-            user = gson.fromJson(jsonUser, User.class);
-        }
     }
 
     @OnClick(R.id.btnAffix)
@@ -101,20 +93,23 @@ public class ChatActivity extends AppCompatActivity {
     @OnClick(R.id.btnSend)
     void sendMessage(){
         String text = inputField.getText().toString();
-        if(text.length()>0) {
-            message.setText(text);
-            backendClient.sendMessage(message);
-            inputField.getText().clear();
-        }
-        message = new Message();
+        presenter.addTextToMsg(text);
+        presenter.sendMessage();
+        inputField.getText().clear();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if(backendClient != null) {
-            backendClient.closeConnection();
-            backendClient = null;
-        }
+        presenter.closeConnection();
+    }
+
+    @Override
+    public void displayMessage(Message message){
+        runOnUiThread(()-> {
+            messageAdapter.addItem(message);
+            messageAdapter.notifyDataSetChanged();
+            msgListView.scrollToPosition(messageAdapter.getItemCount() - 1);
+        });
     }
 }

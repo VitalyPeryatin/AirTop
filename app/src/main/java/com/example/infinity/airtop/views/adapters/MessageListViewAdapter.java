@@ -1,4 +1,4 @@
-package com.example.infinity.airtop.view;
+package com.example.infinity.airtop.views.adapters;
 
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.infinity.airtop.R;
-import com.example.infinity.airtop.model.Message;
+import com.example.infinity.airtop.models.Message;
 
 import java.util.ArrayList;
 
@@ -24,19 +24,15 @@ public class MessageListViewAdapter extends RecyclerView.Adapter<MessageListView
     private ArrayList<Message> currentMessages;
 
     
-    MessageListViewAdapter(ArrayList<Message> currentMessages) {
+    public MessageListViewAdapter(ArrayList<Message> currentMessages) {
         this.currentMessages = currentMessages;
     }
 
     @NonNull
     @Override
     public RecyclerViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int position) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.message_layout, viewGroup, false);
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.message_template, viewGroup, false);
         return new RecyclerViewHolder(view);
-    }
-
-    public ArrayList<Message> getCurrentMessages() {
-        return currentMessages;
     }
 
     @Override
@@ -69,6 +65,10 @@ public class MessageListViewAdapter extends RecyclerView.Adapter<MessageListView
     @Override
     public int getItemCount() {
         return currentMessages.size();
+    }
+
+    public void addItem(Message message){
+        currentMessages.add(message);
     }
 
     class RecyclerViewHolder extends RecyclerView.ViewHolder{

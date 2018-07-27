@@ -1,12 +1,15 @@
-package com.example.infinity.airtop.controller.client;
+package com.example.infinity.airtop.presenters.client;
 
 
 import android.content.Context;
 import android.util.Log;
 
-import com.example.infinity.airtop.controller.client.readData.DataReader;
-import com.example.infinity.airtop.controller.client.writeData.DataWriter;
-import com.example.infinity.airtop.model.Message;
+import com.example.infinity.airtop.models.PhoneVerifier;
+import com.example.infinity.airtop.models.RequestModel;
+import com.example.infinity.airtop.presenters.client.readData.DataReader;
+import com.example.infinity.airtop.presenters.client.writeData.DataWriter;
+import com.example.infinity.airtop.models.Message;
+import com.example.infinity.airtop.views.App;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -18,24 +21,19 @@ import java.util.ArrayList;
  * @version 1.0.0
  */
 public class BackendClient{
+
     private Socket socket;
-    private Context context; // Need for DataReader, which works with UI elements
     private DataWriter writer;
     private DataReader reader;
-    private final ArrayList<String> savedJsonMessages = new ArrayList<>();
+    private static final String HOST = "192.168.1.66";
+    private static final int PORT = 9090;
     private boolean quit = true; // Check when programme need to close connection
 
     // Client connects to server in a new thread, because working with internet network possible
     // only in a separate thread
-    public BackendClient(Context context) {
-        this.context = context;
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                connectToServer();
-            }
-        }).start();
-
+    public BackendClient() {
+        Log.d("mLog", "Подключение клиента");
+        new Thread(this::connectToServer).start();
     }
 
     // TODO Настроить корректную работу при отключёной сети или WiFi
@@ -43,13 +41,12 @@ public class BackendClient{
         try {
             while (!isNotQuit()) {
                 // Connecting to server with host="192.168.1.81" and port=9090
-                socket = new Socket("192.168.43.31", 9090);
+                socket = new Socket(HOST, PORT);
                 quit = false;
                 writer = new DataWriter(this, socket);
-                reader = new DataReader(this, socket, context);
+                reader = new DataReader(this, socket);
                 writer.start();
-                reader.execute();
-
+                reader.start();
 
             }
 
@@ -62,6 +59,7 @@ public class BackendClient{
     }
 
 
+
     /**
      * Check when programme need to close connection
      * @return "permission" to retain the server
@@ -72,12 +70,12 @@ public class BackendClient{
 
     /**
      * Pass message to DataWriter (class for sending processed messages)
-     * @param message message from user
+     * @param requestModel request from user
      */
-    public void sendMessage(Message message){
+    public void sendRequest(RequestModel requestModel){
         while(writer == null)
             Thread.yield();
-        writer.sendMessage(message);
+        writer.sendMessage(requestModel);
     }
 
 
@@ -103,12 +101,7 @@ public class BackendClient{
 
     public void reloadServer(){
         //closeConnection();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                connectToServer();
-            }
-        }).start();
+        new Thread(this::connectToServer).start();
     }
 
 

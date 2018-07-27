@@ -14,8 +14,8 @@
       <file leaf-file-name="server.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/server.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="85">
-              <caret line="5" column="11" lean-forward="true" selection-start-line="5" selection-start-column="11" selection-end-line="5" selection-end-column="11" />
+            <state relative-caret-position="153">
+              <caret line="35" column="4" selection-start-line="35" selection-start-column="4" selection-end-line="35" selection-end-column="4" />
               <folding>
                 <element signature="e#0#13#0" expanded="true" />
               </folding>
@@ -23,14 +23,29 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="server.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../../../Public/Android/AirTop/app/src/main/java/com/example/infinity/airtop/controller/server/server.py">
+      <file leaf-file-name="my_exceptions.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/my_exceptions.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="102">
-              <caret line="6" column="17" lean-forward="true" selection-start-line="6" selection-start-column="17" selection-end-line="6" selection-end-column="17" />
-              <folding>
-                <element signature="e#0#13#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="17">
+              <caret line="1" column="21" selection-start-line="1" selection-start-column="21" selection-end-line="1" selection-end-column="21" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="database_server.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/database_server.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="238">
+              <caret line="14" lean-forward="true" selection-start-line="14" selection-end-line="14" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="threading.py" pinned="false" current-in-tab="false">
+        <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python36-32/Lib/threading.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="15453">
+              <caret line="915" selection-start-line="915" selection-end-line="915" />
             </state>
           </provider>
         </entry>
@@ -38,8 +53,8 @@
       <file leaf-file-name="client_test.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/client_test.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="408">
-              <caret line="24" column="17" selection-start-line="24" selection-start-column="17" selection-end-line="24" selection-end-column="17" />
+            <state relative-caret-position="238">
+              <caret line="14" selection-start-line="14" selection-end-line="14" />
             </state>
           </provider>
         </entry>
@@ -56,7 +71,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/test.py" />
         <option value="$PROJECT_DIR$/redis_lesson.py" />
         <option value="$PROJECT_DIR$/f2.py" />
         <option value="$PROJECT_DIR$/f1.py" />
@@ -66,13 +80,20 @@
         <option value="$PROJECT_DIR$/server_test.py" />
         <option value="$PROJECT_DIR$/client.py" />
         <option value="$PROJECT_DIR$/json_test.py" />
+        <option value="$PROJECT_DIR$/client_test.py" />
+        <option value="$PROJECT_DIR$/testdb.sqlite" />
+        <option value="$PROJECT_DIR$/user.py" />
+        <option value="$PROJECT_DIR$/db_begin.py" />
+        <option value="$PROJECT_DIR$/my_exceptions.py" />
+        <option value="$PROJECT_DIR$/test.py" />
+        <option value="$PROJECT_DIR$/database_server.py" />
         <option value="$PROJECT_DIR$/server.py" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds">
-    <option name="x" value="802" />
-    <option name="y" value="112" />
+  <component name="ProjectFrameBounds" extendedState="7">
+    <option name="x" value="710" />
+    <option name="y" value="50" />
     <option name="width" value="980" />
     <option name="height" value="1040" />
   </component>
@@ -86,15 +107,15 @@
         <subPane>
           <expand>
             <path>
-              <item name="messages" type="b2602c69:ProjectViewProjectNode" />
-              <item name="messages" type="462c0819:PsiDirectoryNode" />
+              <item name="serverAirTop" type="b2602c69:ProjectViewProjectNode" />
+              <item name="serverAirTop" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
-              <item name="messages" type="b2602c69:ProjectViewProjectNode" />
+              <item name="serverAirTop" type="b2602c69:ProjectViewProjectNode" />
               <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
             </path>
             <path>
-              <item name="messages" type="b2602c69:ProjectViewProjectNode" />
+              <item name="serverAirTop" type="b2602c69:ProjectViewProjectNode" />
               <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
               <item name="&lt; Python 3.6 &gt;" type="70bed36:NamedLibraryElementNode" />
             </path>
@@ -160,6 +181,24 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="C:\Users\Виталик\IdeaProjects\messages\client_test.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+    </configuration>
+    <configuration name="db_begin" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="serverAirTop" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="D:\Android\AirTop\app\src\main\java\com\example\infinity\airtop\serverAirTop\database_server.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -282,9 +321,11 @@
       <item itemvalue="Python.redis_db" />
       <item itemvalue="Python.server_test" />
       <item itemvalue="Python.json_test" />
+      <item itemvalue="Python.db_begin" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.db_begin" />
         <item itemvalue="Python.json_test" />
         <item itemvalue="Python.server_test" />
       </list>
@@ -304,14 +345,16 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
+    <frame x="-7" y="-7" width="1550" height="838" extended-state="7" />
+    <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.1764706" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.11302049" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.32905984" />
       <window_info anchor="bottom" id="Version Control" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Python Console" order="7" weight="0.32905984" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.32621083" />
+      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.3233618" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Terminal" order="7" weight="0.32905984" />
       <window_info id="Favorites" order="2" side_tool="true" />
@@ -322,7 +365,6 @@
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
-      <window_info anchor="bottom" id="Find" order="1" weight="0.32905984" />
     </layout>
   </component>
   <component name="VcsContentAnnotationSettings">
@@ -330,10 +372,72 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="3" />
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/server.py</url>
+          <line>85</line>
+          <option name="timeStamp" value="17" />
+        </line-breakpoint>
+      </breakpoints>
+      <option name="time" value="23" />
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python36-32/Lib/threading.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="15453">
+          <caret line="915" selection-start-line="915" selection-end-line="915" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/client_test.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="595">
+          <caret line="35" column="29" selection-start-line="35" selection-start-column="29" selection-end-line="35" selection-end-column="29" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="459">
+          <caret line="28" column="10" lean-forward="true" selection-start-line="28" selection-start-column="10" selection-end-line="28" selection-end-column="10" />
+          <folding>
+            <element signature="e#0#13#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python36-32/Lib/threading.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="15453">
+          <caret line="915" selection-start-line="915" selection-end-line="915" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/client_test.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="595">
+          <caret line="35" column="29" lean-forward="true" selection-start-line="35" selection-start-column="29" selection-end-line="35" selection-end-column="29" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="68">
+          <caret line="5" column="11" lean-forward="true" selection-start-line="5" selection-start-column="11" selection-end-line="5" selection-end-column="11" />
+          <folding>
+            <element signature="e#0#13#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/client_test.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="408">
+          <caret line="24" column="17" selection-start-line="24" selection-start-column="17" selection-end-line="24" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/server.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="527">
@@ -344,13 +448,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/json_test.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="374">
-          <caret line="22" column="11" lean-forward="true" selection-start-line="22" selection-start-column="11" selection-end-line="22" selection-end-column="11" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/json_test.py" />
     <entry file="file://$PROJECT_DIR$/client_test.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="408">
@@ -449,14 +547,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python36-32/Lib/threading.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15453">
-          <caret line="915" selection-start-line="915" selection-end-line="915" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test.py" />
     <entry file="file://$PROJECT_DIR$/redis_lesson.py" />
     <entry file="file://$PROJECT_DIR$/f1.py" />
     <entry file="file://$PROJECT_DIR$/f2.py" />
@@ -516,41 +606,59 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/json_test.py" />
+    <entry file="file://$PROJECT_DIR$/server_test.py" />
+    <entry file="file://$PROJECT_DIR$/../../../Public/Android/AirTop/app/src/main/java/com/example/infinity/airtop/controller/server/server.py" />
+    <entry file="file://$PROJECT_DIR$/testdb.db" />
+    <entry file="file://$PROJECT_DIR$/testdb.sqlite-journal" />
+    <entry file="file://$PROJECT_DIR$/mydb.sqlite" />
+    <entry file="file://$PROJECT_DIR$/user.py" />
     <entry file="file://$PROJECT_DIR$/client_test.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="408">
-          <caret line="24" column="17" selection-start-line="24" selection-start-column="17" selection-end-line="24" selection-end-column="17" />
+        <state relative-caret-position="238">
+          <caret line="14" selection-start-line="14" selection-end-line="14" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/json_test.py">
+    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python36-32/Lib/threading.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="374">
-          <caret line="22" column="11" selection-start-line="22" selection-start-column="11" selection-end-line="22" selection-end-column="11" />
+        <state relative-caret-position="15453">
+          <caret line="915" selection-start-line="915" selection-end-line="915" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/server_test.py">
+    <entry file="file://$PROJECT_DIR$/testdb.sqlite">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="187">
-          <caret line="11" lean-forward="true" selection-start-line="11" selection-end-line="11" />
+        <state relative-caret-position="34">
+          <caret line="2" column="7" selection-start-line="2" selection-start-column="7" selection-end-line="2" selection-end-column="7" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../../../Public/Android/AirTop/app/src/main/java/com/example/infinity/airtop/controller/server/server.py">
+    <entry file="file://$PROJECT_DIR$/my_exceptions.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="6" column="17" lean-forward="true" selection-start-line="6" selection-start-column="17" selection-end-line="6" selection-end-column="17" />
-          <folding>
-            <element signature="e#0#13#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="17">
+          <caret line="1" column="21" selection-start-line="1" selection-start-column="21" selection-end-line="1" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17">
+          <caret line="1" column="33" selection-start-line="1" selection-start-column="6" selection-end-line="1" selection-end-column="33" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/database_server.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="238">
+          <caret line="14" lean-forward="true" selection-start-line="14" selection-end-line="14" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/server.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="5" column="11" lean-forward="true" selection-start-line="5" selection-start-column="11" selection-end-line="5" selection-end-column="11" />
+        <state relative-caret-position="153">
+          <caret line="35" column="4" selection-start-line="35" selection-start-column="4" selection-end-line="35" selection-end-column="4" />
           <folding>
             <element signature="e#0#13#0" expanded="true" />
           </folding>

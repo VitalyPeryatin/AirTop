@@ -1,9 +1,9 @@
-package com.example.infinity.airtop.controller.client.writeData;
+package com.example.infinity.airtop.presenters.client.writeData;
 
 import android.graphics.Bitmap;
 import android.util.Base64;
 
-import com.example.infinity.airtop.model.Message;
+import com.example.infinity.airtop.models.Message;
 
 import java.io.ByteArrayOutputStream;
 

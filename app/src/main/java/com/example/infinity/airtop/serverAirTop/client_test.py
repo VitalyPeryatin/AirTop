@@ -8,7 +8,7 @@ def receving(name, sock):
             input_message = data.decode("utf-8")
             if input_message != '':
                 print(input_message)
-            time.sleep(0.1)
+            time.sleep(0.01)
         except BlockingIOError:
             pass
 
@@ -36,7 +36,7 @@ while not shutdown:
             message = input()
             if message != "":
                 s.send(("[" + alias + "] :: " + message).encode("utf-8"))
-            time.sleep(0.1)
+            time.sleep(0.01)
         except:
             s.sendto(("[" + alias + "] <= left chat ").encode("utf-8"), server)
             shutdown = True

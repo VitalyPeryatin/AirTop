@@ -1,20 +1,22 @@
-package com.example.infinity.airtop.controller.client.readData;
+package com.example.infinity.airtop.presenters.client.readData;
 
-import android.annotation.SuppressLint;
-import android.content.Context;
-import android.os.AsyncTask;
-import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 
-import com.example.infinity.airtop.controller.client.BackendClient;
-import com.example.infinity.airtop.model.Message;
-import com.example.infinity.airtop.view.ChatActivity;
-import com.example.infinity.airtop.view.MessageListViewAdapter;
+import com.example.infinity.airtop.models.SearchableUsers;
+import com.example.infinity.airtop.models.User;
+import com.example.infinity.airtop.presenters.ChatPresenter;
+import com.example.infinity.airtop.presenters.LoginPresenter;
+import com.example.infinity.airtop.presenters.SearchUserPresenter;
+import com.example.infinity.airtop.presenters.client.BackendClient;
+import com.example.infinity.airtop.models.Message;
 import com.google.gson.Gson;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.net.Socket;
-import java.net.SocketException;
 
 
 /**
@@ -22,31 +24,33 @@ import java.net.SocketException;
  * @author infinity_coder
  * @version 1.0.0
  */
-public class DataReader extends AsyncTask<Void, Message, Void>{
-    @SuppressLint("StaticFieldLeak")
-    private Context context;
+public class DataReader extends Thread{
     private BackendClient backendClient; // object for controlling of closing connection
     private DataInputStream inputStream;
+    private ChatPresenter chatPresenter;
+    private LoginPresenter loginPresenter;
+    private SearchUserPresenter searchUserPresenter;
 
-    public DataReader(BackendClient backendClient, Socket socket, Context context) throws IOException {
+    public DataReader(BackendClient backendClient, Socket socket) throws IOException {
         this.backendClient = backendClient;
-        this.context = context;
         inputStream = new DataInputStream(socket.getInputStream());
+        chatPresenter = ChatPresenter.getInstance();
+        loginPresenter = LoginPresenter.getInstance();
+        searchUserPresenter = SearchUserPresenter.getInstance();
     }
 
     @Override
-    protected void onProgressUpdate(Message... values) {
-        super.onProgressUpdate(values);
-
-        // Find recyclerAdapter (it contains list of current messages) and add the next message
-        RecyclerView msgListView = ((ChatActivity)context).getMsgListView();
-        MessageListViewAdapter recyclerAdapter = (MessageListViewAdapter) msgListView.getAdapter();
-        assert recyclerAdapter != null;
-        recyclerAdapter.getCurrentMessages().add(values[0]);
-        recyclerAdapter.notifyDataSetChanged();
-        msgListView.scrollToPosition(recyclerAdapter.getItemCount() - 1);
+    public void run() {
+        super.run();
+        //while(backendClient.isNotQuit())
+        try {
+            while(true) {
+                publishMessage(readData());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
-
 
     /**
      *  Bitwise receives data from the server
@@ -66,39 +70,35 @@ public class DataReader extends AsyncTask<Void, Message, Void>{
 
     /**
      * Converts the received string to the "Message" object and sends it to a publication at the Activity
-     * @param jsonMessage json-string for transformation to "Message" object and following publication
+     * @param jsonText json-string for transformation to "Message" object and following publication
      */
-    private void publishMessage(String jsonMessage){
+    private void publishMessage(String jsonText){
         Gson gson = new Gson();
-        Message message = gson.fromJson(jsonMessage, Message.class);
-        if(message.getText() != null)
-            new TextDecoder().decode(message);
-        if(message.getEncodedImage() != null)
-            new ImageDecoder().decode(message);
-        publishProgress(message);
-    }
-
-    @Override
-    protected Void doInBackground(Void... voids) {
         try {
-            //while(backendClient.isNotQuit())
-            while(true)
-                publishMessage(readData());
-
-        }
-        catch (SocketException ignored){
-            try {
-                inputStream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
+            JSONObject jsonObject = new JSONObject(jsonText);
+            String type = jsonObject.getString("TYPE");
+            if(type.equals("message")) {
+                Message message = gson.fromJson(jsonText, Message.class);
+                if (message.getText() != null)
+                    new TextDecoder().decode(message);
+                if (message.getEncodedImage() != null)
+                    new ImageDecoder().decode(message);
+                chatPresenter.displayMessage(message);
             }
-            backendClient.closeConnection();
+            else if(type.equals("user")){
+                User user = gson.fromJson(jsonText, User.class);
+                loginPresenter.successAuth(user);
+            }
+            else if(type.equals("searchable_users")){
+                Log.d("mLog", jsonText);
+                SearchableUsers searchableUsers = gson.fromJson(jsonText, SearchableUsers.class);
+                searchUserPresenter.displaySearchableUsers(searchableUsers);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
-        catch (Exception e) {
-            backendClient.reloadServer();
 
-        }
-        return null;
+
     }
 }
 

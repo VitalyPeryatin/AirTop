@@ -1,10 +1,10 @@
-package com.example.infinity.airtop.controller.client.readData;
+package com.example.infinity.airtop.presenters.client.readData;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
 
-import com.example.infinity.airtop.model.Message;
+import com.example.infinity.airtop.models.Message;
 
 public class ImageDecoder implements IDecoder{
     @Override
