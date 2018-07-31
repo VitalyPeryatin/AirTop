@@ -5,13 +5,10 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.widget.EditText;
 
 import com.example.infinity.airtop.R;
-import com.example.infinity.airtop.models.User;
-import com.example.infinity.airtop.presenters.LoginPresenter;
-import com.google.gson.Gson;
+import com.example.infinity.airtop.presentation.presenters.LoginPresenter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

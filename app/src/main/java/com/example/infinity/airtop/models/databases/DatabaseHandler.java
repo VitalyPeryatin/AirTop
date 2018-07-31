@@ -1,5 +1,7 @@
 package com.example.infinity.airtop.models.databases;
 
+import android.util.Log;
+
 import com.example.infinity.airtop.models.User;
 import com.example.infinity.airtop.views.App;
 
@@ -32,6 +34,7 @@ public class DatabaseHandler {
                     UserDao userDao = app.getDatabase().userDao();
                     User user = userDao.getByPhone(addInfo);
                     app.setCurrentUser(user);
+                    Log.d("mLog2", "" + user.phone);
                 };
                 break;
         }

@@ -1,6 +1,5 @@
 package com.example.infinity.airtop.views;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -12,12 +11,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.infinity.airtop.R;
-import com.example.infinity.airtop.models.User;
-import com.example.infinity.airtop.presenters.SearchUserPresenter;
+import com.example.infinity.airtop.presentation.presenters.SearchUserPresenter;
 import com.example.infinity.airtop.views.adapters.SearchUserAdapter;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

@@ -1,6 +1,4 @@
-package com.example.infinity.airtop.presenters;
-
-import android.util.Log;
+package com.example.infinity.airtop.presentation.presenters;
 
 import com.example.infinity.airtop.models.User;
 import com.example.infinity.airtop.models.databases.UserDao;
@@ -33,18 +31,17 @@ public class LoginPresenter implements Presenter<LoginActivity> {
         if(isValidPhone(phone)) {
             new Thread(()->{
                 User user = new User(phone);
-                App.getInstance().getDatabase().userDao().insert(user); // TODO Перед вставкой пользователя в БД проверить, что на сервере данные получены
-                App.getBackendClient().sendRequest(user);
+                user.setAction(User.ACTION_CREATE);
+                //App.getInstance().getDatabase().userDao().insert(user); // TODO Перед вставкой пользователя в БД проверить, что на сервере данные получены
+                App.getInstance().getBackendClient().sendRequest(user);
             }).start();
         }
     }
 
     public void successAuth(User user){
-        App.getInstance().setCurrentUser(user);
         UserDao userDao = App.getInstance().getDatabase().userDao();
         userDao.insert(user);
-        Log.d("mLog", "" + userDao.getSize());
-        Log.d("mLog", "Путь: " + activity.getDatabasePath("database.db"));
+        App.getInstance().setCurrentUser(user);
         activity.successAuth();
     }
 

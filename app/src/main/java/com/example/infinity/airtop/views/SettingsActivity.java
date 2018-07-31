@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.example.infinity.airtop.R;
 import com.example.infinity.airtop.models.User;
-import com.example.infinity.airtop.presenters.SettingsPresenter;
+import com.example.infinity.airtop.presentation.presenters.SettingsPresenter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -47,6 +47,16 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         unbinder.unbind();
@@ -77,10 +87,7 @@ public class SettingsActivity extends AppCompatActivity {
                 case PHONE_CODE:
                     break;
                 case USERNAME_CODE:
-                    assert data != null;
-                    assert data.getExtras() != null;
-
-                    String username = data.getExtras().getString("usernameKey", "None");
+                    String username = App.getInstance().getCurrentUser().username;
                     tvUsername.setText(username);
                     break;
             }

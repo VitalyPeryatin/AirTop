@@ -1,4 +1,4 @@
-package com.example.infinity.airtop.presenters.client.readData;
+package com.example.infinity.airtop.services.client.readData;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;

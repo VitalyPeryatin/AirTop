@@ -1,19 +1,15 @@
-package com.example.infinity.airtop.presenters.client;
+package com.example.infinity.airtop.services.client;
 
 
-import android.content.Context;
 import android.util.Log;
 
-import com.example.infinity.airtop.models.PhoneVerifier;
 import com.example.infinity.airtop.models.RequestModel;
-import com.example.infinity.airtop.presenters.client.readData.DataReader;
-import com.example.infinity.airtop.presenters.client.writeData.DataWriter;
-import com.example.infinity.airtop.models.Message;
+import com.example.infinity.airtop.services.client.readData.DataReader;
+import com.example.infinity.airtop.services.client.writeData.DataWriter;
 import com.example.infinity.airtop.views.App;
 
 import java.io.IOException;
 import java.net.Socket;
-import java.util.ArrayList;
 
 /**
  * Client of backend part. It connects to server and tune threads for reading and writing data
@@ -33,21 +29,25 @@ public class BackendClient{
     // only in a separate thread
     public BackendClient() {
         Log.d("mLog", "Подключение клиента");
+        writer = new DataWriter(this);
+        reader = new DataReader(this);
+        writer.start();
+        reader.start();
         new Thread(this::connectToServer).start();
     }
 
     // TODO Настроить корректную работу при отключёной сети или WiFi
     private void connectToServer(){
         try {
-            while (!isNotQuit()) {
+            while (true) {
+                while(!isQuit())
+                    Thread.yield();
                 // Connecting to server with host="192.168.1.81" and port=9090
                 socket = new Socket(HOST, PORT);
+                writer.setSocket(socket);
+                reader.setSocket(socket);
+                App.getInstance().verifyUser();
                 quit = false;
-                writer = new DataWriter(this, socket);
-                reader = new DataReader(this, socket);
-                writer.start();
-                reader.start();
-
             }
 
         } catch (Exception e) {
@@ -55,17 +55,15 @@ public class BackendClient{
             Log.d("mLog","Вылетело исключение");
             e.printStackTrace();
         }
-        Log.d("mLog", "quit: " + quit);
     }
-
 
 
     /**
      * Check when programme need to close connection
      * @return "permission" to retain the server
      */
-    public boolean isNotQuit() {
-        return !quit;
+    public boolean isQuit() {
+        return quit;
     }
 
     /**
@@ -84,8 +82,8 @@ public class BackendClient{
      */
     public void closeConnection() {
         try {
-            socket.close();
             quit = true;
+            socket.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -100,8 +98,8 @@ public class BackendClient{
     }
 
     public void reloadServer(){
-        //closeConnection();
-        new Thread(this::connectToServer).start();
+        closeConnection();
+        quit = true;
     }
 
 

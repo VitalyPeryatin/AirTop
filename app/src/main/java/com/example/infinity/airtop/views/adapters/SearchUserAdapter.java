@@ -1,6 +1,5 @@
 package com.example.infinity.airtop.views.adapters;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
@@ -12,13 +11,9 @@ import android.widget.TextView;
 
 import com.example.infinity.airtop.R;
 import com.example.infinity.airtop.models.User;
-import com.example.infinity.airtop.presenters.ChatPresenter;
-import com.example.infinity.airtop.presenters.Presenter;
+import com.example.infinity.airtop.presentation.presenters.ChatPresenter;
 import com.example.infinity.airtop.views.ChatActivity;
 import com.example.infinity.airtop.views.SearchUserActivity;
-import com.google.gson.Gson;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 

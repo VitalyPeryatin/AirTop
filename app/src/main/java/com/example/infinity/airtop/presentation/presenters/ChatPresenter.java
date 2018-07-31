@@ -1,18 +1,13 @@
-package com.example.infinity.airtop.presenters;
+package com.example.infinity.airtop.presentation.presenters;
 
 import android.graphics.Bitmap;
-import android.util.Log;
 
 import com.example.infinity.airtop.models.Message;
 import com.example.infinity.airtop.models.User;
 import com.example.infinity.airtop.views.App;
 import com.example.infinity.airtop.views.ChatActivity;
 
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-
-public class ChatPresenter implements Presenter<ChatActivity> {
-
+public class ChatPresenter implements Presenter<ChatActivity>{
     private static ChatPresenter chatPresenter;
     private ChatActivity activity;
     private int userLocalId = 0;
@@ -27,7 +22,6 @@ public class ChatPresenter implements Presenter<ChatActivity> {
 
     public static ChatPresenter getInstance() {
         if(chatPresenter == null) chatPresenter = new ChatPresenter();
-        Log.d("mLog", "Presenter: " + chatPresenter + ", client: " + App.getBackendClient());
         return chatPresenter;
     }
 
@@ -35,7 +29,7 @@ public class ChatPresenter implements Presenter<ChatActivity> {
         if(message.getText() != null || message.getImage() != null) {
             message.setAddressee(addresseeUser.phone);
             message.setSender(App.getInstance().getCurrentUser().phone);
-            App.getBackendClient().sendRequest(message);
+            App.getInstance().getBackendClient().sendRequest(message);
             message = new Message();
         }
     }

@@ -7,9 +7,9 @@ import android.graphics.Bitmap;
  * @autor infinity_coder
  * @version 1.0.0
  */
-public class Message implements RequestModel{
+public class Message implements RequestModel, RequestType{
     private String text, sender, addressee, encodedImage;
-    private final String TYPE = "message";
+    private final String TYPE = TYPE_MESSAGE;
     private Bitmap image;
 
     public void setText(String text) {

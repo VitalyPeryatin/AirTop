@@ -1,4 +1,4 @@
-package com.example.infinity.airtop.presenters;
+package com.example.infinity.airtop.presentation.presenters;
 
 import android.app.Activity;
 

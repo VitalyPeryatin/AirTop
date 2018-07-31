@@ -1,4 +1,4 @@
-package com.example.infinity.airtop.presenters;
+package com.example.infinity.airtop.presentation.presenters;
 
 import com.example.infinity.airtop.models.SearchableUsers;
 import com.example.infinity.airtop.views.App;
@@ -31,7 +31,7 @@ public class SearchUserPresenter implements Presenter<SearchUserActivity> {
 
     public void sendSearchableString(String str){
         searchableUsers.searchableString = str;
-        App.getBackendClient().sendRequest(searchableUsers);
+        App.getInstance().getBackendClient().sendRequest(searchableUsers);
     }
 
     public void displaySearchableUsers(SearchableUsers searchableUsers){

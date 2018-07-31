@@ -1,12 +1,11 @@
-package com.example.infinity.airtop.presenters.client.writeData;
+package com.example.infinity.airtop.services.client.writeData;
 
-import android.util.Log;
-
+import com.example.infinity.airtop.models.CheckingUsername;
 import com.example.infinity.airtop.models.PhoneVerifier;
 import com.example.infinity.airtop.models.RequestModel;
 import com.example.infinity.airtop.models.SearchableUsers;
 import com.example.infinity.airtop.models.User;
-import com.example.infinity.airtop.presenters.client.BackendClient;
+import com.example.infinity.airtop.services.client.BackendClient;
 import com.example.infinity.airtop.models.Message;
 import com.google.gson.Gson;
 
@@ -28,12 +27,26 @@ public class DataWriter extends Thread{
     private BackendClient backendClient; // object for controlling of closing connection
     private DataOutputStream outputStream;
     private LinkedBlockingQueue<RequestModel> msgQueue = new LinkedBlockingQueue<>();
+    private Socket socket;
 
-
-    public DataWriter(BackendClient backendClient, Socket socket) throws IOException {
+    public DataWriter(BackendClient backendClient) {
         this.backendClient = backendClient;
-        outputStream = new DataOutputStream(socket.getOutputStream());
     }
+
+    public void setSocket(Socket socket){
+        this.socket = socket;
+        updateOutputStream();
+    }
+
+    private void updateOutputStream(){
+        try {
+            outputStream = new DataOutputStream(socket.getOutputStream());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 
     public synchronized void sendMessage(RequestModel requestModel) {
         msgQueue.add(requestModel);
@@ -42,28 +55,29 @@ public class DataWriter extends Thread{
     @Override
     public void run() {
         super.run();
-        try {
-            while (backendClient.isNotQuit()) { // forever writes messages at "endless" loop
+        while(true) {
+            try {
+                while (backendClient.isQuit())
+                    Thread.yield();// forever writes messages at "endless" loop
                 while (msgQueue.size() == 0) // waiting for message queue to be added
                     Thread.yield();
                 String jsonMessage = transformToJson(msgQueue.poll());
                 sendJson(jsonMessage);
                 outputStream.flush();
-            }
 
-        } catch (Exception ignored) {
-            try {
-                outputStream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
+            } catch (Exception ignored) {
+                try {
+                    outputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                backendClient.reloadServer();
+                // TODO Создать самоперезапускающийся сервер с последующей отправкой непосланных сообщений
             }
-            backendClient.reloadServer();
-             // TODO Создать самоперезапускающийся сервер с последующей отправкой непосланных сообщений
         }
     }
 
     private String transformToJson(@NotNull RequestModel requestModel){
-        //msgQueue.poll();
         Gson gson = new Gson();
         String jsonMessage = "";
         if(requestModel instanceof Message) {
@@ -85,6 +99,10 @@ public class DataWriter extends Thread{
         else if(requestModel instanceof PhoneVerifier){
             PhoneVerifier phoneVerifier = (PhoneVerifier) requestModel;
             jsonMessage = gson.toJson(phoneVerifier);
+        }
+        else if(requestModel instanceof CheckingUsername){
+            CheckingUsername checkingUsername = (CheckingUsername) requestModel;
+            jsonMessage = gson.toJson(checkingUsername);
         }
         jsonMessage = jsonMessage.length() + "@" + jsonMessage;
         return jsonMessage;

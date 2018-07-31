@@ -52,40 +52,10 @@ public class NavDrawerActivity extends AppCompatActivity implements NavigationVi
 
         currentUserPhone = loadCurrentUser();
 
-
         if(currentUserPhone == null ){
             showLoginActivity();
         }
-        else {
-            verifyUser();
-        }
     }
-
-    private void verifyUser(){
-        DatabaseHandler databaseHandler = DatabaseHandler.getInstance();
-        databaseHandler.runByTag(DatabaseHandler.GET_USER_BY_PHONE, currentUserPhone);
-
-        verifyPhone();
-    }
-
-    private void verifyPhone(){
-        PhoneVerifier phoneVerifier = new PhoneVerifier();
-        UserDao userDao = App.getInstance().getDatabase().userDao();
-        new Thread(() -> {
-            ArrayList<User> users = (ArrayList<User>) userDao.getAll();
-            for (User user : users) {
-                Log.d("mLog", "user: " + user.phone);
-                phoneVerifier.userPhone = "" + user.phone;
-                App.getBackendClient().sendRequest(phoneVerifier);
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
-    }
-
 
 
     public void showLoginActivity(){
@@ -98,7 +68,7 @@ public class NavDrawerActivity extends AppCompatActivity implements NavigationVi
         if(requestCode == LOGIN_CODE && resultCode == RESULT_OK && data != null){
             Log.d("mLog", "Регистрация прошла успешно");
             currentUserPhone = data.getStringExtra("user phone");
-            verifyUser();
+            App.getInstance().verifyUser();
         }
     }
 

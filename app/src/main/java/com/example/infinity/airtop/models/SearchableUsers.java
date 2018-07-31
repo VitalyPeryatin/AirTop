@@ -5,9 +5,9 @@ import com.example.infinity.airtop.models.User;
 
 import java.util.ArrayList;
 
-public class SearchableUsers implements RequestModel{
+public class SearchableUsers implements RequestModel, RequestType{
 
-    private final String TYPE = "searchable_users";
+    private final String TYPE = TYPE_SEARCH_USER;
     public String searchableString;
     public ArrayList<User> users;
 

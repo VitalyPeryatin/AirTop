@@ -9,18 +9,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.example.infinity.airtop.R;
-import com.example.infinity.airtop.models.User;
-import com.example.infinity.airtop.presenters.ChatPresenter;
+import com.example.infinity.airtop.presentation.presenters.ChatPresenter;
 import com.example.infinity.airtop.models.Message;
 import com.example.infinity.airtop.views.adapters.MessageListViewAdapter;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -34,7 +30,7 @@ import butterknife.OnClick;
  *  @author infinity_coder
  *  @version 1.0.0
  */
-public class ChatActivity extends AppCompatActivity implements ChatView {
+public class ChatActivity extends AppCompatActivity {
     private static final int LOAD_IMAGE_CODE = 1;
 
     // TODO Отрефакторить код срочно!!!
@@ -45,7 +41,7 @@ public class ChatActivity extends AppCompatActivity implements ChatView {
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 
-    private ChatPresenter presenter;
+    ChatPresenter presenter;
     private MessageListViewAdapter messageAdapter;
 
 
@@ -54,16 +50,14 @@ public class ChatActivity extends AppCompatActivity implements ChatView {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
         ButterKnife.bind(this);
+        presenter = ChatPresenter.getInstance();
+        presenter.attachActivity(this);
 
         // Set adapter AFTER restoring list of messages
         ArrayList<Message> list = new ArrayList<>(); // TODO Внутри list должны лежать сообщения из БД
         messageAdapter = new MessageListViewAdapter(list);
         msgListView.setAdapter(messageAdapter);
         msgListView.setLayoutManager(new LinearLayoutManager(this));
-
-        presenter = ChatPresenter.getInstance();
-        presenter.attachActivity(this);
-
         toolbar.setTitle(presenter.getAddresseeUser().phone);
     }
 
@@ -104,7 +98,6 @@ public class ChatActivity extends AppCompatActivity implements ChatView {
         presenter.closeConnection();
     }
 
-    @Override
     public void displayMessage(Message message){
         runOnUiThread(()-> {
             messageAdapter.addItem(message);

@@ -32,6 +32,9 @@
         <activity
             android:name=".views.UsernameSettingsActivity"
             android:label="@string/title_activity_username_settings" />
+        <service
+            android:name=".services.ReaderService"
+            android:exported="false"/>
     </application>
 
 </manifest>
