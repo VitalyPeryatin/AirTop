@@ -14,7 +14,7 @@ import android.view.MenuItem;
 
 import com.example.infinity.airtop.R;
 import com.example.infinity.airtop.data.network.UserRequest;
-import com.example.infinity.airtop.service.SocketService;
+import com.example.infinity.airtop.service.ClientService;
 import com.example.infinity.airtop.App;
 import com.example.infinity.airtop.ui.settings.SettingsActivity;
 import com.example.infinity.airtop.ui.contacts.ContactsFragment;
@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.main_drawer_activity);
         unbinder = ButterKnife.bind(this);
 
-        Intent intent = new Intent(this, SocketService.class);
+        Intent intent = new Intent(this, ClientService.class);
         startService(intent);
 
         setFragment(new ContactsFragment());

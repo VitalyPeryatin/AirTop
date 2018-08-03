@@ -7,7 +7,7 @@ import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 import com.example.infinity.airtop.App;
 import com.example.infinity.airtop.data.network.SearchableUsers;
-import com.example.infinity.airtop.service.SocketService;
+import com.example.infinity.airtop.service.ClientService;
 import com.example.infinity.airtop.utils.JsonConverter;
 import com.example.infinity.airtop.ui.listeners.OnSearchUserListener;
 
@@ -29,7 +29,7 @@ public class SearchUserPresenter extends MvpPresenter<SearchUserView> implements
         searchableUsers.searchableString = str;
         JsonConverter jsonConverter = new JsonConverter();
         String json = jsonConverter.toJson(searchableUsers);
-        Intent intent = new Intent(context, SocketService.class);
+        Intent intent = new Intent(context, ClientService.class);
         intent.putExtra("request", json);
         context.startService(intent);
     }

@@ -13,7 +13,7 @@ import com.example.infinity.airtop.data.db.repositoryDao.AddresseeDao;
 import com.example.infinity.airtop.data.db.repositoryDao.MessageDao;
 import com.example.infinity.airtop.data.db.repositoryDao.UserDao;
 
-@Database(entities = {User.class, Addressee.class, Message.class}, version = 2, exportSchema = false)
+@Database(entities = {User.class, Addressee.class, Message.class}, version = 3, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
     public abstract UserDao userDao();
     public abstract AddresseeDao addresseeDao();

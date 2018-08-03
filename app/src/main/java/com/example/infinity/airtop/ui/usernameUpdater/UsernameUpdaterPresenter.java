@@ -9,7 +9,8 @@ import com.example.infinity.airtop.data.db.interactors.ChatInteractor;
 import com.example.infinity.airtop.data.db.model.User;
 import com.example.infinity.airtop.data.network.CheckingUsername;
 import com.example.infinity.airtop.data.network.UserRequest;
-import com.example.infinity.airtop.service.SocketService;
+import com.example.infinity.airtop.data.db.repositoryDao.UserDao;
+import com.example.infinity.airtop.service.ClientService;
 import com.example.infinity.airtop.utils.JsonConverter;
 import com.example.infinity.airtop.App;
 import com.example.infinity.airtop.ui.listeners.OnUsernameUpdateListener;
@@ -55,7 +56,7 @@ public class UsernameUpdaterPresenter extends MvpPresenter<UsernameUpdaterView> 
         else {
             JsonConverter jsonConverter = new JsonConverter();
             String json = jsonConverter.toJson(new CheckingUsername());
-            Intent intent = new Intent(context, SocketService.class);
+            Intent intent = new Intent(context, ClientService.class);
             intent.putExtra("request", json);
             context.startService(intent);
             //App.getInstance().getBackendClient().sendRequest(new CheckingUsername(text));

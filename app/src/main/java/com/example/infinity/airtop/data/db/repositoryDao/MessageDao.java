@@ -16,7 +16,7 @@ public abstract class MessageDao {
     @Query("SELECT * FROM message")
     public abstract List<Message> getAll();
 
-    @Insert(onConflict = REPLACE)
+    @Insert
     public abstract void insert(Message user);
 
     @Query("SELECT * FROM message WHERE addressee_phone=:phone")

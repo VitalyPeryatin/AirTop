@@ -15,7 +15,7 @@ import android.widget.Toast;
 import com.arellomobile.mvp.MvpAppCompatActivity;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.example.infinity.airtop.R;
-import com.example.infinity.airtop.data.network.MessageRequest;
+import com.example.infinity.airtop.data.db.model.Message;
 import com.example.infinity.airtop.ui.adapters.MessageListViewAdapter;
 
 import java.io.IOException;
@@ -27,7 +27,7 @@ import butterknife.OnClick;
 /**
  *  Activity for sending and receiving messages
  *  @author infinity_coder
- *  @version 1.0.0
+ *  @version 1.0.2
  */
 
 public class ChatActivity extends MvpAppCompatActivity implements ChatView {
@@ -36,7 +36,7 @@ public class ChatActivity extends MvpAppCompatActivity implements ChatView {
     ChatPresenter presenter;
 
     @BindView(R.id.recyclerView)
-    RecyclerView msgListView;
+    RecyclerView msgRecycler;
     @BindView(R.id.editText)
     EditText inputField;
     @BindView(R.id.toolbar)
@@ -54,17 +54,15 @@ public class ChatActivity extends MvpAppCompatActivity implements ChatView {
 
         // Set adapter AFTER restoring list of messages
         messageAdapter = new MessageListViewAdapter(presenter.getAddresseeUserPhone());
-        msgListView.setAdapter(messageAdapter);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        msgListView.setLayoutManager(layoutManager);
+        msgRecycler.setAdapter(messageAdapter);
+        msgRecycler.setLayoutManager(new LinearLayoutManager(this));
 
-        msgListView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+        msgRecycler.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             public void onGlobalLayout() {
-                msgListView.scrollToPosition(messageAdapter.getItemCount() - 1);
-                msgListView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                msgRecycler.scrollToPosition(messageAdapter.getItemCount() - 1); // TODO saving current position
+                msgRecycler.getViewTreeObserver().removeOnGlobalLayoutListener(this);
             }
         });
-
 
         toolbar.setTitle(presenter.getAddresseeUserPhone());
     }
@@ -75,11 +73,9 @@ public class ChatActivity extends MvpAppCompatActivity implements ChatView {
         if(requestCode == LOAD_IMAGE_CODE && resultCode == RESULT_OK && data != null){
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
-                presenter.addImageToMsg(bitmap);
+                presenter.getMessageEditor().addImage(bitmap);
                 Toast.makeText(this, "Картинка прикреплена", Toast.LENGTH_SHORT).show();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            } catch (IOException e) { e.printStackTrace(); }
         }
 
     }
@@ -103,7 +99,7 @@ public class ChatActivity extends MvpAppCompatActivity implements ChatView {
     private void addTextToMessage(){
         String text = inputField.getText().toString();
         if(text.length() > 0) {
-            presenter.addTextToMsg(text);
+            presenter.getMessageEditor().addText(text);
             inputField.getText().clear();
         }
     }
@@ -114,10 +110,11 @@ public class ChatActivity extends MvpAppCompatActivity implements ChatView {
         presenter.onDestroy();
     }
 
+    // Add message to adapter and display it
     @Override
-    public void displayMessage(MessageRequest messageRequest){
-        messageAdapter.addItem(messageRequest);
+    public void displayMessage(Message message){
+        messageAdapter.addItem(message);
         messageAdapter.notifyDataSetChanged();
-        msgListView.scrollToPosition(messageAdapter.getItemCount() - 1);
+        msgRecycler.scrollToPosition(messageAdapter.getItemCount() - 1);
     }
 }

@@ -135,7 +135,7 @@ public class DataReader extends Thread{
             switch (msg.what){
                 case MESSAGE_REQUEST_KEY:
                     if(msg.obj instanceof MessageRequest)
-                        responseListeners.getMessageListener().onMessage((MessageRequest) msg.obj);
+                        responseListeners.getMessageBus().onMessage((MessageRequest) msg.obj);
                     else
                         Log.e("mLogError", "DataReader -> не верный тип объекта. Ожидалось: MessageRequest");
                     break;

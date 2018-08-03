@@ -5,7 +5,12 @@ import com.example.infinity.airtop.presentation.presenters.listeners.OnMessageLi
 
 import java.util.ArrayList;
 
-public class MessageListener{
+/**
+ * Transfer data(MessageRequest) between different objects and threads
+ * @author infinity_coder
+ * @version 1.0.2
+ */
+public class MessageBus {
     private ArrayList<OnMessageListener> messageListeners = new ArrayList<>();
 
     public void subscribe(OnMessageListener messageListener){

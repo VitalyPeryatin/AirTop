@@ -29,10 +29,9 @@ public class ChatInteractor {
         catch (InterruptedException | ExecutionException | TimeoutException e) { return null; }
     }
 
-    public void insertMessage(MessageRequest messageRequest){
+    public void insertMessage(Message message){
         service.submit(() -> {
             MessageDao messageDao = App.getInstance().getDatabase().messageDao();
-            Message message = new Message(messageRequest);
             messageDao.insert(message);
         });
     }

@@ -1,15 +1,17 @@
 package com.example.infinity.airtop.ui.adapters;
 
-import android.app.Activity;
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.CardView;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.infinity.airtop.App;
@@ -27,16 +29,12 @@ import java.util.ArrayList;
  */
 public class MessageListViewAdapter extends RecyclerView.Adapter<MessageListViewAdapter.RecyclerViewHolder> {
     
-    private ArrayList<MessageRequest> currentMessageRequests = new ArrayList<>();
+    private ArrayList<Message> currentMessageRequests = new ArrayList<>();
     
     public MessageListViewAdapter(String phone) {
         new Thread(() -> {
             MessageDao messageDao = App.getInstance().getDatabase().messageDao();
-            ArrayList<Message> messages = (ArrayList<Message>) messageDao.getBySenderPhone(phone);
-            Log.d("phone", phone);
-            for (Message message : messages) {
-                currentMessageRequests.add(new MessageRequest(message));
-            }
+            currentMessageRequests = (ArrayList<Message>) messageDao.getBySenderPhone(phone);
         }).start();
     }
 
@@ -50,27 +48,37 @@ public class MessageListViewAdapter extends RecyclerView.Adapter<MessageListView
     @Override
     public void onBindViewHolder(@NonNull RecyclerViewHolder recyclerViewHolder, int position) {
         String text;
+        String route = currentMessageRequests.get(position).route;
         Bitmap image;
-        TextView textView = recyclerViewHolder.textView;
+
         ImageView imageView = recyclerViewHolder.imageView;
 
-        if((text = currentMessageRequests.get(position).getText()) != null) {
-            textView.setText(text);
-            textView.setVisibility(View.VISIBLE);
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams)
+                recyclerViewHolder.msgCardView.getLayoutParams();
+
+        if((text = currentMessageRequests.get(position).text) != null) {
+            recyclerViewHolder.textView.setText(text);
+            recyclerViewHolder.textView.setVisibility(View.VISIBLE);
         }
         else {
             recyclerViewHolder.textView.setText("");
-            textView.setVisibility(View.GONE);
+            recyclerViewHolder.textView.setVisibility(View.GONE);
         }
 
-        if((image = currentMessageRequests.get(position).getImage()) != null) {
+        if(route.equals(Message.ROUTE_IN))
+            params.gravity = Gravity.END;
+        else if(route.equals(Message.ROUTE_OUT))
+            params.gravity = Gravity.START;
+        recyclerViewHolder.msgCardView.setLayoutParams(params);
+
+        /*if((image = currentMessageRequests.get(position).getImage()) != null) {
             imageView.setImageBitmap(image);
             imageView.setVisibility(View.VISIBLE);
         }
         else {
             imageView.setImageBitmap(null);
             imageView.setVisibility(View.GONE);
-        }
+        }*/
 
     }
 
@@ -79,19 +87,20 @@ public class MessageListViewAdapter extends RecyclerView.Adapter<MessageListView
         return currentMessageRequests.size();
     }
 
-    public void addItem(MessageRequest messageRequest){
-        currentMessageRequests.add(messageRequest);
-
+    public void addItem(Message message){
+        currentMessageRequests.add(message);
     }
 
     class RecyclerViewHolder extends RecyclerView.ViewHolder{
         TextView textView;
         ImageView imageView;
+        CardView msgCardView;
 
         RecyclerViewHolder(@NonNull View itemView) {
             super(itemView);
             textView = itemView.findViewById(R.id.textView);
             imageView = itemView.findViewById(R.id.imageView);
+            msgCardView = itemView.findViewById(R.id.msgCardView);
         }
     }
 }

@@ -10,11 +10,11 @@ import android.util.Log;
 import com.example.infinity.airtop.data.db.model.User;
 import com.example.infinity.airtop.data.network.UserRequest;
 import com.example.infinity.airtop.ui.auth.AuthListener;
-import com.example.infinity.airtop.ui.chat.MessageListener;
+import com.example.infinity.airtop.ui.chat.MessageBus;
 import com.example.infinity.airtop.data.network.PhoneVerifier;
 import com.example.infinity.airtop.data.db.AppDatabase;
 import com.example.infinity.airtop.data.db.repositoryDao.UserDao;
-import com.example.infinity.airtop.service.SocketService;
+import com.example.infinity.airtop.service.ClientService;
 import com.example.infinity.airtop.utils.JsonConverter;
 import com.example.infinity.airtop.ui.searchUser.SearchUserListener;
 import com.example.infinity.airtop.ui.usernameUpdater.UsernameUpdateListener;
@@ -86,7 +86,7 @@ public class App extends Application {
                 phoneVerifier.userPhone = user.phone;
                 JsonConverter jsonConverter = new JsonConverter();
                 String json = jsonConverter.toJson(phoneVerifier);
-                Intent intent = new Intent(getBaseContext(), SocketService.class);
+                Intent intent = new Intent(getBaseContext(), ClientService.class);
                 intent.putExtra("request", json);
                 getBaseContext().startService(intent);
             }
@@ -111,31 +111,31 @@ public class App extends Application {
     private UserRequest loadCurrentUser(){
         final UserRequest userRequest;
         String currentUserPhone = sPref.getString(USER_PHONE_KEY, null);
-        if(currentUserPhone == null){
+        User user = database.userDao().getByPhone(currentUserPhone);
+        if(currentUserPhone == null || user == null){
             userRequest = null;
         }
         else{
-            User user = database.userDao().getByPhone(currentUserPhone);
             userRequest = new UserRequest(user);
         }
         return userRequest;
     }
 
     public static class ResponseListeners {
-        private MessageListener messageListener;
+        private MessageBus messageBus;
         private AuthListener authListener;
         private UsernameUpdateListener usernameUpdateListener;
         private SearchUserListener searchUserListener;
 
         ResponseListeners(){
-            messageListener = new MessageListener();
+            messageBus = new MessageBus();
             authListener = new AuthListener();
             usernameUpdateListener = new UsernameUpdateListener();
             searchUserListener = new SearchUserListener();
         }
 
-        public MessageListener getMessageListener() {
-            return messageListener;
+        public MessageBus getMessageBus() {
+            return messageBus;
         }
 
         public AuthListener getAuthListener() {

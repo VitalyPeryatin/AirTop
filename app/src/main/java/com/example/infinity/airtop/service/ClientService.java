@@ -12,7 +12,7 @@ import com.example.infinity.airtop.service.client.ServerConnection;
  * @author infinity_coder
  * @version 1.0.2
  */
-public class SocketService extends Service {
+public class ClientService extends Service {
 
     private ServerConnection serverConnection;
 

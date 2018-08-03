@@ -35,7 +35,7 @@
             android:label="@string/title_activity_username_settings" />
 
         <service
-            android:name=".service.SocketService"
+            android:name=".service.ClientService"
             android:exported="false"/>
     </application>
 
