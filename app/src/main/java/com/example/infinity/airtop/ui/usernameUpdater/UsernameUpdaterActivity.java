@@ -1,7 +1,6 @@
 package com.example.infinity.airtop.ui.usernameUpdater;
 
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -16,8 +15,8 @@ import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.example.infinity.airtop.R;
 import com.example.infinity.airtop.data.network.CheckingUsername;
 import com.example.infinity.airtop.data.network.UserRequest;
-import com.example.infinity.airtop.service.ClientService;
-import com.example.infinity.airtop.service.client.JsonConverter;
+import com.example.infinity.airtop.service.SocketService;
+import com.example.infinity.airtop.utils.JsonConverter;
 import com.example.infinity.airtop.App;
 
 import butterknife.BindView;
@@ -101,7 +100,7 @@ public class UsernameUpdaterActivity extends MvpAppCompatActivity implements Tex
 
         JsonConverter jsonConverter = new JsonConverter();
         String json = jsonConverter.toJson(user);
-        Intent intent = new Intent(this, ClientService.class);
+        Intent intent = new Intent(this, SocketService.class);
         intent.putExtra("request", json);
         startService(intent);
         //App.getInstance().getBackendClient().sendRequest(user);

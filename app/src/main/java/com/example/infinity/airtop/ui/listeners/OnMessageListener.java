@@ -1,7 +1,7 @@
 package com.example.infinity.airtop.presentation.presenters.listeners;
 
-import com.example.infinity.airtop.data.network.Message;
+import com.example.infinity.airtop.data.network.MessageRequest;
 
 public interface OnMessageListener {
-    void onMessage(Message message);
+    void onMessage(MessageRequest messageRequest);
 }

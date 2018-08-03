@@ -1,7 +1,7 @@
 package com.example.infinity.airtop.service.client.readData;
 
-import com.example.infinity.airtop.data.network.Message;
+import com.example.infinity.airtop.data.network.MessageRequest;
 
 public interface IDecoder {
-    void decode(Message msg);
+    void decode(MessageRequest msg);
 }

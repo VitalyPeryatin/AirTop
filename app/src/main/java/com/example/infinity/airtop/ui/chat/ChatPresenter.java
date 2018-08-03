@@ -6,92 +6,75 @@ import android.graphics.Bitmap;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
+import com.example.infinity.airtop.data.db.interactors.ChatInteractor;
 import com.example.infinity.airtop.data.db.model.Addressee;
-import com.example.infinity.airtop.data.network.Message;
-import com.example.infinity.airtop.data.db.repositoryDao.AddresseeDao;
+import com.example.infinity.airtop.data.network.MessageRequest;
 import com.example.infinity.airtop.presentation.presenters.listeners.OnMessageListener;
-import com.example.infinity.airtop.service.ClientService;
-import com.example.infinity.airtop.service.client.JsonConverter;
+import com.example.infinity.airtop.service.SocketService;
+import com.example.infinity.airtop.utils.JsonConverter;
 import com.example.infinity.airtop.App;
 
 @InjectViewState
 public class ChatPresenter extends MvpPresenter<ChatView> implements OnMessageListener {
 
-    private Message message;
+    private MessageRequest messageRequest;
     private Addressee addressee;
+    private ChatInteractor chatInteractor;
     private Context context;
 
     public ChatPresenter(){
-        message = new Message();
+        messageRequest = new MessageRequest();
+        chatInteractor = new ChatInteractor();
     }
 
-    public void onCreate(Context context, Intent intent){
-        this.context = context;
-        App.getInstance().getListeners().getMessageListener().subscribe(this);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                AddresseeDao addresseeDao = App.getInstance().getDatabase().addresseeDao();
-                addressee = addresseeDao.getByPhone(intent.getStringExtra("addresseePhone"));
-
-            }
-        }).start();
-        message = new Message();
-
+    public void onCreate(Intent intent){
+        this.context = App.getInstance().getBaseContext();
+        App.getInstance().getResponseListeners().getMessageListener().subscribe(this);
+        addressee = chatInteractor.getAddresseeByPhone(intent.getStringExtra("addresseePhone"));
+        messageRequest = new MessageRequest();
     }
 
     public void sendMessage() {
-        if(message.getText() != null || message.getImage() != null) {
-            message.setAddressee(addressee.phone);
-            message.setSender(App.getInstance().getCurrentUser().phone);
+        if(messageRequest.getText() != null || messageRequest.getImage() != null) {
+            messageRequest.setAddressee(addressee.phone);
+            messageRequest.setSender(App.getInstance().getCurrentUser().phone);
             JsonConverter jsonConverter = new JsonConverter();
-            String json = jsonConverter.toJson(message);
-            Intent intent = new Intent(context, ClientService.class);
+            String json = jsonConverter.toJson(messageRequest);
+            Intent intent = new Intent(context, SocketService.class);
             intent.putExtra("request", json);
             context.startService(intent);
-            //App.getInstance().getBackendClient().sendRequest(message);
-            message = new Message();
+            messageRequest = new MessageRequest();
         }
-    }
-
-
-    public void closeConnection() {
-        /*if(backendClient != null) {
-            backendClient.closeConnection();
-            backendClient = null;
-        }*/
     }
 
     public void addTextToMsg(String text){
-        message.setText(text);
+        messageRequest.setText(text);
     }
 
     public void addImageToMsg(Bitmap bitmap) {
-        message.setImage(bitmap);
+        messageRequest.setImage(bitmap);
     }
 
-    public void displayMessage(Message message){
-        getViewState().displayMessage(message);
+    public void displayMessage(MessageRequest messageRequest){
+        chatInteractor.insertMessage(messageRequest);
+        if(messageRequest.sender.equals(addressee.phone)) {
+            getViewState().displayMessage(messageRequest);
+        }
     }
 
     public String getAddresseeUserPhone() {
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         return addressee.phone;
     }
 
 
     @Override
-    public void onMessage(Message message) {
-        displayMessage(message);
+    public void onMessage(MessageRequest messageRequest) {
+        displayMessage(messageRequest);
     }
 
     public void onDestroy() {
         super.onDestroy();
-        App.getInstance().getListeners().getMessageListener().unsubscribe(this);
+        App.getInstance().getResponseListeners().getMessageListener().unsubscribe(this);
 
     }
 }

@@ -8,16 +8,19 @@ import com.example.infinity.airtop.service.client.writeData.DataWriter;
 import com.example.infinity.airtop.App;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.SocketAddress;
 
 /**
  * Client of backend part. It connects to server and tune threads for reading and writing data
  * @author infinity_coder
- * @version 1.0.0
+ * @version 1.0.2
  */
-public class BackendClient extends Thread{
+public class ServerConnection extends Thread{
 
     private Socket socket;
+    private SocketAddress address = new InetSocketAddress(HOST, PORT);
     private DataWriter writer;
     private DataReader reader;
     private static final String HOST = "192.168.1.65";
@@ -26,8 +29,8 @@ public class BackendClient extends Thread{
 
     // Client connects to server in a new thread, because working with internet network possible
     // only in a separate thread
-    public BackendClient() {
-        Log.d("mLog", "Подключение клиента");
+    public ServerConnection() {
+        Log.d("mLog", "Подключение клиента... ");
         writer = new DataWriter(this);
         reader = new DataReader(this);
         writer.start();
@@ -37,22 +40,23 @@ public class BackendClient extends Thread{
     @Override
     public void run() {
         super.run();
-        try {
-            while (true) {
-                while(!isQuit())
+        while (true) {
+            try {
+                while(!isQuit()) {
                     Thread.yield();
-                // Connecting to server with host="192.168.1.81" and port=9090
-                socket = new Socket(HOST, PORT);
-                writer.setSocket(socket);
-                reader.setSocket(socket);
-                App.getInstance().verifyUser();
+                }
+                socket = new Socket();
+                socket.connect(address, 500); // Time for connecting to server
+                writer.connectToSocket(socket);
+                reader.connectToSocket(socket);
                 quit = false;
+                Thread.sleep(50); // Time for resume work "DataWriter" and "DataReader"
+                App.getInstance().verifyUserPhone();
+                Log.d("mLog","Соединение с сервером найдено");
+            } catch (Exception e) {
+                quit = true;
+                Log.d("mLog","Подключение разорвано");
             }
-
-        } catch (Exception e) {
-            quit = true;
-            Log.d("mLog","Вылетело исключение");
-            e.printStackTrace();
         }
     }
 
@@ -76,9 +80,7 @@ public class BackendClient extends Thread{
     }
 
 
-    /**
-     * In case you need to close connections manually (DON'T REMOVE!)
-     */
+    // Safely closes an existing socket connection
     private void closeConnection() {
         try {
             quit = true;
@@ -92,17 +94,17 @@ public class BackendClient extends Thread{
 
 
     /**
-     * Charset for receiving and sending data in "DataReader" and "DataWriter"
+     * Charset name for sending and receiving data from the server
      */
     public String getCharsetName(){
         return "windows-1251";
     }
 
-    public void reloadServer(){
+    /**
+     * Automatically reconnect to server after closing the connection
+     */
+    public void reconnectToServer(){
         closeConnection();
-        quit = true; // TODO Возможно эту строку надо будет удалить
     }
-
-
 }
 

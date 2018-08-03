@@ -1,16 +1,22 @@
 package com.example.infinity.airtop.ui.adapters;
 
+import android.app.Activity;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.infinity.airtop.App;
 import com.example.infinity.airtop.R;
-import com.example.infinity.airtop.data.network.Message;
+import com.example.infinity.airtop.data.db.model.Message;
+import com.example.infinity.airtop.data.db.repositoryDao.MessageDao;
+import com.example.infinity.airtop.data.network.MessageRequest;
 
 import java.util.ArrayList;
 
@@ -21,11 +27,17 @@ import java.util.ArrayList;
  */
 public class MessageListViewAdapter extends RecyclerView.Adapter<MessageListViewAdapter.RecyclerViewHolder> {
     
-    private ArrayList<Message> currentMessages;
-
+    private ArrayList<MessageRequest> currentMessageRequests = new ArrayList<>();
     
-    public MessageListViewAdapter(ArrayList<Message> currentMessages) {
-        this.currentMessages = currentMessages;
+    public MessageListViewAdapter(String phone) {
+        new Thread(() -> {
+            MessageDao messageDao = App.getInstance().getDatabase().messageDao();
+            ArrayList<Message> messages = (ArrayList<Message>) messageDao.getBySenderPhone(phone);
+            Log.d("phone", phone);
+            for (Message message : messages) {
+                currentMessageRequests.add(new MessageRequest(message));
+            }
+        }).start();
     }
 
     @NonNull
@@ -42,7 +54,7 @@ public class MessageListViewAdapter extends RecyclerView.Adapter<MessageListView
         TextView textView = recyclerViewHolder.textView;
         ImageView imageView = recyclerViewHolder.imageView;
 
-        if((text = currentMessages.get(position).getText()) != null) {
+        if((text = currentMessageRequests.get(position).getText()) != null) {
             textView.setText(text);
             textView.setVisibility(View.VISIBLE);
         }
@@ -51,7 +63,7 @@ public class MessageListViewAdapter extends RecyclerView.Adapter<MessageListView
             textView.setVisibility(View.GONE);
         }
 
-        if((image = currentMessages.get(position).getImage()) != null) {
+        if((image = currentMessageRequests.get(position).getImage()) != null) {
             imageView.setImageBitmap(image);
             imageView.setVisibility(View.VISIBLE);
         }
@@ -64,11 +76,12 @@ public class MessageListViewAdapter extends RecyclerView.Adapter<MessageListView
 
     @Override
     public int getItemCount() {
-        return currentMessages.size();
+        return currentMessageRequests.size();
     }
 
-    public void addItem(Message message){
-        currentMessages.add(message);
+    public void addItem(MessageRequest messageRequest){
+        currentMessageRequests.add(messageRequest);
+
     }
 
     class RecyclerViewHolder extends RecyclerView.ViewHolder{

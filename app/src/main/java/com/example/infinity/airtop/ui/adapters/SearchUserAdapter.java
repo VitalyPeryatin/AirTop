@@ -81,6 +81,7 @@ public class SearchUserAdapter extends RecyclerView.Adapter<SearchUserAdapter.Se
                             AddresseeDao addresseeDao = App.getInstance().getDatabase().addresseeDao();
                             Addressee addressee = new Addressee(user);
                             addresseeDao.insert(addressee);
+                            //App.getInstance().getListeners().getContactsAdapterListener().onUpdateList();
 
                             activity.runOnUiThread(new Runnable() {
                                 @Override

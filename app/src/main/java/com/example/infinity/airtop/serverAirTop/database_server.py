@@ -51,7 +51,7 @@ class DatabaseHelper:
                 """.format(self.NICKNAME, self.PHONE, self.USERNAME, self.USERNAME), [username])
         result = self.cursor.fetchall()
         print(result)
-        result.sort(key=self.sort_by_username_length) # TODO Проверить работает ли сортировка и обрезание списка
+        result.sort(key=self.sort_by_username_length)
         result = result[:5]
         users = []
         for i in range(result.__len__()):

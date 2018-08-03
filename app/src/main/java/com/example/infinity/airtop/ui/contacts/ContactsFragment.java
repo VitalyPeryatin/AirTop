@@ -1,5 +1,6 @@
 package com.example.infinity.airtop.ui.contacts;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -8,10 +9,12 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.infinity.airtop.App;
 import com.example.infinity.airtop.R;
 import com.example.infinity.airtop.ui.searchUser.SearchUserActivity;
 import com.example.infinity.airtop.ui.adapters.ContactsListViewAdapter;
@@ -40,59 +43,24 @@ public class ContactsFragment extends Fragment {
         unbinder = ButterKnife.bind(this, layout);
 
         toolbar.setTitle("Чаты");
-        adapter = new ContactsListViewAdapter();
-        fillAdapter();
+        adapter = new ContactsListViewAdapter(this);
         recyclerContacts.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerContacts.setAdapter(adapter);
 
         fab.attachToRecyclerView(recyclerContacts);
 
-
         return layout;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        adapter.onUpdateList();
     }
 
     @OnClick(R.id.fab)
     void searchNewUser(){
         startActivity(new Intent(getContext(), SearchUserActivity.class));
-    }
-
-    private void fillAdapter(){
-        adapter.addContact("Петя");
-        adapter.addContact("Вася");
-        adapter.addContact("Коля");
-        adapter.addContact("Маша");
-        adapter.addContact("Виталя");
-        adapter.addContact("Наташа");
-        adapter.addContact("Лёша");
-        adapter.addContact("Артём");
-        adapter.addContact("Марина");
-        adapter.addContact("Кристина");
-        adapter.addContact("Костя");
-        adapter.addContact("Андрей");
-        adapter.addContact("Кирилл");
-        adapter.addContact("Катя");
-        adapter.addContact("Соня");
-        adapter.addContact("Рената");
-        adapter.addContact("Павел");
-        adapter.addContact("Петя");
-        adapter.addContact("Вася");
-        adapter.addContact("Коля");
-        adapter.addContact("Маша");
-        adapter.addContact("Виталя");
-        adapter.addContact("Наташа");
-        adapter.addContact("Лёша");
-        adapter.addContact("Артём");
-        adapter.addContact("Марина");
-        adapter.addContact("Кристина");
-        adapter.addContact("Костя");
-        adapter.addContact("Андрей");
-        adapter.addContact("Кирилл");
-        adapter.addContact("Катя");
-        adapter.addContact("Соня");
-        adapter.addContact("Рената");
-        adapter.addContact("Павел");
-
-        adapter.notifyDataSetChanged();
     }
 
     @Override

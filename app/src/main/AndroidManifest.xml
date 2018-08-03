@@ -12,7 +12,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
-        <activity android:name=".ui.chat.ChatActivity"/>
+        <activity android:name=".ui.chat.ChatActivity"
+            android:windowSoftInputMode="adjustResize|stateHidden"/>
         <activity android:name=".ui.entrance.EntranceActivity" />
         <activity android:name=".ui.auth.LoginActivity" />
         <activity android:name=".ui.searchUser.SearchUserActivity"/>
@@ -34,7 +35,7 @@
             android:label="@string/title_activity_username_settings" />
 
         <service
-            android:name=".service.ClientService"
+            android:name=".service.SocketService"
             android:exported="false"/>
     </application>
 

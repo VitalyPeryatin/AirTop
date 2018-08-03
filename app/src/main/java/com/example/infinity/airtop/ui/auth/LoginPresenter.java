@@ -5,26 +5,27 @@ import android.content.Intent;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
+import com.example.infinity.airtop.data.db.interactors.ChatInteractor;
 import com.example.infinity.airtop.data.db.model.User;
 import com.example.infinity.airtop.data.network.UserRequest;
-import com.example.infinity.airtop.data.db.repositoryDao.UserDao;
 import com.example.infinity.airtop.presentation.presenters.listeners.OnAuthListener;
-import com.example.infinity.airtop.service.ClientService;
-import com.example.infinity.airtop.service.client.JsonConverter;
+import com.example.infinity.airtop.service.SocketService;
+import com.example.infinity.airtop.utils.JsonConverter;
 import com.example.infinity.airtop.App;
 
 @InjectViewState
 public class LoginPresenter extends MvpPresenter<LoginView> implements OnAuthListener {
 
     private Context context;
+    private ChatInteractor chatInteractor;
 
     public LoginPresenter(){
-
+        chatInteractor = new ChatInteractor();
     }
 
     public void onCreate(Context context){
         this.context = context;
-        App.getInstance().getListeners().getAuthListener().subscribe(this);
+        App.getInstance().getResponseListeners().getAuthListener().subscribe(this);
     }
 
     public void auth(String phone){
@@ -32,23 +33,21 @@ public class LoginPresenter extends MvpPresenter<LoginView> implements OnAuthLis
             new Thread(()->{
                 UserRequest user = new UserRequest(phone);
                 user.setAction(UserRequest.ACTION_CREATE);
-                //App.getInstance().getDatabase().userDao().insert(user); // TODO Перед вставкой пользователя в БД проверить, что на сервере данные получены
+                // TODO Перед вставкой пользователя в БД проверить, что на сервере данные получены
 
                 JsonConverter jsonConverter = new JsonConverter();
                 String json = jsonConverter.toJson(user);
-                Intent intent = new Intent(context, ClientService.class);
+                Intent intent = new Intent(context, SocketService.class);
                 intent.putExtra("request", json);
                 context.startService(intent);
-                //App.getInstance().getBackendClient().sendRequest(user);
             }).start();
         }
     }
 
     public void successAuth(UserRequest userRequest){
-        UserDao userDao = App.getInstance().getDatabase().userDao();
         User user = new User(userRequest);
-        userDao.insert(user);
-        App.getInstance().setCurrentUserPhone(user.phone);
+        chatInteractor.insertUser(user);
+        App.getInstance().setCurrentUser(userRequest);
         getViewState().successAuth();
     }
 
@@ -64,6 +63,6 @@ public class LoginPresenter extends MvpPresenter<LoginView> implements OnAuthLis
 
     public void onDestroy() {
         super.onDestroy();
-        App.getInstance().getListeners().getAuthListener().unsubscribe(this);
+        App.getInstance().getResponseListeners().getAuthListener().unsubscribe(this);
     }
 }

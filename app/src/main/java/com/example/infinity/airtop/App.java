@@ -14,8 +14,8 @@ import com.example.infinity.airtop.ui.chat.MessageListener;
 import com.example.infinity.airtop.data.network.PhoneVerifier;
 import com.example.infinity.airtop.data.db.AppDatabase;
 import com.example.infinity.airtop.data.db.repositoryDao.UserDao;
-import com.example.infinity.airtop.service.ClientService;
-import com.example.infinity.airtop.service.client.JsonConverter;
+import com.example.infinity.airtop.service.SocketService;
+import com.example.infinity.airtop.utils.JsonConverter;
 import com.example.infinity.airtop.ui.searchUser.SearchUserListener;
 import com.example.infinity.airtop.ui.usernameUpdater.UsernameUpdateListener;
 import com.facebook.stetho.Stetho;
@@ -27,7 +27,7 @@ public class App extends Application {
     private static App instance;
     private AppDatabase database;
     private SharedPreferences sPref;
-    private Listeners listeners;
+    private ResponseListeners responseListeners;
 
     private static final String USER_PHONE_KEY = "user_phone_key";
 
@@ -46,7 +46,7 @@ public class App extends Application {
         Stetho.initialize(initializer);
 
         instance = this;
-        listeners = new Listeners();
+        responseListeners = new ResponseListeners();
 
         database = Room.databaseBuilder(this, AppDatabase.class, "database.db")
                 .setJournalMode(RoomDatabase.JournalMode.TRUNCATE)
@@ -57,38 +57,20 @@ public class App extends Application {
 
         sPref = getSharedPreferences("savedUserPhone", MODE_PRIVATE);
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                currentUser = loadCurrentUser();
-            }
-        }).start();
+        new Thread(() -> currentUser = loadCurrentUser()).start();
 
 
     }
-
-
 
     public AppDatabase getDatabase() {
         return database;
     }
 
-    /*public BackendClient getBackendClient() {
-        return backendClient;
-    }*/
-
-
     public UserRequest getCurrentUser() {
         return currentUser;
     }
 
-
-
-    public void verifyUser(){
-        verifyPhone();
-    }
-
-    private void verifyPhone(){
+    public void verifyUserPhone(){
         new Thread(() -> {
             UserDao userDao = App.getInstance().getDatabase().userDao();
             ArrayList<User> users = (ArrayList<User>) userDao.getAll();
@@ -104,7 +86,7 @@ public class App extends Application {
                 phoneVerifier.userPhone = user.phone;
                 JsonConverter jsonConverter = new JsonConverter();
                 String json = jsonConverter.toJson(phoneVerifier);
-                Intent intent = new Intent(getBaseContext(), ClientService.class);
+                Intent intent = new Intent(getBaseContext(), SocketService.class);
                 intent.putExtra("request", json);
                 getBaseContext().startService(intent);
             }
@@ -115,37 +97,37 @@ public class App extends Application {
         SharedPreferences.Editor editor = sPref.edit();
         editor.putString(USER_PHONE_KEY, currentUserPhone);
         editor.apply();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                currentUser = loadCurrentUser();
-            }
-        }).start();
+        new Thread(() -> currentUser = loadCurrentUser()).start();
     }
 
-    public Listeners getListeners() {
-        return listeners;
+    public void setCurrentUser(UserRequest currentUser) {
+        this.currentUser = currentUser;
+    }
+
+    public ResponseListeners getResponseListeners() {
+        return responseListeners;
     }
 
     private UserRequest loadCurrentUser(){
-        final User user;
+        final UserRequest userRequest;
         String currentUserPhone = sPref.getString(USER_PHONE_KEY, null);
         if(currentUserPhone == null){
-            user = null;
+            userRequest = null;
         }
         else{
-            user = database.userDao().getByPhone(currentUserPhone);
+            User user = database.userDao().getByPhone(currentUserPhone);
+            userRequest = new UserRequest(user);
         }
-        return new UserRequest(user);
+        return userRequest;
     }
 
-    public static class Listeners{
+    public static class ResponseListeners {
         private MessageListener messageListener;
         private AuthListener authListener;
         private UsernameUpdateListener usernameUpdateListener;
         private SearchUserListener searchUserListener;
 
-        Listeners(){
+        ResponseListeners(){
             messageListener = new MessageListener();
             authListener = new AuthListener();
             usernameUpdateListener = new UsernameUpdateListener();
@@ -167,6 +149,7 @@ public class App extends Application {
         public SearchUserListener getSearchUserListener() {
             return searchUserListener;
         }
+
     }
 
 }

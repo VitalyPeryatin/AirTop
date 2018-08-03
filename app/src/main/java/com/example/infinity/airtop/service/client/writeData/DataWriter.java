@@ -1,6 +1,6 @@
 package com.example.infinity.airtop.service.client.writeData;
 
-import com.example.infinity.airtop.service.client.BackendClient;
+import com.example.infinity.airtop.service.client.ServerConnection;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -9,36 +9,27 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 
 /**
- * Class for writing data and sending on the server
+ * Class for writing data and sending to server
  * @author infinity_coder
- * @version 1.0.0
+ * @version 1.0.2
  */
 public class DataWriter extends Thread{
 
-    private BackendClient backendClient; // object for controlling of closing connection
+    private ServerConnection serverConnection;
     private DataOutputStream outputStream;
     private LinkedBlockingQueue<String> msgQueue = new LinkedBlockingQueue<>();
-    private Socket socket;
 
-    public DataWriter(BackendClient backendClient) {
-        this.backendClient = backendClient;
+    public DataWriter(ServerConnection serverConnection) {
+        this.serverConnection = serverConnection;
     }
 
-    public void setSocket(Socket socket){
-        this.socket = socket;
-        updateOutputStream();
-    }
-
-    private void updateOutputStream(){
+    public void connectToSocket(Socket socket){
         try {
             outputStream = new DataOutputStream(socket.getOutputStream());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        } catch (IOException e) { e.printStackTrace(); }
     }
 
-
-
+    // Adds a message to the queue for following sending
     public synchronized void sendMessage(String json) {
         msgQueue.add(json);
     }
@@ -48,36 +39,24 @@ public class DataWriter extends Thread{
         super.run();
         while(true) {
             try {
-                while (backendClient.isQuit())
-                    Thread.yield();// forever writes messages at "endless" loop
+                while (serverConnection.isQuit()) // waiting for connection to server
+                    Thread.yield();
                 while (msgQueue.size() == 0) // waiting for message queue to be added
                     Thread.yield();
-                sendJson(msgQueue.poll());
+                sendJsonToServer(msgQueue.poll());
                 outputStream.flush();
-
-            } catch (Exception ignored) {
-                try {
-                    outputStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                backendClient.reloadServer();
-                // TODO Создать самоперезапускающийся сервер с последующей отправкой непосланных сообщений
+            } catch (Exception e) { // after something error on the client is reconnect to server
+                serverConnection.reconnectToServer();
             }
         }
     }
 
-
-
-
-    private synchronized void sendJson(String jsonStr) throws IOException {
-        byte[] bytes = jsonStr.getBytes(backendClient.getCharsetName());
+    private synchronized void sendJsonToServer(String jsonStr) throws IOException {
+        byte[] bytes = jsonStr.getBytes(serverConnection.getCharsetName());
         outputStream.write(bytes, 0, bytes.length);
     }
 
     public void closeConnection() throws IOException {
         outputStream.close();
     }
-
-
 }

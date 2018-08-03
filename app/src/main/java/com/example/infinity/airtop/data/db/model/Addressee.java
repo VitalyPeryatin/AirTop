@@ -1,14 +1,10 @@
 package com.example.infinity.airtop.data.db.model;
 
 import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 
-import com.example.infinity.airtop.data.network.Message;
 import com.example.infinity.airtop.data.network.UserRequest;
-
-import java.util.List;
 
 @Entity
 public class Addressee {
@@ -26,12 +22,5 @@ public class Addressee {
         username = user.username;
         nickname = user.nickname;
         bio = user.bio;
-    }
-
-    @Ignore
-    public List<Message> messages;
-
-    public void addMessage(Message message){
-        messages.add(message);
     }
 }

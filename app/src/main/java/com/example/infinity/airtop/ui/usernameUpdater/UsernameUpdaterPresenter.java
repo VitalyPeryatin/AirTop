@@ -5,12 +5,12 @@ import android.content.Intent;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
+import com.example.infinity.airtop.data.db.interactors.ChatInteractor;
 import com.example.infinity.airtop.data.db.model.User;
 import com.example.infinity.airtop.data.network.CheckingUsername;
 import com.example.infinity.airtop.data.network.UserRequest;
-import com.example.infinity.airtop.data.db.repositoryDao.UserDao;
-import com.example.infinity.airtop.service.ClientService;
-import com.example.infinity.airtop.service.client.JsonConverter;
+import com.example.infinity.airtop.service.SocketService;
+import com.example.infinity.airtop.utils.JsonConverter;
 import com.example.infinity.airtop.App;
 import com.example.infinity.airtop.ui.listeners.OnUsernameUpdateListener;
 
@@ -20,18 +20,22 @@ import static com.example.infinity.airtop.data.network.CheckingUsername.RESULT_L
 @InjectViewState
 public class UsernameUpdaterPresenter extends MvpPresenter<UsernameUpdaterView> implements OnUsernameUpdateListener{
     private Context context;
+    private ChatInteractor chatInteractor;
+
+    public UsernameUpdaterPresenter(){
+        chatInteractor = new ChatInteractor();
+    }
 
     public void onUpdateUsername(UserRequest userRequest){
-        UserDao userDao = App.getInstance().getDatabase().userDao();
         User user = new User(userRequest);
-        userDao.insert(user);
+        chatInteractor.insertUser(user);
         App.getInstance().setCurrentUserPhone(user.phone);
         getViewState().onUpdateUsername();
     }
 
     public void onCreate(Context context){
         this.context = context;
-        App.getInstance().getListeners().getUsernameUpdateListener().subscribe(this);
+        App.getInstance().getResponseListeners().getUsernameUpdateListener().subscribe(this);
     }
 
     public void onResultUsernameCheck(CheckingUsername checkingUsername){
@@ -51,7 +55,7 @@ public class UsernameUpdaterPresenter extends MvpPresenter<UsernameUpdaterView> 
         else {
             JsonConverter jsonConverter = new JsonConverter();
             String json = jsonConverter.toJson(new CheckingUsername());
-            Intent intent = new Intent(context, ClientService.class);
+            Intent intent = new Intent(context, SocketService.class);
             intent.putExtra("request", json);
             context.startService(intent);
             //App.getInstance().getBackendClient().sendRequest(new CheckingUsername(text));
@@ -60,6 +64,6 @@ public class UsernameUpdaterPresenter extends MvpPresenter<UsernameUpdaterView> 
 
     public void onDestroy() {
         super.onDestroy();
-        App.getInstance().getListeners().getUsernameUpdateListener().unsubscribe(this);
+        App.getInstance().getResponseListeners().getUsernameUpdateListener().unsubscribe(this);
     }
 }
