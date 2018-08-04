@@ -14,9 +14,9 @@ import android.widget.Toast;
 
 import com.arellomobile.mvp.MvpAppCompatActivity;
 import com.arellomobile.mvp.presenter.InjectPresenter;
+import com.example.infinity.airtop.App;
 import com.example.infinity.airtop.R;
 import com.example.infinity.airtop.data.db.model.Message;
-import com.example.infinity.airtop.ui.adapters.MessageListViewAdapter;
 
 import java.io.IOException;
 
@@ -43,17 +43,19 @@ public class ChatActivity extends MvpAppCompatActivity implements ChatView {
     Toolbar toolbar;
 
     private static final int LOAD_IMAGE_CODE = 1;
-    private MessageListViewAdapter messageAdapter;
+    private MessageRecyclerAdapter messageAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
         ButterKnife.bind(this);
-        presenter.onCreate(getIntent());
+        String addressPhone = getIntent().getStringExtra("addresseePhone");
+        String senderPhone = App.getInstance().getCurrentUser().phone;
+        presenter.onCreate(addressPhone, senderPhone);
 
         // Set adapter AFTER restoring list of messages
-        messageAdapter = new MessageListViewAdapter(presenter.getAddresseeUserPhone());
+        messageAdapter = new MessageRecyclerAdapter(presenter.getAddresseeUserPhone());
         msgRecycler.setAdapter(messageAdapter);
         msgRecycler.setLayoutManager(new LinearLayoutManager(this));
 

@@ -1,18 +1,20 @@
 package com.example.infinity.airtop.ui.chat;
 
 import android.content.Context;
-import android.content.Intent;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 import com.example.infinity.airtop.data.db.interactors.ChatInteractor;
 import com.example.infinity.airtop.data.db.model.Message;
-import com.example.infinity.airtop.data.network.MessageRequest;
+import com.example.infinity.airtop.di.components.ChatComponent;
+import com.example.infinity.airtop.di.components.DaggerChatComponent;
 import com.example.infinity.airtop.presentation.presenters.listeners.OnMessageListener;
-import com.example.infinity.airtop.service.ClientService;
 import com.example.infinity.airtop.utils.JsonConverter;
-import com.example.infinity.airtop.App;
 import com.example.infinity.airtop.utils.MessageEditor;
+import com.example.infinity.airtop.utils.serverWorker.LauncherServerSending;
+import com.example.infinity.airtop.utils.serverWorker.TestLauncherServerSending;
+
+import javax.inject.Inject;
 
 /**
  * Presenter of "ChatActivity"
@@ -22,29 +24,33 @@ import com.example.infinity.airtop.utils.MessageEditor;
 @InjectViewState
 public class ChatPresenter extends MvpPresenter<ChatView> implements OnMessageListener {
 
+    @Inject
+    public ChatInteractor chatInteractor;
+    @Inject
+    public LauncherServerSending serverSending;
+    @Inject
+    public MessageBus messageBus;
+
     private String addresseePhone;
-    private ChatInteractor chatInteractor;
-    private Context context;
-    private MessageBus messageBus;
     private MessageEditor messageEditor;
 
-    ChatPresenter(){
+
+    public ChatPresenter(){
+        ChatComponent chatComponent = DaggerChatComponent.create();
+        chatComponent.inject(this);
         messageEditor = MessageEditor.edit();
-        chatInteractor = new ChatInteractor();
-        messageBus = App.getInstance().getResponseListeners().getMessageBus();
     }
 
-    void onCreate(Intent intent){
-        this.context = App.getInstance().getBaseContext();
+    public void onCreate(String addresseePhone, String senderPhone){
+        this.addresseePhone = addresseePhone;
         messageBus.subscribe(this);
-        addresseePhone = intent.getStringExtra("addresseePhone");
 
         // Add to message the base data: "sender" and "addressee"
         messageEditor.addAddressPhone(addresseePhone);
-        messageEditor.addSendPhone(App.getInstance().getCurrentUser().phone);
+        messageEditor.addSendPhone(senderPhone);
     }
 
-    void sendMessage() {
+    public void sendMessage() {
         if(messageEditor.isNotEmptyMessage()) {
             // Save message in DB and display the message
             Message message = new Message(messageEditor.getMessage(), Message.ROUTE_OUT);
@@ -54,13 +60,16 @@ public class ChatPresenter extends MvpPresenter<ChatView> implements OnMessageLi
             // Send message to server
             JsonConverter jsonConverter = new JsonConverter();
             String json = jsonConverter.toJson(messageEditor.getMessage());
-            Intent intent = new Intent(context, ClientService.class);
-            intent.putExtra("request", json);
-            context.startService(intent);
+            serverSending.sendMessage(json);
 
             // Clear existing message after sending
             messageEditor.clear();
         }
+    }
+
+    // Need ONLY for Unit tests, Sorry! It is a pain. (Don't Remove!)
+    public TestLauncherServerSending getServerSending(){
+        return (TestLauncherServerSending) serverSending;
     }
 
     public MessageEditor getMessageEditor() {
@@ -73,10 +82,8 @@ public class ChatPresenter extends MvpPresenter<ChatView> implements OnMessageLi
 
     // Listen events from server with messages throw MessageBus
     @Override
-    public void onMessage(MessageRequest messageRequest) {
-        Message message = new Message(messageRequest, Message.ROUTE_IN);
-        chatInteractor.insertMessage(message); // TODO сообщение не сохраняется в БД!
-        if(messageRequest.sender.equals(addresseePhone))
+    public void onMessage(Message message) {
+        if(message.addresseePhone.equals(addresseePhone))
             getViewState().displayMessage(message);
     }
 

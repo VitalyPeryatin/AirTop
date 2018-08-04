@@ -2,7 +2,6 @@ package com.example.infinity.airtop.ui.searchUser;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -14,7 +13,6 @@ import com.arellomobile.mvp.MvpAppCompatActivity;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.example.infinity.airtop.R;
 import com.example.infinity.airtop.data.network.SearchableUsers;
-import com.example.infinity.airtop.ui.adapters.SearchUserAdapter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

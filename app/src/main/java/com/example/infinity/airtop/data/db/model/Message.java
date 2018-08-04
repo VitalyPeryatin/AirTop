@@ -11,7 +11,7 @@ import com.example.infinity.airtop.data.network.MessageRequest;
 /**
  * Class for constructing messages of various type
  * @autor infinity_coder
- * @version 1.0.0
+ * @version 1.0.2
  */
 @Entity(foreignKeys = @ForeignKey(entity = Addressee.class, parentColumns = "phone", childColumns = "addressee_phone"))
 public class Message {
@@ -29,13 +29,25 @@ public class Message {
 
     public Message(){}
 
+    /**
+     * MessageRequest transfer to Message for saving in DataBase.
+     * If the message is sent by the user, then the sender = the addressee.
+     * If the message is received by the user, then the sender and the addressee change places.
+     * (The message is received by the addressee)
+     * @param route indicates a message: sent or received
+     */
     public Message(MessageRequest messageRequest, String route){
         this.route = route;
-        addresseePhone = messageRequest.addressee;
-        if(route.equals(ROUTE_OUT))
-            senderPhone = addresseePhone;
-        else
-            senderPhone = messageRequest.sender;
+
+        if(route.equals(ROUTE_OUT)) {
+            senderPhone = messageRequest.addressee;
+            addresseePhone = senderPhone;
+        }
+        else {
+            String aSender = messageRequest.sender;
+            senderPhone = messageRequest.addressee;
+            addresseePhone = aSender;
+        }
         text = messageRequest.text;
     }
 }

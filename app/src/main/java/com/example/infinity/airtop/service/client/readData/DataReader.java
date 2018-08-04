@@ -2,9 +2,10 @@ package com.example.infinity.airtop.service.client.readData;
 
 import android.os.Handler;
 import android.os.Looper;
-import android.os.Message;
 import android.util.Log;
 
+import com.example.infinity.airtop.data.db.interactors.ChatInteractor;
+import com.example.infinity.airtop.data.db.model.Message;
 import com.example.infinity.airtop.data.network.CheckingUsername;
 import com.example.infinity.airtop.data.network.MessageRequest;
 import com.example.infinity.airtop.data.network.SearchableUsers;
@@ -31,6 +32,7 @@ public class DataReader extends Thread{
     private ServerConnection serverConnection;
     private DataInputStream inputStream;
     private App.ResponseListeners responseListeners;
+    private ChatInteractor chatInteractor;
 
     // Constants for pass to handler the type of response
     private static final int
@@ -43,6 +45,7 @@ public class DataReader extends Thread{
     public DataReader(ServerConnection serverConnection) {
         this.serverConnection = serverConnection;
         responseListeners = App.getInstance().getResponseListeners();
+        chatInteractor = new ChatInteractor();
     }
 
     public void connectToSocket(Socket socket){
@@ -89,7 +92,7 @@ public class DataReader extends Thread{
             JSONObject jsonObject = new JSONObject(jsonText);
             Log.d("mLog", "Сообщение принято: " + jsonText);
             String type = jsonObject.getString("TYPE");
-            Message message = new Message();
+            android.os.Message message = new android.os.Message();
             switch (type) {
                 case "message":
                     MessageRequest messageRequest = gson.fromJson(jsonText, MessageRequest.class);
@@ -97,8 +100,12 @@ public class DataReader extends Thread{
                         new TextDecoder().decode(messageRequest);
                     if (messageRequest.getEncodedImage() != null)
                         new ImageDecoder().decode(messageRequest);
+
+                    Message messageModel = new Message(messageRequest, Message.ROUTE_IN);
+                    chatInteractor.insertMessage(messageModel);
+
                     message.what = MESSAGE_REQUEST_KEY;
-                    message.obj = messageRequest;
+                    message.obj = messageModel;
                     break;
                 case "user":
                     UserRequest user = gson.fromJson(jsonText, UserRequest.class);
@@ -129,15 +136,15 @@ public class DataReader extends Thread{
     // Notifies the necessary listeners by key in the UI thread
     private Handler handler = new Handler(Looper.getMainLooper()){
         @Override
-        public void handleMessage(Message msg) {
+        public void handleMessage(android.os.Message msg) {
             super.handleMessage(msg);
 
             switch (msg.what){
                 case MESSAGE_REQUEST_KEY:
-                    if(msg.obj instanceof MessageRequest)
-                        responseListeners.getMessageBus().onMessage((MessageRequest) msg.obj);
+                    if(msg.obj instanceof Message)
+                        responseListeners.getMessageBus().onMessage((Message) msg.obj);
                     else
-                        Log.e("mLogError", "DataReader -> не верный тип объекта. Ожидалось: MessageRequest");
+                        Log.e("mLogError", "DataReader -> не верный тип объекта. Ожидалось: Message");
                     break;
                 case USER_CREATE_KEY:
                     if(msg.obj instanceof UserRequest)

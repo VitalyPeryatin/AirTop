@@ -53,9 +53,8 @@ public class App extends Application {
                 .fallbackToDestructiveMigration()
                 .build();
 
-
-
         sPref = getSharedPreferences("savedUserPhone", MODE_PRIVATE);
+
 
         new Thread(() -> currentUser = loadCurrentUser()).start();
 

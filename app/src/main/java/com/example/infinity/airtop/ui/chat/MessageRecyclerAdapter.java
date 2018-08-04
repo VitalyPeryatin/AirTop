@@ -1,11 +1,9 @@
-package com.example.infinity.airtop.ui.adapters;
+package com.example.infinity.airtop.ui.chat;
 
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,7 +16,6 @@ import com.example.infinity.airtop.App;
 import com.example.infinity.airtop.R;
 import com.example.infinity.airtop.data.db.model.Message;
 import com.example.infinity.airtop.data.db.repositoryDao.MessageDao;
-import com.example.infinity.airtop.data.network.MessageRequest;
 
 import java.util.ArrayList;
 
@@ -27,14 +24,14 @@ import java.util.ArrayList;
  *  @author infinity_coder
  *  @version 1.0.0
  */
-public class MessageListViewAdapter extends RecyclerView.Adapter<MessageListViewAdapter.RecyclerViewHolder> {
+public class MessageRecyclerAdapter extends RecyclerView.Adapter<MessageRecyclerAdapter.RecyclerViewHolder> {
     
     private ArrayList<Message> currentMessageRequests = new ArrayList<>();
     
-    public MessageListViewAdapter(String phone) {
+    public MessageRecyclerAdapter(String phone) {
         new Thread(() -> {
             MessageDao messageDao = App.getInstance().getDatabase().messageDao();
-            currentMessageRequests = (ArrayList<Message>) messageDao.getBySenderPhone(phone);
+            currentMessageRequests = (ArrayList<Message>) messageDao.getByAddresseePhone(phone);
         }).start();
     }
 

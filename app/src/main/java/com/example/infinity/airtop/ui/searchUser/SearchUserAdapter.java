@@ -1,4 +1,4 @@
-package com.example.infinity.airtop.ui.adapters;
+package com.example.infinity.airtop.ui.searchUser;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -15,7 +15,6 @@ import com.example.infinity.airtop.data.network.UserRequest;
 import com.example.infinity.airtop.data.db.repositoryDao.AddresseeDao;
 import com.example.infinity.airtop.App;
 import com.example.infinity.airtop.ui.chat.ChatActivity;
-import com.example.infinity.airtop.ui.searchUser.SearchUserActivity;
 
 import java.util.ArrayList;
 

@@ -17,13 +17,16 @@ public abstract class MessageDao {
     public abstract List<Message> getAll();
 
     @Insert
-    public abstract void insert(Message user);
+    public abstract void insert(Message message);
 
     @Query("SELECT * FROM message WHERE addressee_phone=:phone")
     public abstract List<Message> getByAddresseePhone(String phone);
 
     @Query("SELECT * FROM message WHERE sender_phone=:phone")
     public abstract List<Message> getBySenderPhone(String phone);
+
+    @Query("SELECT * FROM message WHERE addressee_phone=:phone ORDER BY id DESC LIMIT 1;")
+    public abstract Message getLastMessageByAddressePhone(String phone);
 
     @Delete
     public abstract void delete(Message user);
