@@ -1,7 +1,6 @@
 package com.example.infinity.airtop.ui.auth;
 
 import com.example.infinity.airtop.data.network.UserRequest;
-import com.example.infinity.airtop.presentation.presenters.listeners.OnAuthListener;
 
 import java.util.ArrayList;
 
@@ -16,11 +15,9 @@ public class AuthListener{
         authListeners.remove(authListener);
     }
 
-
-
     public void onAuth(UserRequest user){
         for (OnAuthListener authListener : authListeners) {
-            authListener.onAuth(user);
+            authListener.onPhoneAuth(user);
         }
     }
 }

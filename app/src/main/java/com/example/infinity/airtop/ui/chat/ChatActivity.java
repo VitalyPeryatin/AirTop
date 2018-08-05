@@ -27,7 +27,7 @@ import butterknife.OnClick;
 /**
  *  Activity for sending and receiving messages
  *  @author infinity_coder
- *  @version 1.0.2
+ *  @version 1.0.3
  */
 
 public class ChatActivity extends MvpAppCompatActivity implements ChatView {
@@ -42,26 +42,31 @@ public class ChatActivity extends MvpAppCompatActivity implements ChatView {
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 
-    private static final int LOAD_IMAGE_CODE = 1;
+    private static final int LOAD_IMAGE_KEY = 1;
     private MessageRecyclerAdapter messageAdapter;
+    private String addressPhone;
+    private LinearLayoutManager layoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
         ButterKnife.bind(this);
-        String addressPhone = getIntent().getStringExtra("addresseePhone");
+        addressPhone = getIntent().getStringExtra(getResources().getString(R.string.intent_key_address_phone));
         String senderPhone = App.getInstance().getCurrentUser().phone;
         presenter.onCreate(addressPhone, senderPhone);
 
         // Set adapter AFTER restoring list of messages
         messageAdapter = new MessageRecyclerAdapter(presenter.getAddresseeUserPhone());
         msgRecycler.setAdapter(messageAdapter);
-        msgRecycler.setLayoutManager(new LinearLayoutManager(this));
+        layoutManager = new LinearLayoutManager(this);
+        msgRecycler.setLayoutManager(layoutManager);
 
+        // It is refresh Recycler Adapter and set the last position after closing the activity
         msgRecycler.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             public void onGlobalLayout() {
-                msgRecycler.scrollToPosition(messageAdapter.getItemCount() - 1); // TODO saving current position
+                int defaultPosition = messageAdapter.getItemCount() - 1;
+                msgRecycler.scrollToPosition(presenter.getAdapterPosition(addressPhone, defaultPosition)); // TODO saving current position
                 msgRecycler.getViewTreeObserver().removeOnGlobalLayoutListener(this);
             }
         });
@@ -72,11 +77,11 @@ public class ChatActivity extends MvpAppCompatActivity implements ChatView {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == LOAD_IMAGE_CODE && resultCode == RESULT_OK && data != null){
+        if(requestCode == LOAD_IMAGE_KEY && resultCode == RESULT_OK && data != null){
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
                 presenter.getMessageEditor().addImage(bitmap);
-                Toast.makeText(this, "Картинка прикреплена", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getResources().getString(R.string.picture_attached), Toast.LENGTH_SHORT).show();
             } catch (IOException e) { e.printStackTrace(); }
         }
 
@@ -88,7 +93,8 @@ public class ChatActivity extends MvpAppCompatActivity implements ChatView {
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_PICK);
-        startActivityForResult(Intent.createChooser(intent, "Choose Image"), LOAD_IMAGE_CODE);
+        startActivityForResult(Intent.createChooser(intent,
+                getResources().getString(R.string.choose_image)), LOAD_IMAGE_KEY);
     }
 
     @OnClick(R.id.btnSend)
@@ -109,6 +115,7 @@ public class ChatActivity extends MvpAppCompatActivity implements ChatView {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        presenter.saveAdapterPosition(addressPhone, layoutManager.findLastVisibleItemPosition());
         presenter.onDestroy();
     }
 

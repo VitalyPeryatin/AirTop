@@ -9,7 +9,6 @@ import com.example.infinity.airtop.App;
 import com.example.infinity.airtop.data.network.SearchableUsers;
 import com.example.infinity.airtop.service.ClientService;
 import com.example.infinity.airtop.utils.JsonConverter;
-import com.example.infinity.airtop.ui.listeners.OnSearchUserListener;
 
 @InjectViewState
 public class SearchUserPresenter extends MvpPresenter<SearchUserView> implements OnSearchUserListener{

@@ -10,6 +10,8 @@ import com.example.infinity.airtop.data.db.repositoryDao.UserDao;
 import com.example.infinity.airtop.data.network.MessageRequest;
 import com.example.infinity.airtop.data.network.UserRequest;
 
+import java.util.ArrayList;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -17,8 +19,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-public class ChatInteractor {
-    private ExecutorService service = Executors.newCachedThreadPool();
+public class ChatInteractor extends BaseIntearctor{
 
     public Addressee getAddresseeByPhone(String phone){
         Future<Addressee> future = service.submit(() -> {
@@ -41,5 +42,14 @@ public class ChatInteractor {
             UserDao userDao = App.getInstance().getDatabase().userDao();
             userDao.insert(user);
         });
+    }
+
+    public ArrayList<Message> getAllMessagesPhone(String addressPhone){
+        Future<ArrayList<Message>> future = service.submit(() -> {
+            MessageDao messageDao = App.getInstance().getDatabase().messageDao();
+            return (ArrayList<Message>) messageDao.getByAddresseePhone(addressPhone);
+        });
+        try { return future.get(1, TimeUnit.SECONDS); }
+        catch (InterruptedException | ExecutionException | TimeoutException e) { return null; }
     }
 }

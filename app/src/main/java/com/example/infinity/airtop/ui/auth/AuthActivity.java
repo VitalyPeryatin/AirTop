@@ -4,11 +4,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentTransaction;
 import android.widget.EditText;
 
 import com.arellomobile.mvp.MvpAppCompatActivity;
 import com.arellomobile.mvp.presenter.InjectPresenter;
-import com.example.infinity.airtop.App;
 import com.example.infinity.airtop.R;
 import com.example.infinity.airtop.ui.entrance.EntranceActivity;
 
@@ -16,10 +16,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class LoginActivity extends MvpAppCompatActivity implements LoginView{
+public class AuthActivity extends MvpAppCompatActivity implements AuthView {
 
     @InjectPresenter
-    LoginPresenter loginPresenter;
+    AuthPresenter authPresenter;
     private static final int ACCESS_CODE = 1;
     @BindView(R.id.etAuthPhone)
     EditText editTextAuth;
@@ -32,10 +32,9 @@ public class LoginActivity extends MvpAppCompatActivity implements LoginView{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_auth);
         ButterKnife.bind(this);
-        loginPresenter.onCreate(this);
-
+        authPresenter.onCreate(this);
 
         sPref = getSharedPreferences("savedEntryCode", MODE_PRIVATE);
 
@@ -45,11 +44,10 @@ public class LoginActivity extends MvpAppCompatActivity implements LoginView{
         }
     }
 
-
     @OnClick(R.id.btnAuth)
     void auth(){
         phone = editTextAuth.getText().toString();
-        loginPresenter.auth(phone);
+        authPresenter.auth(phone);
     }
 
     @Override
@@ -64,10 +62,8 @@ public class LoginActivity extends MvpAppCompatActivity implements LoginView{
     protected void onDestroy() {
         super.onDestroy();
         saveEntranceState();
-        loginPresenter.onDestroy();
+        authPresenter.onDestroy();
     }
-
-
 
     // Save value of "isEntered"
     private void saveEntranceState(){

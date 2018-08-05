@@ -1,4 +1,4 @@
-package com.example.infinity.airtop.ui.listeners;
+package com.example.infinity.airtop.ui.usernameUpdater;
 
 import com.example.infinity.airtop.data.network.CheckingUsername;
 import com.example.infinity.airtop.data.network.UserRequest;

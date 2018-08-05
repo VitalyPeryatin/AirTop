@@ -1,8 +1,6 @@
 package com.example.infinity.airtop.ui.chat;
 
 import com.example.infinity.airtop.data.db.model.Message;
-import com.example.infinity.airtop.data.network.MessageRequest;
-import com.example.infinity.airtop.presentation.presenters.listeners.OnMessageListener;
 
 import java.util.ArrayList;
 

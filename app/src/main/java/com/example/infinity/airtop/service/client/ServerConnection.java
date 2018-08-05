@@ -23,7 +23,7 @@ public class ServerConnection extends Thread{
     private SocketAddress address = new InetSocketAddress(HOST, PORT);
     private DataWriter writer;
     private DataReader reader;
-    private static final String HOST = "192.168.1.65";
+    private static final String HOST = "192.168.1.66";
     private static final int PORT = 9090;
     private boolean quit = true; // Check when programme need to close connection
 

@@ -1,5 +1,6 @@
 package com.example.infinity.airtop.ui.contacts;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -20,14 +21,17 @@ import com.example.infinity.airtop.data.db.repositoryDao.MessageDao;
 import com.example.infinity.airtop.ui.chat.ChatActivity;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecyclerAdapter.ContactsViewHolder> {
 
     private ArrayList<Contact> contacts = new ArrayList<>();
     private Fragment fragment;
+    private Context context;
 
     public ContactsRecyclerAdapter(Fragment fragment){
         this.fragment = fragment;
+        context = App.getInstance().getBaseContext();
     }
 
     @NonNull
@@ -53,10 +57,15 @@ public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecycl
                 Contact contact = new Contact();
                 contact.setAddressee(addressee);
                 Message message = messageDao.getLastMessageByAddressePhone(addressee.phone);
-                contact.setLastMessage(message.text);
-                contacts.add(contact);
+                if(message == null){
+                    addresseeDao.delete(addressee);
+                }
+                else {
+                    contact.setLastMessage(message.text);
+                    contacts.add(contact);
+                }
             }
-            fragment.getActivity().runOnUiThread(() -> notifyDataSetChanged());
+            Objects.requireNonNull(fragment.getActivity()).runOnUiThread(this::notifyDataSetChanged);
         }).start();
     }
 
@@ -88,9 +97,11 @@ public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecycl
             switch (view.getId()){
                 case R.id.container:
                     Addressee addressee = contacts.get(getAdapterPosition()).getAddressee();
-                    Intent intent = new Intent(App.getInstance().getBaseContext(), ChatActivity.class);
-                    intent.putExtra("addresseePhone", addressee.phone);
-                    App.getInstance().getBaseContext().startActivity(intent);
+                    Intent intent = new Intent(context, ChatActivity.class);
+                    String addressPhone = context.getResources().getString(R.string.intent_key_address_phone);
+                    intent.putExtra(addressPhone, addressee.phone);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(intent);
                     break;
             }
         }

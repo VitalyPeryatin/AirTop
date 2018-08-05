@@ -1,25 +1,22 @@
 package com.example.infinity.airtop.ui.chat;
 
-import android.content.Context;
-
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 import com.example.infinity.airtop.data.db.interactors.ChatInteractor;
 import com.example.infinity.airtop.data.db.model.Message;
+import com.example.infinity.airtop.data.prefs.app.AppPreferencesHelper;
 import com.example.infinity.airtop.di.components.ChatComponent;
 import com.example.infinity.airtop.di.components.DaggerChatComponent;
-import com.example.infinity.airtop.presentation.presenters.listeners.OnMessageListener;
 import com.example.infinity.airtop.utils.JsonConverter;
 import com.example.infinity.airtop.utils.MessageEditor;
 import com.example.infinity.airtop.utils.serverWorker.LauncherServerSending;
-import com.example.infinity.airtop.utils.serverWorker.TestLauncherServerSending;
 
 import javax.inject.Inject;
 
 /**
  * Presenter of "ChatActivity"
  * @author infinity_coder
- * @version 1.0.2
+ * @version 1.0.3
  */
 @InjectViewState
 public class ChatPresenter extends MvpPresenter<ChatView> implements OnMessageListener {
@@ -30,10 +27,11 @@ public class ChatPresenter extends MvpPresenter<ChatView> implements OnMessageLi
     public LauncherServerSending serverSending;
     @Inject
     public MessageBus messageBus;
+    @Inject
+    public AppPreferencesHelper preferencesHelper;
 
     private String addresseePhone;
     private MessageEditor messageEditor;
-
 
     public ChatPresenter(){
         ChatComponent chatComponent = DaggerChatComponent.create();
@@ -48,6 +46,17 @@ public class ChatPresenter extends MvpPresenter<ChatView> implements OnMessageLi
         // Add to message the base data: "sender" and "addressee"
         messageEditor.addAddressPhone(addresseePhone);
         messageEditor.addSendPhone(senderPhone);
+    }
+
+    public int getAdapterPosition(String addresseePhone, int defaultPosition){
+        int position = preferencesHelper.getAdapterPosition(addresseePhone);
+        if(position == 0) position = defaultPosition;
+        return position;
+    }
+
+    public void saveAdapterPosition(String addresseePhone, int position){
+        if(position >= 0)
+            preferencesHelper.saveAdapterPosition(addresseePhone, position);
     }
 
     public void sendMessage() {
@@ -65,11 +74,6 @@ public class ChatPresenter extends MvpPresenter<ChatView> implements OnMessageLi
             // Clear existing message after sending
             messageEditor.clear();
         }
-    }
-
-    // Need ONLY for Unit tests, Sorry! It is a pain. (Don't Remove!)
-    public TestLauncherServerSending getServerSending(){
-        return (TestLauncherServerSending) serverSending;
     }
 
     public MessageEditor getMessageEditor() {

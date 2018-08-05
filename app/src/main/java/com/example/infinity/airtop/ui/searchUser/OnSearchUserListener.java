@@ -1,4 +1,4 @@
-package com.example.infinity.airtop.ui.listeners;
+package com.example.infinity.airtop.ui.searchUser;
 
 import com.example.infinity.airtop.data.network.SearchableUsers;
 

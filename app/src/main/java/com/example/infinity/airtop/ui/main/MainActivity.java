@@ -16,9 +16,9 @@ import com.example.infinity.airtop.R;
 import com.example.infinity.airtop.data.network.UserRequest;
 import com.example.infinity.airtop.service.ClientService;
 import com.example.infinity.airtop.App;
+import com.example.infinity.airtop.ui.auth_new.AuthActivity;
 import com.example.infinity.airtop.ui.settings.SettingsActivity;
 import com.example.infinity.airtop.ui.contacts.ContactsFragment;
-import com.example.infinity.airtop.ui.auth.LoginActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
     public void showLoginActivity(){
-        startActivityForResult(new Intent(this, LoginActivity.class), LOGIN_CODE);
+        startActivityForResult(new Intent(this, AuthActivity.class), LOGIN_CODE);
     }
 
     @Override

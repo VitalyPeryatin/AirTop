@@ -19,7 +19,7 @@ public class UserRequest implements RequestModel{
 
     public UserRequest(String phone) {
         username = "NULL";
-        nickname = "Anonym";
+        nickname = "";
         bio = "None";
         action = ACTION_CREATE;
         this.phone = phone;

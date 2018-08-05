@@ -1,29 +1,17 @@
 package com.example.infinity.airtop.utils.serverWorker;
 
-import java.util.ArrayList;
+import com.example.infinity.airtop.utils.TestServer;
 
 public class TestLauncherServerSending implements LauncherServerSending {
 
-    private ArrayList<String> jsonMessages = new ArrayList<>();
+    private TestServer testServer;
 
     public TestLauncherServerSending(){
-        jsonMessages.clear();
+        testServer = TestServer.getInstance();
     }
 
     @Override
     public void sendMessage(String json) {
-        jsonMessages.add(json);
-    }
-
-    public ArrayList<String> getAllMessages(){
-        return jsonMessages;
-    }
-
-    public String getLastMessage(){
-        return jsonMessages.get(jsonMessages.size() - 1);
-    }
-
-    public void clearMessage(){
-        jsonMessages.clear();
+        testServer.addMessage(json);
     }
 }

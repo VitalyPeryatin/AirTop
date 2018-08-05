@@ -9,11 +9,9 @@ import com.example.infinity.airtop.data.db.interactors.ChatInteractor;
 import com.example.infinity.airtop.data.db.model.User;
 import com.example.infinity.airtop.data.network.CheckingUsername;
 import com.example.infinity.airtop.data.network.UserRequest;
-import com.example.infinity.airtop.data.db.repositoryDao.UserDao;
 import com.example.infinity.airtop.service.ClientService;
 import com.example.infinity.airtop.utils.JsonConverter;
 import com.example.infinity.airtop.App;
-import com.example.infinity.airtop.ui.listeners.OnUsernameUpdateListener;
 
 import static com.example.infinity.airtop.data.network.CheckingUsername.RESULT_EMPTY;
 import static com.example.infinity.airtop.data.network.CheckingUsername.RESULT_LITTLE;

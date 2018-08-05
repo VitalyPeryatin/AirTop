@@ -2,7 +2,6 @@ package com.example.infinity.airtop.ui.searchUser;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,23 +9,29 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.infinity.airtop.R;
+import com.example.infinity.airtop.data.db.interactors.SearchUserInteractor;
 import com.example.infinity.airtop.data.db.model.Addressee;
 import com.example.infinity.airtop.data.network.UserRequest;
-import com.example.infinity.airtop.data.db.repositoryDao.AddresseeDao;
-import com.example.infinity.airtop.App;
 import com.example.infinity.airtop.ui.chat.ChatActivity;
 
 import java.util.ArrayList;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class SearchUserAdapter extends RecyclerView.Adapter<SearchUserAdapter.SearchUserViewHolder> {
 
     private ArrayList<UserRequest> users = new ArrayList<>();
     private SearchUserActivity activity;
+    private SearchUserInteractor interactor;
 
-    public SearchUserAdapter(SearchUserActivity activity){
+    SearchUserAdapter(SearchUserActivity activity){
         this.activity = activity;
+        interactor = new SearchUserInteractor();
     }
 
+    @NonNull
     @Override
     public SearchUserViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.template_search_user, viewGroup, false);
@@ -46,8 +51,8 @@ public class SearchUserAdapter extends RecyclerView.Adapter<SearchUserAdapter.Se
 
     @Override
     public void onBindViewHolder(@NonNull SearchUserViewHolder searchUserViewHolder, int i) {
+        searchUserViewHolder.tvNickname.setText(users.get(i).nickname);
         searchUserViewHolder.tvUsername.setText(users.get(i).username);
-        searchUserViewHolder.tvPhone.setText(users.get(i).phone);
     }
 
     @Override
@@ -57,46 +62,33 @@ public class SearchUserAdapter extends RecyclerView.Adapter<SearchUserAdapter.Se
 
     class SearchUserViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
-        TextView tvUsername, tvPhone;
-        CardView cardView;
+        @BindView(R.id.tvNickname)
+        TextView tvNickname;
+        @BindView(R.id.tvUsername)
+        TextView tvUsername;
 
         SearchUserViewHolder(@NonNull View itemView) {
             super(itemView);
+            ButterKnife.bind(this, itemView);
+
+            tvNickname = itemView.findViewById(R.id.tvNickname);
             tvUsername = itemView.findViewById(R.id.tvUsername);
-            tvPhone = itemView.findViewById(R.id.tvPhone);
-            cardView = itemView.findViewById(R.id.cardView);
-            cardView.setOnClickListener(this);
         }
 
-        @Override
+        @OnClick(R.id.cardView)
         public void onClick(View view) {
-            switch (view.getId()){
-                case R.id.cardView:
+            Addressee addressee = new Addressee(users.get(getAdapterPosition()));
+            interactor.insertAddressee(addressee);
+            startChatActivity(addressee.phone);
+        }
 
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            UserRequest user = users.get(getAdapterPosition());
-                            AddresseeDao addresseeDao = App.getInstance().getDatabase().addresseeDao();
-                            Addressee addressee = new Addressee(user);
-                            addresseeDao.insert(addressee);
-                            //App.getInstance().getListeners().getContactsAdapterListener().onUpdateList();
-
-                            activity.runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    //ChatPresenter.getInstance().setAddresseeUser(user);
-                                    Intent intent = new Intent(activity, ChatActivity.class);
-                                    intent.putExtra("addresseePhone", addressee.phone);
-                                    activity.startActivity(intent);
-                                    activity.finish();
-                                }
-                            });
-
-                        }
-                    }).start();
-                    break;
-            }
+        // Start Chat Activity with companion by address phone
+        private void startChatActivity(String addressPhone){
+            Intent intent = new Intent(activity, ChatActivity.class);
+            String addressPhoneKey = activity.getResources().getString(R.string.intent_key_address_phone);
+            intent.putExtra(addressPhoneKey, addressPhone);
+            activity.startActivity(intent);
+            activity.finish();
         }
     }
 }

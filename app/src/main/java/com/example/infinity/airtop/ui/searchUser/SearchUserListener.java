@@ -1,7 +1,6 @@
 package com.example.infinity.airtop.ui.searchUser;
 
 import com.example.infinity.airtop.data.network.SearchableUsers;
-import com.example.infinity.airtop.ui.listeners.OnSearchUserListener;
 
 import java.util.ArrayList;
 

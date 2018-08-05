@@ -1,6 +1,7 @@
 package com.example.infinity.airtop;
 
 import com.example.infinity.airtop.ui.chat.ChatPresenter;
+import com.example.infinity.airtop.utils.TestServer;
 import com.example.infinity.airtop.utils.serverWorker.TestLauncherServerSending;
 
 import org.junit.Before;
@@ -13,7 +14,7 @@ import static org.junit.Assert.assertEquals;
 @RunWith(MockitoJUnitRunner.class)
 public class SendingMessageTest {
 
-    private TestLauncherServerSending serverSending;
+    private TestServer testServer;
     private String addressPhone = "89035724917", senderPhone = "89688512558";
     private ChatPresenter chatPresenter;
 
@@ -21,7 +22,7 @@ public class SendingMessageTest {
     public void init(){
         chatPresenter = new ChatPresenter();
         chatPresenter.onCreate(addressPhone, senderPhone);
-        serverSending = chatPresenter.getServerSending();
+        testServer = TestServer.getInstance();
     }
 
     @Test
@@ -31,7 +32,7 @@ public class SendingMessageTest {
                 messageText, senderPhone, addressPhone);
         chatPresenter.getMessageEditor().addText(messageText);
         chatPresenter.sendMessage();
-        assertEquals(jsonMessage, serverSending.getLastMessage());
+        assertEquals(jsonMessage, testServer.getLastMessage());
     }
 
     @Test
@@ -42,6 +43,6 @@ public class SendingMessageTest {
 
         chatPresenter.getMessageEditor().addText(messageText);
         chatPresenter.sendMessage();
-        assertEquals(jsonMessage, serverSending.getLastMessage());
+        assertEquals(jsonMessage, testServer.getLastMessage());
     }
 }

@@ -8,19 +8,17 @@ import com.arellomobile.mvp.MvpPresenter;
 import com.example.infinity.airtop.data.db.interactors.ChatInteractor;
 import com.example.infinity.airtop.data.db.model.User;
 import com.example.infinity.airtop.data.network.UserRequest;
-import com.example.infinity.airtop.data.db.repositoryDao.UserDao;
-import com.example.infinity.airtop.presentation.presenters.listeners.OnAuthListener;
 import com.example.infinity.airtop.service.ClientService;
 import com.example.infinity.airtop.utils.JsonConverter;
 import com.example.infinity.airtop.App;
 
 @InjectViewState
-public class LoginPresenter extends MvpPresenter<LoginView> implements OnAuthListener {
+public class AuthPresenter extends MvpPresenter<AuthView> implements OnAuthListener {
 
     private Context context;
     private ChatInteractor chatInteractor;
 
-    public LoginPresenter(){
+    public AuthPresenter(){
         chatInteractor = new ChatInteractor();
     }
 
@@ -45,7 +43,7 @@ public class LoginPresenter extends MvpPresenter<LoginView> implements OnAuthLis
         }
     }
 
-    public void successAuth(UserRequest userRequest){
+    public void successPhoneAuth(UserRequest userRequest){
         User user = new User(userRequest);
         chatInteractor.insertUser(user);
         App.getInstance().setCurrentUser(userRequest);
@@ -58,8 +56,8 @@ public class LoginPresenter extends MvpPresenter<LoginView> implements OnAuthLis
     }
 
     @Override
-    public void onAuth(UserRequest user) {
-        successAuth(user);
+    public void onPhoneAuth(UserRequest user) {
+        successPhoneAuth(user);
     }
 
     public void onDestroy() {

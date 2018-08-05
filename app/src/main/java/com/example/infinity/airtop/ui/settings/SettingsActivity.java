@@ -20,9 +20,9 @@ import butterknife.Unbinder;
 
 public class SettingsActivity extends AppCompatActivity {
 
-    @BindView(R.id.tvPhone)
-    TextView tvPhone;
     @BindView(R.id.tvUsername)
+    TextView tvPhone;
+    @BindView(R.id.tvNickname)
     TextView tvUsername;
 
     private Unbinder unbinder;

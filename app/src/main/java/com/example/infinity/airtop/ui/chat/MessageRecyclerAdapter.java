@@ -1,6 +1,5 @@
 package com.example.infinity.airtop.ui.chat;
 
-import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -8,31 +7,30 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.infinity.airtop.App;
 import com.example.infinity.airtop.R;
+import com.example.infinity.airtop.data.db.interactors.ChatInteractor;
 import com.example.infinity.airtop.data.db.model.Message;
-import com.example.infinity.airtop.data.db.repositoryDao.MessageDao;
 
 import java.util.ArrayList;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  *  Adapter for data management in recycler view (list of current messages)
  *  @author infinity_coder
- *  @version 1.0.0
+ *  @version 1.0.3
  */
 public class MessageRecyclerAdapter extends RecyclerView.Adapter<MessageRecyclerAdapter.RecyclerViewHolder> {
     
-    private ArrayList<Message> currentMessageRequests = new ArrayList<>();
-    
-    public MessageRecyclerAdapter(String phone) {
-        new Thread(() -> {
-            MessageDao messageDao = App.getInstance().getDatabase().messageDao();
-            currentMessageRequests = (ArrayList<Message>) messageDao.getByAddresseePhone(phone);
-        }).start();
+    private ArrayList<Message> currentMessageRequests;
+
+    MessageRecyclerAdapter(String phone) {
+        ChatInteractor interactor = new ChatInteractor();
+        currentMessageRequests = interactor.getAllMessagesPhone(phone);
     }
 
     @NonNull
@@ -46,13 +44,14 @@ public class MessageRecyclerAdapter extends RecyclerView.Adapter<MessageRecycler
     public void onBindViewHolder(@NonNull RecyclerViewHolder recyclerViewHolder, int position) {
         String text;
         String route = currentMessageRequests.get(position).route;
-        Bitmap image;
+        //Bitmap image;
 
-        ImageView imageView = recyclerViewHolder.imageView;
+        //ImageView imageView = recyclerViewHolder.imageView;
 
         LinearLayout.LayoutParams params = (LinearLayout.LayoutParams)
                 recyclerViewHolder.msgCardView.getLayoutParams();
 
+        // Set text relatively received messages
         if((text = currentMessageRequests.get(position).text) != null) {
             recyclerViewHolder.textView.setText(text);
             recyclerViewHolder.textView.setVisibility(View.VISIBLE);
@@ -62,11 +61,13 @@ public class MessageRecyclerAdapter extends RecyclerView.Adapter<MessageRecycler
             recyclerViewHolder.textView.setVisibility(View.GONE);
         }
 
+        // Set display type by route relatively received messages
         if(route.equals(Message.ROUTE_IN))
             params.gravity = Gravity.END;
         else if(route.equals(Message.ROUTE_OUT))
             params.gravity = Gravity.START;
         recyclerViewHolder.msgCardView.setLayoutParams(params);
+
 
         /*if((image = currentMessageRequests.get(position).getImage()) != null) {
             imageView.setImageBitmap(image);
@@ -89,15 +90,16 @@ public class MessageRecyclerAdapter extends RecyclerView.Adapter<MessageRecycler
     }
 
     class RecyclerViewHolder extends RecyclerView.ViewHolder{
+        @BindView(R.id.textView)
         TextView textView;
-        ImageView imageView;
+        @BindView(R.id.msgCardView)
         CardView msgCardView;
+        /*@BindView(R.id.imageView)
+        ImageView imageView;*/
 
         RecyclerViewHolder(@NonNull View itemView) {
             super(itemView);
-            textView = itemView.findViewById(R.id.textView);
-            imageView = itemView.findViewById(R.id.imageView);
-            msgCardView = itemView.findViewById(R.id.msgCardView);
+            ButterKnife.bind(this, itemView);
         }
     }
 }
