@@ -5,31 +5,39 @@ import android.content.Intent;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
-import com.example.infinity.airtop.data.db.interactors.ChatInteractor;
-import com.example.infinity.airtop.data.db.model.User;
+import com.example.infinity.airtop.data.db.interactors.UpdateUserInteractor;
 import com.example.infinity.airtop.data.network.CheckingUsername;
-import com.example.infinity.airtop.data.network.UserRequest;
+import com.example.infinity.airtop.data.network.request.UpdateUsernameRequest;
+import com.example.infinity.airtop.data.network.response.UpdateUsernameResponse;
 import com.example.infinity.airtop.service.ClientService;
 import com.example.infinity.airtop.utils.JsonConverter;
 import com.example.infinity.airtop.App;
 
-import static com.example.infinity.airtop.data.network.CheckingUsername.RESULT_EMPTY;
 import static com.example.infinity.airtop.data.network.CheckingUsername.RESULT_LITTLE;
 
 @InjectViewState
 public class UsernameUpdaterPresenter extends MvpPresenter<UsernameUpdaterView> implements OnUsernameUpdateListener{
     private Context context;
-    private ChatInteractor chatInteractor;
+    private UpdateUserInteractor interactor;
+    private String phone, username;
+    private String isAvailableToChange = "false";
 
     public UsernameUpdaterPresenter(){
-        chatInteractor = new ChatInteractor();
+        interactor = new UpdateUserInteractor();
     }
 
-    public void onUpdateUsername(UserRequest userRequest){
-        User user = new User(userRequest);
-        chatInteractor.insertUser(user);
-        App.getInstance().setCurrentUserPhone(user.phone);
-        getViewState().onUpdateUsername();
+    @Override
+    public void onUpdateUsername(UpdateUsernameResponse response){
+        phone = response.getPhone();
+        username = response.getUsername();
+        if(response.getResult().equals(UpdateUsernameResponse.RESULT_OK)) {
+            getViewState().onUsernameFree();
+            isAvailableToChange = "true";
+        }
+        else{
+            getViewState().onUsernameIsTaken();
+            isAvailableToChange = "false";
+        }
     }
 
     public void onCreate(Context context){
@@ -37,27 +45,27 @@ public class UsernameUpdaterPresenter extends MvpPresenter<UsernameUpdaterView> 
         App.getInstance().getResponseListeners().getUsernameUpdateListener().subscribe(this);
     }
 
-    public void onResultUsernameCheck(CheckingUsername checkingUsername){
-        getViewState().onResultUsernameCheck(checkingUsername);
-    }
-
     public void onTextChanged(String text){
-        CheckingUsername checkingUsername = new CheckingUsername();
+        isAvailableToChange = "false";
         if(text.length() == 0) {
-            checkingUsername.setResult(RESULT_EMPTY);
-            getViewState().onResultUsernameCheck(checkingUsername);
+            getViewState().onEmptyUsernameField();
         }
         else if(text.length() < 5) {
-            checkingUsername.setResult(RESULT_LITTLE);
-            getViewState().onResultUsernameCheck(checkingUsername);
+            getViewState().onSmallUsername();
         }
         else {
-            JsonConverter jsonConverter = new JsonConverter();
-            String json = jsonConverter.toJson(new CheckingUsername());
-            Intent intent = new Intent(context, ClientService.class);
-            intent.putExtra("request", json);
-            context.startService(intent);
-            //App.getInstance().getBackendClient().sendRequest(new CheckingUsername(text));
+            getViewState().onSendUsername(text, isAvailableToChange);
+        }
+    }
+
+    public void saveChanges(){
+        if(isAvailableToChange.equals("true")){
+            getViewState().onSendUsername(username, isAvailableToChange);
+            interactor.updateUsername(phone, username);
+            App.getInstance().updateCurrentUser();
+            isAvailableToChange = "false";
+
+            getViewState().onUpdateUsername();
         }
     }
 

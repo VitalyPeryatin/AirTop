@@ -10,7 +10,7 @@ import com.example.infinity.airtop.utils.serverWorker.LauncherServerSending;
 
 import dagger.Component;
 
-@Component(modules = {MainChatModule.class, RealChatModule.class})
+@Component(modules = RealChatModule.class)
 public interface ChatComponent {
     void inject(ChatPresenter chatPresenter);
     MessageBus getMessageBus();

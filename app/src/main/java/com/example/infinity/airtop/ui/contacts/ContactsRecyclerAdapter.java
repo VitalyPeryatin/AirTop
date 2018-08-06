@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.example.infinity.airtop.App;
 import com.example.infinity.airtop.R;
+import com.example.infinity.airtop.data.db.interactors.ContactsInteractor;
 import com.example.infinity.airtop.data.db.model.Addressee;
 import com.example.infinity.airtop.data.db.model.Contact;
 import com.example.infinity.airtop.data.db.model.Message;
@@ -28,6 +29,7 @@ public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecycl
     private ArrayList<Contact> contacts = new ArrayList<>();
     private Fragment fragment;
     private Context context;
+    private ContactsInteractor interactor = new ContactsInteractor();
 
     public ContactsRecyclerAdapter(Fragment fragment){
         this.fragment = fragment;
@@ -48,25 +50,8 @@ public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecycl
     }
 
     public void onUpdateList(){ // TODO заменить полное изменени списка на локальные изменения
-        new Thread(() -> {
-            contacts.clear();
-            AddresseeDao addresseeDao = App.getInstance().getDatabase().addresseeDao();
-            MessageDao messageDao = App.getInstance().getDatabase().messageDao();
-            ArrayList<Addressee> addressees = (ArrayList<Addressee>) addresseeDao.getAll();
-            for (Addressee addressee : addressees) {
-                Contact contact = new Contact();
-                contact.setAddressee(addressee);
-                Message message = messageDao.getLastMessageByAddressePhone(addressee.phone);
-                if(message == null){
-                    addresseeDao.delete(addressee);
-                }
-                else {
-                    contact.setLastMessage(message.text);
-                    contacts.add(contact);
-                }
-            }
-            Objects.requireNonNull(fragment.getActivity()).runOnUiThread(this::notifyDataSetChanged);
-        }).start();
+        contacts = interactor.getContacts();
+        notifyDataSetChanged();
     }
 
     public void addContactByAddress(Addressee addressee){

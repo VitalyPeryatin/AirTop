@@ -13,8 +13,10 @@ import android.widget.Toast;
 import com.arellomobile.mvp.MvpAppCompatActivity;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.example.infinity.airtop.R;
+import com.example.infinity.airtop.data.db.model.User;
 import com.example.infinity.airtop.data.network.CheckingUsername;
 import com.example.infinity.airtop.data.network.UserRequest;
+import com.example.infinity.airtop.data.network.request.UpdateUsernameRequest;
 import com.example.infinity.airtop.service.ClientService;
 import com.example.infinity.airtop.utils.JsonConverter;
 import com.example.infinity.airtop.App;
@@ -35,7 +37,6 @@ public class UsernameUpdaterActivity extends MvpAppCompatActivity implements Tex
     public EditText editTextUsername;
     @BindView(R.id.tvAccessInfo)
     public TextView tvAccessInfo;
-    private CheckingUsername checkingUsername;
 
     @InjectPresenter
     UsernameUpdaterPresenter presenter;
@@ -49,18 +50,12 @@ public class UsernameUpdaterActivity extends MvpAppCompatActivity implements Tex
 
         editTextUsername.addTextChangedListener(this);
         tvAccessInfo.setVisibility(View.GONE);
-
-        checkingUsername = new CheckingUsername();
-        checkingUsername.setResult(RESULT_EMPTY);
     }
 
 
     @OnClick(R.id.btnApplyUsername)
     public void applyUsername(){
-        if(checkingUsername.getResult().equals(CheckingUsername.RESULT_OK)) {
-            String username = editTextUsername.getText().toString();
-            notifyServer(username);
-        }
+        presenter.saveChanges();
     }
 
     @Override
@@ -70,40 +65,38 @@ public class UsernameUpdaterActivity extends MvpAppCompatActivity implements Tex
     }
 
     @Override
-    public void onResultUsernameCheck(CheckingUsername checkingUsername){
-        runOnUiThread(()->{
-            this.checkingUsername = checkingUsername;
-            if(checkingUsername.getResult().equals(RESULT_EMPTY)){
-                tvAccessInfo.setVisibility(View.GONE);
-            }
-            else{
-                tvAccessInfo.setVisibility(View.VISIBLE);
-                if(checkingUsername.getResult().equals(RESULT_LITTLE)){
-                    tvAccessInfo.setText("Username должен иметь хотя бы 5 символов");
-                }
-                else if(checkingUsername.getResult().equals(RESULT_CANCEL)){
-                    tvAccessInfo.setText("Username уже занят другим пользователем");
-                }
-                else if(checkingUsername.getResult().equals(CheckingUsername.RESULT_OK)){
-                    tvAccessInfo.setText("Username доступен");
-                }
-            }
-            Toast.makeText(this, checkingUsername.getResult(), Toast.LENGTH_SHORT).show();
-        });
-    }
-
-    private void notifyServer(String username){
-        App app = App.getInstance();
-        UserRequest user = app.getCurrentUser();
-        user.username = username;
-        user.setAction(UserRequest.ACTION_UPDATE);
+    public void onSendUsername(String username, String availableToUpdate) {
+        String phone = App.getInstance().getCurrentUser().phone;
+        UpdateUsernameRequest request = new UpdateUsernameRequest(phone, username, availableToUpdate);
 
         JsonConverter jsonConverter = new JsonConverter();
-        String json = jsonConverter.toJson(user);
+        String json = jsonConverter.toJson(request);
         Intent intent = new Intent(this, ClientService.class);
         intent.putExtra("request", json);
         startService(intent);
-        //App.getInstance().getBackendClient().sendRequest(user);
+    }
+
+    @Override
+    public void onUsernameFree() {
+        tvAccessInfo.setVisibility(View.VISIBLE);
+        tvAccessInfo.setText("Username доступен");
+    }
+
+    @Override
+    public void onEmptyUsernameField() {
+        tvAccessInfo.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onSmallUsername() {
+        tvAccessInfo.setVisibility(View.VISIBLE);
+        tvAccessInfo.setText("Username должен иметь хотя бы 5 символов");
+    }
+
+    @Override
+    public void onUsernameIsTaken() {
+        tvAccessInfo.setVisibility(View.VISIBLE);
+        tvAccessInfo.setText("Username уже занят другим пользователем");
     }
 
     @Override

@@ -4,9 +4,12 @@ import android.support.annotation.NonNull;
 
 import com.example.infinity.airtop.data.db.model.User;
 
+import java.util.UUID;
+
 public class UserRequest implements RequestModel{
     @NonNull
     public String phone;
+    public String uuid;
     public String username;
     public String nickname;
     public String bio;
@@ -15,6 +18,7 @@ public class UserRequest implements RequestModel{
     public static final String
             ACTION_CREATE = "create",
             ACTION_UPDATE = "update";
+
     private final String TYPE = TYPE_USER;
 
     public UserRequest(String phone) {
@@ -23,12 +27,14 @@ public class UserRequest implements RequestModel{
         bio = "None";
         action = ACTION_CREATE;
         this.phone = phone;
+        uuid = UUID.randomUUID().toString();
     }
 
     public UserRequest(User user) {
         username = user.username;
         nickname = user.nickname;
         bio = user.bio;
+        uuid = user.uuid;
         phone = user.phone;
         action = ACTION_CREATE;
     }

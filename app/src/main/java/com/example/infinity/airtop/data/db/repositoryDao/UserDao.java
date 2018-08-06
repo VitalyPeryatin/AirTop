@@ -23,6 +23,9 @@ public abstract class UserDao {
     @Insert(onConflict = REPLACE)
     public abstract void insert(User user);
 
+    @Query("UPDATE user SET username=:username WHERE phone=:phone")
+    public abstract void updateUsername(String phone, String username);
+
     @Delete
     public abstract void delete(User user);
 

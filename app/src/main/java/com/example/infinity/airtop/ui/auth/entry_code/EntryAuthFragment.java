@@ -1,4 +1,4 @@
-package com.example.infinity.airtop.ui.auth_new.entry_code;
+package com.example.infinity.airtop.ui.auth.entry_code;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -11,7 +11,7 @@ import android.widget.EditText;
 
 import com.example.infinity.airtop.R;
 import com.example.infinity.airtop.data.prefs.auth.AuthPreference;
-import com.example.infinity.airtop.ui.auth_new.AuthActivity;
+import com.example.infinity.airtop.ui.auth.AuthActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

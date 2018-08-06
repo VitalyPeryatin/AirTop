@@ -7,6 +7,7 @@ import com.example.infinity.airtop.App;
 
 public class AppPreference implements AppPreferencesHelper {
 
+    private static final String CURRENT_PHONE_KEY = "currentUserPhone";
     private SharedPreferences sPref;
     private String prefix = "position_by_";
 
@@ -27,5 +28,16 @@ public class AppPreference implements AppPreferencesHelper {
         return sPref.getInt(prefix + addressee, 0);
     }
 
+    @Override
+    public String getCurrentPhone() {
+        return sPref.getString(CURRENT_PHONE_KEY, null);
+    }
+
+    @Override
+    public void saveCurrentPhone(String phone) {
+        SharedPreferences.Editor editor = sPref.edit();
+        editor.putString(CURRENT_PHONE_KEY, phone);
+        editor.apply();
+    }
 
 }

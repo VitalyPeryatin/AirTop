@@ -4,5 +4,5 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public abstract class BaseIntearctor {
-    protected ExecutorService service = Executors.newFixedThreadPool(1);
+    protected static ExecutorService service = Executors.newFixedThreadPool(1);
 }

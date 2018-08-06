@@ -1,81 +1,46 @@
 package com.example.infinity.airtop.ui.auth;
 
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.widget.EditText;
+import android.support.v7.app.AppCompatActivity;
 
-import com.arellomobile.mvp.MvpAppCompatActivity;
-import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.example.infinity.airtop.R;
-import com.example.infinity.airtop.ui.entrance.EntranceActivity;
+import com.example.infinity.airtop.data.prefs.auth.AuthPreference;
+import com.example.infinity.airtop.ui.auth.entry_code.EntryAuthFragment;
+import com.example.infinity.airtop.ui.auth.nickname.NicknameAuthFragment;
+import com.example.infinity.airtop.ui.auth.phone.PhoneAuthFragment;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
+public class AuthActivity extends AppCompatActivity{
 
-public class AuthActivity extends MvpAppCompatActivity implements AuthView {
-
-    @InjectPresenter
-    AuthPresenter authPresenter;
-    private static final int ACCESS_CODE = 1;
-    @BindView(R.id.etAuthPhone)
-    EditText editTextAuth;
-    String phone = null;
-
-    private static final String KEY_ENTER = "isEntered";
-    private SharedPreferences sPref;
-    private boolean isEntered;
+    private AuthPreference sPref;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_auth);
-        ButterKnife.bind(this);
-        authPresenter.onCreate(this);
+        setContentView(R.layout.activity_new_auth);
+        sPref = new AuthPreference();
 
-        sPref = getSharedPreferences("savedEntryCode", MODE_PRIVATE);
+        changeView();
+    }
 
-        isEntered = sPref.getBoolean(KEY_ENTER, false);
-        if (!isEntered) {
-            startActivityForResult(new Intent(this, EntranceActivity.class), ACCESS_CODE);
+    public void changeView(){
+        if(!sPref.isEntered())
+            setFragment(new EntryAuthFragment());
+        else if(sPref.getCurrentPhone() == null)
+            setFragment(new PhoneAuthFragment());
+        else if(!sPref.haveNickname())
+            setFragment(new NicknameAuthFragment());
+        else {
+            setResult(RESULT_OK);
+            finish();
         }
     }
 
-    @OnClick(R.id.btnAuth)
-    void auth(){
-        phone = editTextAuth.getText().toString();
-        authPresenter.auth(phone);
-    }
-
-    @Override
-    public void successAuth(){
-        Intent data = new Intent();
-        data.putExtra("user phone", phone);
-        setResult(RESULT_OK, data);
-        finish();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        saveEntranceState();
-        authPresenter.onDestroy();
-    }
-
-    // Save value of "isEntered"
-    private void saveEntranceState(){
-        SharedPreferences.Editor editor = sPref.edit();
-        editor.putBoolean(KEY_ENTER, isEntered);
-        editor.apply();
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == RESULT_OK && requestCode == ACCESS_CODE)
-            isEntered = true;
+    private void setFragment(Fragment fragment){
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_container, fragment);
+        transaction.commit();
     }
 }

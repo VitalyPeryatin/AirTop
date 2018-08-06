@@ -15,7 +15,6 @@
         <activity android:name=".ui.chat.ChatActivity"
             android:windowSoftInputMode="adjustResize|stateHidden"/>
         <activity android:name=".ui.entrance.EntranceActivity" />
-        <activity android:name=".ui.auth.AuthActivity" />
         <activity android:name=".ui.searchUser.SearchUserActivity"/>
         <activity android:name=".ui.main.MainActivity" >
             <intent-filter>
@@ -33,7 +32,7 @@
         <activity
             android:name=".ui.usernameUpdater.UsernameUpdaterActivity"
             android:label="@string/title_activity_username_settings" />
-        <activity android:name=".ui.auth_new.AuthActivity"/>
+        <activity android:name=".ui.auth.AuthActivity"/>
 
         <service
             android:name=".service.ClientService"

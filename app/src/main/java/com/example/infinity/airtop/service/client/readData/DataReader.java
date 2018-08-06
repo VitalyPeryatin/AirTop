@@ -8,8 +8,12 @@ import com.example.infinity.airtop.data.db.interactors.ChatInteractor;
 import com.example.infinity.airtop.data.db.model.Message;
 import com.example.infinity.airtop.data.network.CheckingUsername;
 import com.example.infinity.airtop.data.network.MessageRequest;
+import com.example.infinity.airtop.data.network.request.UpdateUsernameRequest;
+import com.example.infinity.airtop.data.network.response.NicknameAuthResponse;
+import com.example.infinity.airtop.data.network.response.PhoneAuthResponse;
 import com.example.infinity.airtop.data.network.SearchableUsers;
 import com.example.infinity.airtop.data.network.UserRequest;
+import com.example.infinity.airtop.data.network.response.UpdateUsernameResponse;
 import com.example.infinity.airtop.service.client.ServerConnection;
 import com.example.infinity.airtop.App;
 import com.google.gson.Gson;
@@ -40,7 +44,10 @@ public class DataReader extends Thread{
             USER_CREATE_KEY = 2,
             USER_UPDATE_KEY = 3,
             SEARCHABLE_USERS_KEY = 4,
-            CHECKING_USERNAME_KEY = 5;
+            CHECKING_USERNAME_KEY = 5,
+            PHONE_AUTH_KEY = 6,
+            NICKNAME_AUTH_KEY = 7,
+            UPDATE_USERNAME_KEY = 8;
 
     public DataReader(ServerConnection serverConnection) {
         this.serverConnection = serverConnection;
@@ -107,7 +114,22 @@ public class DataReader extends Thread{
                     message.what = MESSAGE_REQUEST_KEY;
                     message.obj = messageModel;
                     break;
-                case "user":
+                case "phone_auth":
+                    PhoneAuthResponse phoneAuthResponse = gson.fromJson(jsonText, PhoneAuthResponse.class);
+                    message.what = PHONE_AUTH_KEY;
+                    message.obj =  phoneAuthResponse;
+                    break;
+                case "update_username":
+                    UpdateUsernameResponse response = gson.fromJson(jsonText, UpdateUsernameResponse.class);
+                    message.what = UPDATE_USERNAME_KEY;
+                    message.obj = response;
+                    break;
+                case "nickname_auth":
+                    NicknameAuthResponse nicknameAuthResponse = gson.fromJson(jsonText, NicknameAuthResponse.class);
+                    message.what = NICKNAME_AUTH_KEY;
+                    message.obj =  nicknameAuthResponse;
+                    break;
+                /*case "user":
                     UserRequest user = gson.fromJson(jsonText, UserRequest.class);
 
                     if (user.getAction().equals(UserRequest.ACTION_CREATE))
@@ -115,7 +137,7 @@ public class DataReader extends Thread{
                     if (user.getAction().equals(UserRequest.ACTION_UPDATE))
                         message.what = USER_UPDATE_KEY;
                     message.obj = user;
-                    break;
+                    break;*/
                 case "searchable_users":
                     SearchableUsers searchableUsers = gson.fromJson(jsonText, SearchableUsers.class);
                     message.what = SEARCHABLE_USERS_KEY;
@@ -146,29 +168,41 @@ public class DataReader extends Thread{
                     else
                         Log.e("mLogError", "DataReader -> не верный тип объекта. Ожидалось: Message");
                     break;
-                case USER_CREATE_KEY:
+                /*case USER_CREATE_KEY:
                     if(msg.obj instanceof UserRequest)
-                        responseListeners.getAuthListener().onAuth((UserRequest) msg.obj);
+                        responseListeners.getPhoneAuthListener().onPhoneAuth((UserRequest) msg.obj);
                     else
                         Log.e("mLogError", "DataReader -> не верный тип объекта. Ожидалось: UserRequest");
-                    break;
-                case USER_UPDATE_KEY:
+                    break;*/
+                /*case USER_UPDATE_KEY:
                     if(msg.obj instanceof UserRequest)
                         responseListeners.getUsernameUpdateListener().onUpdateUsername((UserRequest) msg.obj);
                     else
                         Log.e("mLogError", "DataReader -> не верный тип объекта. Ожидалось: UserRequest");
-                    break;
+                    break;*/
                 case SEARCHABLE_USERS_KEY:
                     if(msg.obj instanceof SearchableUsers)
                         responseListeners.getSearchUserListener().displaySearchableUsers((SearchableUsers) msg.obj);
                     else
                         Log.e("mLogError", "DataReader -> не верный тип объекта. Ожидалось: SearchableUsers");
                     break;
-                case CHECKING_USERNAME_KEY:
-                    if(msg.obj instanceof CheckingUsername)
-                        responseListeners.getUsernameUpdateListener().onResultUsernameCheck((CheckingUsername) msg.obj);
+                case PHONE_AUTH_KEY:
+                    if(msg.obj instanceof PhoneAuthResponse)
+                        responseListeners.getPhoneAuthListener().onPhoneAuth((PhoneAuthResponse) msg.obj);
                     else
-                        Log.e("mLogError", "DataReader -> не верный тип объекта. Ожидалось: CheckingUsername");
+                        Log.e("mLogError", "DataReader -> не верный тип объекта. Ожидалось: PhoneAuthResponse");
+                    break;
+                case NICKNAME_AUTH_KEY:
+                    if(msg.obj instanceof NicknameAuthResponse)
+                        responseListeners.getNicknameAuthListener().onNicknameAuth((NicknameAuthResponse) msg.obj);
+                    else
+                        Log.e("mLogError", "DataReader -> не верный тип объекта. Ожидалось: NicknameAuthResponse");
+                    break;
+                case UPDATE_USERNAME_KEY:
+                    if(msg.obj instanceof UpdateUsernameResponse)
+                        responseListeners.getUsernameUpdateListener().onUpdateUsername((UpdateUsernameResponse) msg.obj);
+                    else
+                        Log.e("mLogError", "DataReader -> не верный тип объекта. Ожидалось: UpdateUsernameResponse");
                     break;
             }
         }

@@ -4,12 +4,14 @@ import android.app.Application;
 import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.util.Log;
 
+import com.example.infinity.airtop.data.db.interactors.UserInteractor;
 import com.example.infinity.airtop.data.db.model.User;
 import com.example.infinity.airtop.data.network.UserRequest;
-import com.example.infinity.airtop.ui.auth.AuthListener;
+import com.example.infinity.airtop.data.prefs.app.AppPreference;
+import com.example.infinity.airtop.ui.auth.nickname.NicknameAuthListener;
+import com.example.infinity.airtop.ui.auth.phone.PhoneAuthListener;
 import com.example.infinity.airtop.ui.chat.MessageBus;
 import com.example.infinity.airtop.data.network.PhoneVerifier;
 import com.example.infinity.airtop.data.db.AppDatabase;
@@ -23,11 +25,11 @@ import com.facebook.stetho.Stetho;
 import java.util.ArrayList;
 
 public class App extends Application {
-    private UserRequest currentUser;
+    private User currentUser;
     private static App instance;
     private AppDatabase database;
-    private SharedPreferences sPref;
     private ResponseListeners responseListeners;
+    private UserInteractor interactor;
 
     private static final String USER_PHONE_KEY = "user_phone_key";
 
@@ -47,25 +49,20 @@ public class App extends Application {
 
         instance = this;
         responseListeners = new ResponseListeners();
+        interactor = new UserInteractor();
 
         database = Room.databaseBuilder(this, AppDatabase.class, "database.db")
                 .setJournalMode(RoomDatabase.JournalMode.TRUNCATE)
                 .fallbackToDestructiveMigration()
                 .build();
-
-        sPref = getSharedPreferences("savedUserPhone", MODE_PRIVATE);
-
-
-        new Thread(() -> currentUser = loadCurrentUser()).start();
-
-
+        updateCurrentUser();
     }
 
     public AppDatabase getDatabase() {
         return database;
     }
 
-    public UserRequest getCurrentUser() {
+    public User getCurrentUser() {
         return currentUser;
     }
 
@@ -92,53 +89,39 @@ public class App extends Application {
         }).start();
     }
 
-    public void setCurrentUserPhone(String currentUserPhone){
-        SharedPreferences.Editor editor = sPref.edit();
-        editor.putString(USER_PHONE_KEY, currentUserPhone);
-        editor.apply();
-        new Thread(() -> currentUser = loadCurrentUser()).start();
-    }
-
-    public void setCurrentUser(UserRequest currentUser) {
-        this.currentUser = currentUser;
+    public void setCurrentUser(User user) {
+        this.currentUser = user;
     }
 
     public ResponseListeners getResponseListeners() {
         return responseListeners;
     }
 
-    private UserRequest loadCurrentUser(){
-        final UserRequest userRequest;
-        String currentUserPhone = sPref.getString(USER_PHONE_KEY, null);
-        User user = database.userDao().getByPhone(currentUserPhone);
-        if(currentUserPhone == null || user == null){
-            userRequest = null;
-        }
-        else{
-            userRequest = new UserRequest(user);
-        }
-        return userRequest;
+    public void updateCurrentUser(){
+        currentUser = interactor.getUserByPhone(new AppPreference().getCurrentPhone());
     }
 
     public static class ResponseListeners {
         private MessageBus messageBus;
-        private AuthListener authListener;
+        private PhoneAuthListener phoneAuthListener;
         private UsernameUpdateListener usernameUpdateListener;
         private SearchUserListener searchUserListener;
+        private NicknameAuthListener nicknameAuthListener;
 
         ResponseListeners(){
             messageBus = new MessageBus();
-            authListener = new AuthListener();
+            phoneAuthListener = new PhoneAuthListener();
             usernameUpdateListener = new UsernameUpdateListener();
             searchUserListener = new SearchUserListener();
+            nicknameAuthListener = new NicknameAuthListener();
         }
 
         public MessageBus getMessageBus() {
             return messageBus;
         }
 
-        public AuthListener getAuthListener() {
-            return authListener;
+        public PhoneAuthListener getPhoneAuthListener() {
+            return phoneAuthListener;
         }
 
         public UsernameUpdateListener getUsernameUpdateListener() {
@@ -149,6 +132,9 @@ public class App extends Application {
             return searchUserListener;
         }
 
+        public NicknameAuthListener getNicknameAuthListener() {
+            return nicknameAuthListener;
+        }
     }
 
 }

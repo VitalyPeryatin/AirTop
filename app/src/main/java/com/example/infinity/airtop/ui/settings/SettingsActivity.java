@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.example.infinity.airtop.R;
+import com.example.infinity.airtop.data.db.model.User;
 import com.example.infinity.airtop.data.network.UserRequest;
 import com.example.infinity.airtop.App;
 import com.example.infinity.airtop.ui.phoneUpdater.PhoneUpdaterActivity;
@@ -40,19 +41,9 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void loadUserData(){
-        UserRequest user = App.getInstance().getCurrentUser();
+        User user = App.getInstance().getCurrentUser();
         tvPhone.setText(user.phone);
         tvUsername.setText(user.username);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
     }
 
     @Override
@@ -85,8 +76,7 @@ public class SettingsActivity extends AppCompatActivity {
                 case PHONE_CODE:
                     break;
                 case USERNAME_CODE:
-                    String username = App.getInstance().getCurrentUser().username;
-                    tvUsername.setText(username);
+                    loadUserData();
                     break;
             }
         }

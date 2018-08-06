@@ -6,8 +6,12 @@ import com.example.infinity.airtop.data.network.PhoneVerifier;
 import com.example.infinity.airtop.data.network.RequestModel;
 import com.example.infinity.airtop.data.network.SearchableUsers;
 import com.example.infinity.airtop.data.network.UserRequest;
+import com.example.infinity.airtop.data.network.request.NicknameAuthRequest;
+import com.example.infinity.airtop.data.network.request.PhoneAuthRequest;
+import com.example.infinity.airtop.data.network.request.UpdateUsernameRequest;
 import com.example.infinity.airtop.service.client.writeData.ImageEncoder;
 import com.example.infinity.airtop.service.client.writeData.TextEncoder;
+import com.example.infinity.airtop.ui.usernameUpdater.UsernameUpdaterActivity;
 import com.google.gson.Gson;
 
 import org.jetbrains.annotations.NotNull;
@@ -44,6 +48,18 @@ public class JsonConverter {
         else if(requestModel instanceof CheckingUsername){
             CheckingUsername checkingUsername = (CheckingUsername) requestModel;
             jsonMessage = gson.toJson(checkingUsername);
+        }
+        else if(requestModel instanceof PhoneAuthRequest){
+            PhoneAuthRequest request = (PhoneAuthRequest) requestModel;
+            jsonMessage = gson.toJson(request);
+        }
+        else if(requestModel instanceof NicknameAuthRequest){
+            NicknameAuthRequest request = (NicknameAuthRequest) requestModel;
+            jsonMessage = gson.toJson(request);
+        }
+        else if(requestModel instanceof UpdateUsernameRequest){
+            UpdateUsernameRequest request = (UpdateUsernameRequest) requestModel;
+            jsonMessage = gson.toJson(request);
         }
         jsonMessage = jsonMessage.length() + "@" + jsonMessage;
         return jsonMessage;

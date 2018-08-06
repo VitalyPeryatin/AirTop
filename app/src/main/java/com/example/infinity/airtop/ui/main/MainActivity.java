@@ -13,10 +13,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
 import com.example.infinity.airtop.R;
+import com.example.infinity.airtop.data.db.model.User;
 import com.example.infinity.airtop.data.network.UserRequest;
 import com.example.infinity.airtop.service.ClientService;
 import com.example.infinity.airtop.App;
-import com.example.infinity.airtop.ui.auth_new.AuthActivity;
+import com.example.infinity.airtop.ui.auth.AuthActivity;
 import com.example.infinity.airtop.ui.settings.SettingsActivity;
 import com.example.infinity.airtop.ui.contacts.ContactsFragment;
 
@@ -46,7 +47,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setFragment(new ContactsFragment());
         navigationView.setNavigationItemSelectedListener(this);
 
-        UserRequest currentUser = App.getInstance().getCurrentUser();
+        User currentUser = App.getInstance().getCurrentUser();
         if(currentUser == null ){
             showLoginActivity();
         }

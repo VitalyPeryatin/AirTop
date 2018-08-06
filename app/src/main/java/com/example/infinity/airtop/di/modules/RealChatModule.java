@@ -10,7 +10,7 @@ import com.example.infinity.airtop.utils.serverWorker.RealLauncherServerSending;
 import dagger.Module;
 import dagger.Provides;
 
-@Module
+@Module(includes = MainChatModule.class)
 public class RealChatModule {
 
     @Provides

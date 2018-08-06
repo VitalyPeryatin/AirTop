@@ -20,4 +20,14 @@ public class TestPreference implements AppPreferencesHelper {
         if(map.get(prefix + addressee) == null) return default_value;
         return map.get(prefix + addressee);
     }
+
+    @Override
+    public String getCurrentPhone() {
+        return null;
+    }
+
+    @Override
+    public void saveCurrentPhone(String phone) {
+
+    }
 }

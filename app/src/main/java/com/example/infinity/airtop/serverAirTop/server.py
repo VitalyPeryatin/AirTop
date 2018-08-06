@@ -21,6 +21,7 @@ ACTION_CREATE = "create"
 ACTION_UPDATE = "update"
 
 connections = {}
+auth_users = {}
 
 database = DatabaseHelper()
 
@@ -88,33 +89,53 @@ def send_user(client_sock, user):
     client_sock.sendall(json_str)
 
 
-def create_or_update_user(json_user, client_sock):
-    user = None
+def send_json(client_sock, json_str):
+    str_len = str(len(json_str)) + '@'
+    json_str = (str_len + json_str).encode(CHARSET)
+    client_sock.sendall(json_str)
+
+
+def create_user(json_user, client_sock):
     user_dict = dict(eval(json_user))
-    if user_dict.get("action") == "create":
-        user = create_user(user_dict)
-    elif user_dict.get("action") == "update":
-        user = update_user(user_dict)
-
-    user[TYPE_KEY] = "user"
-    send_user(client_sock, user)
-
-
-def create_user(user_dict):
+    database.insert_or_replace_user(user_dict)
+    user_dict[TYPE_KEY] = "nickname_auth"
     phone = user_dict.get("phone")
+    users_on_auth = list(auth_users[phone])
+    if not (client_sock in users_on_auth):
+        users_on_auth.append(client_sock)
+    user_json = str(user_dict)
+    for user_socket in users_on_auth:
+        send_json(user_socket, user_json)
+
+
+def phone_auth_user(json_user, client_sock):
+    user_dict = dict(eval(json_user))
+    phone = user_dict.get("phoneNumber")
+    response_dict = {TYPE_KEY: "phone_auth"}
     user = database.get_user_by_phone(phone)
     if user is None:
-        user = database.insert_or_replace_user(user_dict)
-    user[ACTION_KEY] = ACTION_CREATE
-    return user
+        response_dict["result"] = "RESULT_OK"
+        if phone in auth_users:
+            auth_users[phone] = list(auth_users[phone]).append(client_sock)
+        else:
+            auth_users[phone] = [client_sock]
+    else:
+        response_dict["result"] = "RESULT_EXIST"
+        response_dict["user"] = str(user)
+    response_json = str(response_dict)
+    # user[ACTION_KEY] = ACTION_CREATE
+    send_json(client_sock, response_json)
 
 
-def update_user(user_dict):
+def update_username(json_str, client_sock):
+    user_dict = dict(eval(json_str))
     phone = user_dict.get("phone")
-    database.insert_or_replace_user(user_dict)
-    user = database.get_user_by_phone(phone)
-    user[ACTION_KEY] = ACTION_UPDATE
-    return user
+    username = user_dict.get("username")
+    available_to_update = user_dict.get("availableToUpdate")
+    result = database.update_username_by_phone(phone, username, available_to_update)
+    response_dict = {TYPE_KEY: "update_username", "result": result, "phone": phone, "username": username}
+    json = str(response_dict)
+    send_json(client_sock, json)
 
 
 def send_searchable_users(json_str, client_sock):
@@ -163,14 +184,19 @@ def receiver(sock):
                 print(json_str)
                 if type == "message":
                     threading.Thread(target=send_message, args=(json_str,)).start()
-                elif type == "user":
-                    threading.Thread(target=create_or_update_user, args=(json_str, sock,)).start()
+                elif type == "phone_auth":
+                    threading.Thread(target=phone_auth_user, args=(json_str, sock,)).start()
+                elif type == "nickname_auth":
+                    threading.Thread(target=create_user, args=(json_str, sock,)).start()
                 elif type == "searchable_users":
                     threading.Thread(target=send_searchable_users, args=(json_str, sock,)).start()
                 elif type == "PhoneVerifier":
                     threading.Thread(target=verify_phone, args=(json_str, sock,)).start()
                 elif type == "checkingUsername":
                     threading.Thread(target=check_username, args=(json_str, sock,)).start()
+                elif type == "update_username":
+                    threading.Thread(target=update_username, args=(json_str, sock,)).start()
+
 
         except (ConnectionResetError, ConnectionAbortedError):
             print("Исключение")

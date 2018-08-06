@@ -1,7 +1,6 @@
 package com.example.infinity.airtop.ui.usernameUpdater;
 
-import com.example.infinity.airtop.data.network.CheckingUsername;
-import com.example.infinity.airtop.data.network.UserRequest;
+import com.example.infinity.airtop.data.network.response.UpdateUsernameResponse;
 
 import java.util.ArrayList;
 
@@ -16,15 +15,9 @@ public class UsernameUpdateListener {
         usernameUpdateListeners.remove(usernameUpdateListener);
     }
 
-    public void onUpdateUsername(UserRequest userRequest){
+    public void onUpdateUsername(UpdateUsernameResponse response){
         for (OnUsernameUpdateListener usernameUpdateListener : usernameUpdateListeners) {
-            usernameUpdateListener.onUpdateUsername(userRequest);
-        }
-    }
-
-    public void onResultUsernameCheck(CheckingUsername checkingUsername){
-        for (OnUsernameUpdateListener usernameUpdateListener : usernameUpdateListeners) {
-            usernameUpdateListener.onResultUsernameCheck(checkingUsername);
+            usernameUpdateListener.onUpdateUsername(response);
         }
     }
 }
