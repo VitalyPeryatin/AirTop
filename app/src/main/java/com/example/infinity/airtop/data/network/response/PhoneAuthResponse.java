@@ -1,17 +1,17 @@
 package com.example.infinity.airtop.data.network.response;
 
-import com.example.infinity.airtop.data.network.UserRequest;
+import com.example.infinity.airtop.data.db.model.User;
 
 public class PhoneAuthResponse {
     private String TYPE;
     private String result;
-    private UserRequest userRequest;
+    private User user;
 
     public String getResult() {
         return result;
     }
 
-    public UserRequest getUserRequest() {
-        return userRequest;
+    public User getUser() {
+        return user;
     }
 }

@@ -69,11 +69,11 @@ def get_phone_by_socket(sock):
 
 
 def send_message(json_message):
-    phone = eval(json_message).get("addressee")
-    client_sock = connections.get(phone)
+    to_id = eval(json_message).get("toId")
+    client_sock = connections.get(to_id)
     str_len = str(len(json_message)) + '@'
     message_str = (str_len + json_message).encode(CHARSET)
-
+    print("connection: " + str(to_id) + "\n" + str(client_sock))
     client_sock.sendall(message_str)
     # for client_sock in client_socks:
     #     str_len = str(len(json_message)) + '@'
@@ -149,10 +149,10 @@ def send_searchable_users(json_str, client_sock):
     client_sock.sendall(json_str)
 
 
-def verify_phone(json_str, sock):
+def verify_user(json_str, sock):
     json_dict = eval(json_str)
-    phone = json_dict.get("userPhone")
-    connections[phone] = sock
+    uuid = json_dict.get("uuid")
+    connections[uuid] = sock
 
 
 def check_username(json_str, sock):
@@ -190,8 +190,8 @@ def receiver(sock):
                     threading.Thread(target=create_user, args=(json_str, sock,)).start()
                 elif type == "searchable_users":
                     threading.Thread(target=send_searchable_users, args=(json_str, sock,)).start()
-                elif type == "PhoneVerifier":
-                    threading.Thread(target=verify_phone, args=(json_str, sock,)).start()
+                elif type == "verify_user":
+                    threading.Thread(target=verify_user, args=(json_str, sock,)).start()
                 elif type == "checkingUsername":
                     threading.Thread(target=check_username, args=(json_str, sock,)).start()
                 elif type == "update_username":

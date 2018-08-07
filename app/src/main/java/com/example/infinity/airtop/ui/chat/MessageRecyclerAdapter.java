@@ -28,9 +28,9 @@ public class MessageRecyclerAdapter extends RecyclerView.Adapter<MessageRecycler
     
     private ArrayList<Message> currentMessageRequests;
 
-    MessageRecyclerAdapter(String phone) {
+    MessageRecyclerAdapter(String uuid) {
         ChatInteractor interactor = new ChatInteractor();
-        currentMessageRequests = interactor.getAllMessagesPhone(phone);
+        currentMessageRequests = interactor.getAllMessagesByUUID(uuid);
     }
 
     @NonNull

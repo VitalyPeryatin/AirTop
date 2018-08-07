@@ -26,9 +26,6 @@ public abstract class UserDao {
     @Query("UPDATE user SET username=:username WHERE phone=:phone")
     public abstract void updateUsername(String phone, String username);
 
-    @Delete
-    public abstract void delete(User user);
-
     public int getSize(){
         return getAll().size();
     }

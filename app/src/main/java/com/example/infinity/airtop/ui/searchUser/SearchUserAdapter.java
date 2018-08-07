@@ -11,7 +11,7 @@ import android.widget.TextView;
 import com.example.infinity.airtop.R;
 import com.example.infinity.airtop.data.db.interactors.SearchUserInteractor;
 import com.example.infinity.airtop.data.db.model.Addressee;
-import com.example.infinity.airtop.data.network.UserRequest;
+import com.example.infinity.airtop.data.db.model.User;
 import com.example.infinity.airtop.ui.chat.ChatActivity;
 
 import java.util.ArrayList;
@@ -22,7 +22,7 @@ import butterknife.OnClick;
 
 public class SearchUserAdapter extends RecyclerView.Adapter<SearchUserAdapter.SearchUserViewHolder> {
 
-    private ArrayList<UserRequest> users = new ArrayList<>();
+    private ArrayList<User> users = new ArrayList<>();
     private SearchUserActivity activity;
     private SearchUserInteractor interactor;
 
@@ -38,7 +38,7 @@ public class SearchUserAdapter extends RecyclerView.Adapter<SearchUserAdapter.Se
         return new SearchUserViewHolder(view);
     }
 
-    public void updateList(ArrayList<UserRequest> list){
+    public void updateList(ArrayList<User> list){
         users.clear();
         users.addAll(list);
         notifyDataSetChanged();
@@ -79,14 +79,14 @@ public class SearchUserAdapter extends RecyclerView.Adapter<SearchUserAdapter.Se
         public void onClick(View view) {
             Addressee addressee = new Addressee(users.get(getAdapterPosition()));
             interactor.insertAddressee(addressee);
-            startChatActivity(addressee.phone);
+            startChatActivity(addressee.uuid);
         }
 
         // Start Chat Activity with companion by address phone
-        private void startChatActivity(String addressPhone){
+        private void startChatActivity(String addressId){
             Intent intent = new Intent(activity, ChatActivity.class);
-            String addressPhoneKey = activity.getResources().getString(R.string.intent_key_address_phone);
-            intent.putExtra(addressPhoneKey, addressPhone);
+            String addressIdKey = activity.getResources().getString(R.string.intent_key_address_id);
+            intent.putExtra(addressIdKey, addressId);
             activity.startActivity(intent);
             activity.finish();
         }

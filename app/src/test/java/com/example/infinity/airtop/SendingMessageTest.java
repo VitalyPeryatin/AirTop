@@ -2,7 +2,6 @@ package com.example.infinity.airtop;
 
 import com.example.infinity.airtop.ui.chat.ChatPresenter;
 import com.example.infinity.airtop.utils.TestServer;
-import com.example.infinity.airtop.utils.serverWorker.TestLauncherServerSending;
 
 import org.junit.Before;
 import org.junit.Test;

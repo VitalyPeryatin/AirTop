@@ -44,7 +44,7 @@ public class ChatActivity extends MvpAppCompatActivity implements ChatView {
 
     private static final int LOAD_IMAGE_KEY = 1;
     private MessageRecyclerAdapter messageAdapter;
-    private String addressPhone;
+    private String addressId;
     private LinearLayoutManager layoutManager;
 
     @Override
@@ -52,12 +52,12 @@ public class ChatActivity extends MvpAppCompatActivity implements ChatView {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
         ButterKnife.bind(this);
-        addressPhone = getIntent().getStringExtra(getResources().getString(R.string.intent_key_address_phone));
-        String senderPhone = App.getInstance().getCurrentUser().phone;
-        presenter.onCreate(addressPhone, senderPhone);
+        addressId = getIntent().getStringExtra(getResources().getString(R.string.intent_key_address_id));
+        String senderId = App.getInstance().getCurrentUser().uuid;
+        presenter.onCreate(addressId, senderId);
 
         // Set adapter AFTER restoring list of messages
-        messageAdapter = new MessageRecyclerAdapter(presenter.getAddresseeUserPhone());
+        messageAdapter = new MessageRecyclerAdapter(addressId);
         msgRecycler.setAdapter(messageAdapter);
         layoutManager = new LinearLayoutManager(this);
         msgRecycler.setLayoutManager(layoutManager);
@@ -66,12 +66,12 @@ public class ChatActivity extends MvpAppCompatActivity implements ChatView {
         msgRecycler.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             public void onGlobalLayout() {
                 int defaultPosition = messageAdapter.getItemCount() - 1;
-                msgRecycler.scrollToPosition(presenter.getAdapterPosition(addressPhone, defaultPosition)); // TODO saving current position
+                msgRecycler.scrollToPosition(presenter.getAdapterPosition(addressId, defaultPosition)); // TODO saving current position
                 msgRecycler.getViewTreeObserver().removeOnGlobalLayoutListener(this);
             }
         });
 
-        toolbar.setTitle(presenter.getAddresseeUserPhone());
+        toolbar.setTitle(presenter.getNickname());
     }
 
     @Override
@@ -115,7 +115,7 @@ public class ChatActivity extends MvpAppCompatActivity implements ChatView {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        presenter.saveAdapterPosition(addressPhone, layoutManager.findLastVisibleItemPosition());
+        presenter.saveAdapterPosition(addressId, layoutManager.findLastVisibleItemPosition());
         presenter.onDestroy();
     }
 

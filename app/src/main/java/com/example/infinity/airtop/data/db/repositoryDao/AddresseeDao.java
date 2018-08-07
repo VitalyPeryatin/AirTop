@@ -16,11 +16,8 @@ public abstract class AddresseeDao {
     @Query("SELECT * FROM addressee")
     public abstract List<Addressee> getAll();
 
-    @Query("SELECT * FROM addressee WHERE phone=:phone")
-    public abstract Addressee getByPhone(String phone);
-
-    @Query("SELECT * FROM addressee WHERE username=:username")
-    public abstract Addressee getByUsername(String username);
+    @Query("SELECT nickname FROM addressee WHERE uuid=:uuid")
+    public abstract String getNicknameById(String uuid);
 
     @Insert(onConflict = REPLACE)
     public abstract void insert(Addressee user);

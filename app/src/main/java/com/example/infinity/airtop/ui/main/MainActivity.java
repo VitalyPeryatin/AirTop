@@ -13,18 +13,27 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
 import com.example.infinity.airtop.R;
+import com.example.infinity.airtop.data.db.interactors.UserInteractor;
 import com.example.infinity.airtop.data.db.model.User;
-import com.example.infinity.airtop.data.network.UserRequest;
+import com.example.infinity.airtop.data.network.VerifyUserRequest;
 import com.example.infinity.airtop.service.ClientService;
 import com.example.infinity.airtop.App;
 import com.example.infinity.airtop.ui.auth.AuthActivity;
 import com.example.infinity.airtop.ui.settings.SettingsActivity;
 import com.example.infinity.airtop.ui.contacts.ContactsFragment;
 
+import java.util.ArrayList;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
+/**
+ * Activity for controlling fragment by navigation drawer,
+ * show ContactsFragment and verify existing users.
+ * @author infinity_coder
+ * @version 1.0.3
+ */
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
     @BindView(R.id.nav_view)
@@ -33,7 +42,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     DrawerLayout drawerLayout;
 
     private Unbinder unbinder;
-    private static final int LOGIN_CODE = 2;
+    private static final int AUTH_REQUEST_CODE = 1;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -41,32 +50,38 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.main_drawer_activity);
         unbinder = ButterKnife.bind(this);
 
-        Intent intent = new Intent(this, ClientService.class);
-        startService(intent);
-
         setFragment(new ContactsFragment());
         navigationView.setNavigationItemSelectedListener(this);
 
         User currentUser = App.getInstance().getCurrentUser();
-        if(currentUser == null ){
+        if(currentUser == null )
             showLoginActivity();
-        }
-        else {
-            App.getInstance().verifyUserPhone();
-        }
+        else
+            verifyUserPhone();
     }
 
+    private void verifyUserPhone(){
+        UserInteractor interactor  = new UserInteractor();
+        ArrayList<User> users = interactor.getAllUsers();
+        for (User user : users) {
+            VerifyUserRequest request = new VerifyUserRequest(user.uuid);
 
-    public void showLoginActivity(){
-        startActivityForResult(new Intent(this, AuthActivity.class), LOGIN_CODE);
+            Intent intent = new Intent(this, ClientService.class);
+            intent.putExtra("request", request.toJson());
+            startService(intent);
+        }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == LOGIN_CODE && resultCode == RESULT_OK && data != null){
-            App.getInstance().verifyUserPhone();
+        if(requestCode == AUTH_REQUEST_CODE && resultCode == RESULT_OK){
+            verifyUserPhone();
         }
+    }
+
+    public void showLoginActivity(){
+        startActivityForResult(new Intent(this, AuthActivity.class), AUTH_REQUEST_CODE);
     }
 
     private void setFragment(Fragment fragment){

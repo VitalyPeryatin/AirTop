@@ -5,7 +5,6 @@ import android.util.Log;
 
 import com.example.infinity.airtop.service.client.readData.DataReader;
 import com.example.infinity.airtop.service.client.writeData.DataWriter;
-import com.example.infinity.airtop.App;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -50,8 +49,6 @@ public class ServerConnection extends Thread{
                 writer.connectToSocket(socket);
                 reader.connectToSocket(socket);
                 quit = false;
-                Thread.sleep(50); // Time for resume work "DataWriter" and "DataReader"
-                App.getInstance().verifyUserPhone();
                 Log.d("mLog","Соединение с сервером найдено");
             } catch (Exception e) {
                 quit = true;

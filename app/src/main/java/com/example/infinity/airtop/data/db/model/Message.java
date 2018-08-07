@@ -1,27 +1,21 @@
 package com.example.infinity.airtop.data.db.model;
 
-import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.ForeignKey;
+import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
 
 import com.example.infinity.airtop.data.network.MessageRequest;
 
 
-/**
- * Class for constructing messages of various type
- * @autor infinity_coder
- * @version 1.0.2
- */
-@Entity(foreignKeys = @ForeignKey(entity = Addressee.class, parentColumns = "phone", childColumns = "addressee_phone"))
+@Entity(foreignKeys = @ForeignKey(entity = Addressee.class, parentColumns = "uuid", childColumns = "addressId"),
+        indices = @Index("addressId"))
 public class Message {
     public static final String ROUTE_IN = "in", ROUTE_OUT = "out";
     @PrimaryKey(autoGenerate = true)
     public long id;
-    @ColumnInfo(name = "addressee_phone")
-    public String addresseePhone;
-    @ColumnInfo(name = "sender_phone")
-    public String senderPhone;
+    public String senderId;
+    public String addressId;
     public String route;
 
     public String text;
@@ -40,13 +34,13 @@ public class Message {
         this.route = route;
 
         if(route.equals(ROUTE_OUT)) {
-            senderPhone = messageRequest.addressee;
-            addresseePhone = senderPhone;
+            senderId = messageRequest.toId;
+            addressId = senderId;
         }
         else {
-            String aSender = messageRequest.sender;
-            senderPhone = messageRequest.addressee;
-            addresseePhone = aSender;
+            String aSender = messageRequest.fromId;
+            senderId = messageRequest.toId;
+            addressId = aSender;
         }
         text = messageRequest.text;
     }

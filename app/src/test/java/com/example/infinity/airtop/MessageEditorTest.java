@@ -41,7 +41,7 @@ public class MessageEditorTest {
     public void testAddingSender(){
         String phone = "89855136621";
         messageEditor = MessageEditor.edit();
-        messageEditor.addSendPhone(phone);
+        messageEditor.setSenderId(phone);
         MessageRequest messageRequest = messageEditor.getMessage();
         assertEquals(phone, messageRequest.sender);
     }
@@ -50,7 +50,7 @@ public class MessageEditorTest {
     public void testAddingAddressee(){
         String phone = "89035724917";
         messageEditor = MessageEditor.edit();
-        messageEditor.addAddressPhone(phone);
+        messageEditor.setAddressId(phone);
         MessageRequest messageRequest = messageEditor.getMessage();
         assertEquals(phone, messageRequest.addressee);
     }
@@ -61,8 +61,8 @@ public class MessageEditorTest {
         String senderPhone = "89035724917";
         String text = "text";
         messageEditor = MessageEditor.edit();
-        messageEditor.addAddressPhone(adderessPhone);
-        messageEditor.addSendPhone(senderPhone);
+        messageEditor.setAddressId(adderessPhone);
+        messageEditor.setSenderId(senderPhone);
         messageEditor.addText(text);
         MessageRequest messageRequest = messageEditor.getMessage();
         assertEquals(adderessPhone, messageRequest.addressee);

@@ -30,7 +30,7 @@ public class ChatPresenter extends MvpPresenter<ChatView> implements OnMessageLi
     @Inject
     public AppPreferencesHelper preferencesHelper;
 
-    private String addresseePhone;
+    private String addressId;
     private MessageEditor messageEditor;
 
     public ChatPresenter(){
@@ -39,13 +39,13 @@ public class ChatPresenter extends MvpPresenter<ChatView> implements OnMessageLi
         messageEditor = MessageEditor.edit();
     }
 
-    public void onCreate(String addresseePhone, String senderPhone){
-        this.addresseePhone = addresseePhone;
+    public void onCreate(String addressId, String senderId){
+        this.addressId = addressId;
         messageBus.subscribe(this);
 
         // Add to message the base data: "sender" and "addressee"
-        messageEditor.addAddressPhone(addresseePhone);
-        messageEditor.addSendPhone(senderPhone);
+        messageEditor.setAddressId(addressId);
+        messageEditor.setSenderId(senderId);
     }
 
     public int getAdapterPosition(String addresseePhone, int defaultPosition){
@@ -80,14 +80,14 @@ public class ChatPresenter extends MvpPresenter<ChatView> implements OnMessageLi
         return messageEditor;
     }
 
-    public String getAddresseeUserPhone() {
-        return addresseePhone;
+    public String getNickname() {
+        return chatInteractor.getNicknameById(addressId);
     }
 
     // Listen events from server with messages throw MessageBus
     @Override
     public void onMessage(Message message) {
-        if(message.addresseePhone.equals(addresseePhone))
+        if(message.addressId.equals(addressId))
             getViewState().displayMessage(message);
     }
 

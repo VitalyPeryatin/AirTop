@@ -16,7 +16,6 @@ import com.example.infinity.airtop.R;
 import com.example.infinity.airtop.data.db.interactors.ChatInteractor;
 import com.example.infinity.airtop.data.db.model.User;
 import com.example.infinity.airtop.data.network.response.PhoneAuthResponse;
-import com.example.infinity.airtop.data.network.UserRequest;
 import com.example.infinity.airtop.data.network.request.PhoneAuthRequest;
 import com.example.infinity.airtop.data.prefs.auth.AuthPreference;
 import com.example.infinity.airtop.service.ClientService;
@@ -60,16 +59,15 @@ public class PhoneAuthFragment extends Fragment implements OnPhoneAuthListener {
 
     @Override
     public void onPhoneAuth(PhoneAuthResponse response) {
-        Log.d("mLog2", "" + response.getResult() + " " + response.getUserRequest());
-        UserRequest userRequest = response.getUserRequest();
+        Log.d("mLog2", "" + response.getResult() + " " + response.getUser());
 
         if(response.getResult().equals("RESULT_OK")){
             sPref.saveCurrentPhone(phone);
         }
         else if (response.getResult().equals("RESULT_EXISTS")){
+            User user = response.getUser();
             sPref.saveCurrentPhone(phone);
             sPref.saveHaveNickname(true);
-            User user = new User(userRequest);
             interactor.insertUser(user);
             App.getInstance().updateCurrentUser();
         }

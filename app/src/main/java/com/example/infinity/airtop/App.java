@@ -4,25 +4,18 @@ import android.app.Application;
 import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.content.Intent;
-import android.util.Log;
 
 import com.example.infinity.airtop.data.db.interactors.UserInteractor;
 import com.example.infinity.airtop.data.db.model.User;
-import com.example.infinity.airtop.data.network.UserRequest;
 import com.example.infinity.airtop.data.prefs.app.AppPreference;
+import com.example.infinity.airtop.service.ClientService;
 import com.example.infinity.airtop.ui.auth.nickname.NicknameAuthListener;
 import com.example.infinity.airtop.ui.auth.phone.PhoneAuthListener;
 import com.example.infinity.airtop.ui.chat.MessageBus;
-import com.example.infinity.airtop.data.network.PhoneVerifier;
 import com.example.infinity.airtop.data.db.AppDatabase;
-import com.example.infinity.airtop.data.db.repositoryDao.UserDao;
-import com.example.infinity.airtop.service.ClientService;
-import com.example.infinity.airtop.utils.JsonConverter;
 import com.example.infinity.airtop.ui.searchUser.SearchUserListener;
 import com.example.infinity.airtop.ui.usernameUpdater.UsernameUpdateListener;
 import com.facebook.stetho.Stetho;
-
-import java.util.ArrayList;
 
 public class App extends Application {
     private User currentUser;
@@ -51,6 +44,9 @@ public class App extends Application {
         responseListeners = new ResponseListeners();
         interactor = new UserInteractor();
 
+        Intent intent = new Intent(this, ClientService.class);
+        startService(intent);
+
         database = Room.databaseBuilder(this, AppDatabase.class, "database.db")
                 .setJournalMode(RoomDatabase.JournalMode.TRUNCATE)
                 .fallbackToDestructiveMigration()
@@ -64,29 +60,6 @@ public class App extends Application {
 
     public User getCurrentUser() {
         return currentUser;
-    }
-
-    public void verifyUserPhone(){
-        new Thread(() -> {
-            UserDao userDao = App.getInstance().getDatabase().userDao();
-            ArrayList<User> users = (ArrayList<User>) userDao.getAll();
-            ArrayList<UserRequest> usersRequest = new ArrayList<>();
-            for (User user : users) {
-                usersRequest.add(new UserRequest(user));
-            }
-
-            Log.d("mLog", "" + users.size());
-            for (UserRequest user : usersRequest) {
-                Log.d("mLog", user.username);
-                PhoneVerifier phoneVerifier = new PhoneVerifier();
-                phoneVerifier.userPhone = user.phone;
-                JsonConverter jsonConverter = new JsonConverter();
-                String json = jsonConverter.toJson(phoneVerifier);
-                Intent intent = new Intent(getBaseContext(), ClientService.class);
-                intent.putExtra("request", json);
-                getBaseContext().startService(intent);
-            }
-        }).start();
     }
 
     public void setCurrentUser(User user) {

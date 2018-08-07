@@ -1,19 +1,12 @@
 package com.example.infinity.airtop.ui.usernameUpdater;
 
 import android.content.Context;
-import android.content.Intent;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 import com.example.infinity.airtop.data.db.interactors.UpdateUserInteractor;
-import com.example.infinity.airtop.data.network.CheckingUsername;
-import com.example.infinity.airtop.data.network.request.UpdateUsernameRequest;
 import com.example.infinity.airtop.data.network.response.UpdateUsernameResponse;
-import com.example.infinity.airtop.service.ClientService;
-import com.example.infinity.airtop.utils.JsonConverter;
 import com.example.infinity.airtop.App;
-
-import static com.example.infinity.airtop.data.network.CheckingUsername.RESULT_LITTLE;
 
 @InjectViewState
 public class UsernameUpdaterPresenter extends MvpPresenter<UsernameUpdaterView> implements OnUsernameUpdateListener{

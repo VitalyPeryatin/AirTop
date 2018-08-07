@@ -7,7 +7,7 @@ import com.example.infinity.airtop.data.network.MessageRequest;
 public class MessageEditor{
     private MessageRequest messageRequest;
     // Base info for message which saves after clearing message by method "clear()"
-    private String addressPhone, sendPhone;
+    private String addressId, senderId;
 
     private MessageEditor(){
         messageRequest = new MessageRequest();
@@ -25,14 +25,14 @@ public class MessageEditor{
         messageRequest.setImage(bitmap);
     }
 
-    public void addAddressPhone(String phone){
-        addressPhone = phone;
-        messageRequest.setAddressee(phone);
+    public void setAddressId(String id){
+        addressId = id;
+        messageRequest.setAddressee(id);
     }
 
-    public void addSendPhone(String phone){
-        sendPhone = phone;
-        messageRequest.setSender(phone);
+    public void setSenderId(String id){
+        senderId = id;
+        messageRequest.setSender(id);
     }
 
     public boolean isNotEmptyMessage(){
@@ -41,14 +41,8 @@ public class MessageEditor{
 
     public void clear(){
         messageRequest = new MessageRequest();
-        addAddressPhone(addressPhone);
-        addSendPhone(sendPhone);
-    }
-
-    public void addMessage(MessageRequest messageRequest){
-        this.messageRequest.setSender(messageRequest.sender);
-        this.messageRequest.setAddressee(messageRequest.addressee);
-        this.messageRequest.setText(messageRequest.text);
+        setAddressId(addressId);
+        setSenderId(senderId);
     }
 
     public MessageRequest getMessage() {

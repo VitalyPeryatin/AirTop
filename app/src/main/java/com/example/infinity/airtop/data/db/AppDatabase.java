@@ -1,10 +1,7 @@
 package com.example.infinity.airtop.data.db;
 
-import android.arch.persistence.db.SupportSQLiteDatabase;
 import android.arch.persistence.room.Database;
 import android.arch.persistence.room.RoomDatabase;
-import android.arch.persistence.room.migration.Migration;
-import android.icu.util.Measure;
 
 import com.example.infinity.airtop.data.db.model.Addressee;
 import com.example.infinity.airtop.data.db.model.Message;

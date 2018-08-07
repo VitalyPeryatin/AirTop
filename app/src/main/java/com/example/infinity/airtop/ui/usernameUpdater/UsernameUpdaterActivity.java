@@ -8,14 +8,10 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.arellomobile.mvp.MvpAppCompatActivity;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.example.infinity.airtop.R;
-import com.example.infinity.airtop.data.db.model.User;
-import com.example.infinity.airtop.data.network.CheckingUsername;
-import com.example.infinity.airtop.data.network.UserRequest;
 import com.example.infinity.airtop.data.network.request.UpdateUsernameRequest;
 import com.example.infinity.airtop.service.ClientService;
 import com.example.infinity.airtop.utils.JsonConverter;
@@ -25,10 +21,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
-
-import static com.example.infinity.airtop.data.network.CheckingUsername.RESULT_CANCEL;
-import static com.example.infinity.airtop.data.network.CheckingUsername.RESULT_EMPTY;
-import static com.example.infinity.airtop.data.network.CheckingUsername.RESULT_LITTLE;
 
 public class UsernameUpdaterActivity extends MvpAppCompatActivity implements TextWatcher, UsernameUpdaterView {
 

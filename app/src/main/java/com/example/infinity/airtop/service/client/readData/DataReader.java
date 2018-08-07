@@ -6,13 +6,11 @@ import android.util.Log;
 
 import com.example.infinity.airtop.data.db.interactors.ChatInteractor;
 import com.example.infinity.airtop.data.db.model.Message;
-import com.example.infinity.airtop.data.network.CheckingUsername;
 import com.example.infinity.airtop.data.network.MessageRequest;
-import com.example.infinity.airtop.data.network.request.UpdateUsernameRequest;
+import com.example.infinity.airtop.data.network.response.MessageResponse;
 import com.example.infinity.airtop.data.network.response.NicknameAuthResponse;
 import com.example.infinity.airtop.data.network.response.PhoneAuthResponse;
 import com.example.infinity.airtop.data.network.SearchableUsers;
-import com.example.infinity.airtop.data.network.UserRequest;
 import com.example.infinity.airtop.data.network.response.UpdateUsernameResponse;
 import com.example.infinity.airtop.service.client.ServerConnection;
 import com.example.infinity.airtop.App;
@@ -129,24 +127,10 @@ public class DataReader extends Thread{
                     message.what = NICKNAME_AUTH_KEY;
                     message.obj =  nicknameAuthResponse;
                     break;
-                /*case "user":
-                    UserRequest user = gson.fromJson(jsonText, UserRequest.class);
-
-                    if (user.getAction().equals(UserRequest.ACTION_CREATE))
-                        message.what = USER_CREATE_KEY;
-                    if (user.getAction().equals(UserRequest.ACTION_UPDATE))
-                        message.what = USER_UPDATE_KEY;
-                    message.obj = user;
-                    break;*/
                 case "searchable_users":
                     SearchableUsers searchableUsers = gson.fromJson(jsonText, SearchableUsers.class);
                     message.what = SEARCHABLE_USERS_KEY;
                     message.obj = searchableUsers;
-                    break;
-                case "checkingUsername":
-                    CheckingUsername checkingUsername = gson.fromJson(jsonText, CheckingUsername.class);
-                    message.what = CHECKING_USERNAME_KEY;
-                    message.obj = checkingUsername;
                     break;
             }
             handler.sendMessage(message);
@@ -168,18 +152,6 @@ public class DataReader extends Thread{
                     else
                         Log.e("mLogError", "DataReader -> не верный тип объекта. Ожидалось: Message");
                     break;
-                /*case USER_CREATE_KEY:
-                    if(msg.obj instanceof UserRequest)
-                        responseListeners.getPhoneAuthListener().onPhoneAuth((UserRequest) msg.obj);
-                    else
-                        Log.e("mLogError", "DataReader -> не верный тип объекта. Ожидалось: UserRequest");
-                    break;*/
-                /*case USER_UPDATE_KEY:
-                    if(msg.obj instanceof UserRequest)
-                        responseListeners.getUsernameUpdateListener().onUpdateUsername((UserRequest) msg.obj);
-                    else
-                        Log.e("mLogError", "DataReader -> не верный тип объекта. Ожидалось: UserRequest");
-                    break;*/
                 case SEARCHABLE_USERS_KEY:
                     if(msg.obj instanceof SearchableUsers)
                         responseListeners.getSearchUserListener().displaySearchableUsers((SearchableUsers) msg.obj);

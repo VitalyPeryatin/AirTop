@@ -7,7 +7,7 @@
     <string name="title_activity_settings" translatable="false">SettingsActivity</string>
     <string name="title_activity_phone_settings" translatable="false">PhoneSettingsActivity</string>
     <string name="title_activity_username_settings" translatable="false">UsernameSettingsActivity</string>
-    <string name="intent_key_address_phone" translatable="false">addressPhone</string>
+    <string name="intent_key_address_id" translatable="false">addressId</string>
     <string name="picture_attached">Picture attached</string>
     <string name="choose_image">Choose image</string>
 </resources>

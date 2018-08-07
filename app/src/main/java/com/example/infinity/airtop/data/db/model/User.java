@@ -4,7 +4,6 @@ import android.arch.persistence.room.Entity;
 import android.support.annotation.NonNull;
 
 import com.example.infinity.airtop.data.network.response.NicknameAuthResponse;
-import com.example.infinity.airtop.data.network.UserRequest;
 
 @Entity(primaryKeys = {"phone", "uuid"})
 public class User{
@@ -21,14 +20,6 @@ public class User{
         nickname = "Anonym";
         bio = "None";
         this.phone = phone;
-    }
-
-    public User(UserRequest user){
-        username = user.username;
-        nickname = user.nickname;
-        bio = user.bio;
-        phone = user.phone;
-        uuid = user.uuid;
     }
 
     public User(NicknameAuthResponse response){

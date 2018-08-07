@@ -10,14 +10,14 @@ import com.example.infinity.airtop.data.db.model.Message;
  * @version 1.0.0
  */
 public class MessageRequest implements RequestModel{
-    public String text, sender, addressee, encodedImage;
+    public String text, fromId, toId, encodedImage;
     public String phone;
     private final String TYPE = TYPE_MESSAGE;
     private Bitmap image;
     public MessageRequest(){}
     public MessageRequest(Message message){
         text = message.text;
-        addressee = message.addresseePhone;
+        toId = message.addressId;
     }
 
     public void setText(String text) {
@@ -45,19 +45,19 @@ public class MessageRequest implements RequestModel{
     }
 
     public String getAddressee() {
-        return addressee;
+        return toId;
     }
 
-    public void setAddressee(String addressee) {
-        this.addressee = addressee;
+    public void setAddressee(String id) {
+        this.toId = id;
     }
 
     public String getSender() {
-        return sender;
+        return fromId;
     }
 
-    public void setSender(String sender) {
-        this.sender = sender;
+    public void setSender(String id) {
+        this.fromId = id;
     }
 
 

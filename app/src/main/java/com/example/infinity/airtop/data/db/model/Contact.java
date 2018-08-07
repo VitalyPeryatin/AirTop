@@ -1,22 +1,13 @@
 package com.example.infinity.airtop.data.db.model;
 
+import com.example.infinity.airtop.ui.contacts.ContactsRecyclerAdapter;
+
+/**
+ * POJO-class for {@linkplain ContactsRecyclerAdapter}
+ * @author infinity_coder
+ * @version 1.0.3
+ */
 public class Contact {
-    private Addressee addressee;
-    private String lastMessage;
-
-    public Addressee getAddressee() {
-        return addressee;
-    }
-
-    public void setAddressee(Addressee addressee) {
-        this.addressee = addressee;
-    }
-
-    public String getLastMessage() {
-        return lastMessage;
-    }
-
-    public void setLastMessage(String lastMessage) {
-        this.lastMessage = lastMessage;
-    }
+    public Addressee addressee;
+    public String lastMessage;
 }

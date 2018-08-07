@@ -3,37 +3,39 @@ package com.example.infinity.airtop.ui.contacts;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.infinity.airtop.App;
 import com.example.infinity.airtop.R;
 import com.example.infinity.airtop.data.db.interactors.ContactsInteractor;
 import com.example.infinity.airtop.data.db.model.Addressee;
 import com.example.infinity.airtop.data.db.model.Contact;
-import com.example.infinity.airtop.data.db.model.Message;
-import com.example.infinity.airtop.data.db.repositoryDao.AddresseeDao;
-import com.example.infinity.airtop.data.db.repositoryDao.MessageDao;
 import com.example.infinity.airtop.ui.chat.ChatActivity;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecyclerAdapter.ContactsViewHolder> {
 
     private ArrayList<Contact> contacts = new ArrayList<>();
-    private Fragment fragment;
     private Context context;
     private ContactsInteractor interactor = new ContactsInteractor();
+    private Toolbar toolbar;
 
-    public ContactsRecyclerAdapter(Fragment fragment){
-        this.fragment = fragment;
+    ContactsRecyclerAdapter(Toolbar toolbar){
         context = App.getInstance().getBaseContext();
+        this.toolbar = toolbar;
     }
 
     @NonNull
@@ -45,8 +47,8 @@ public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecycl
 
     @Override
     public void onBindViewHolder(@NonNull ContactsViewHolder contactsViewHolder, int i) {
-        contactsViewHolder.tvAddressTitle.setText(contacts.get(i).getAddressee().username);
-        contactsViewHolder.tvLastMessage.setText(contacts.get(i).getLastMessage());
+        contactsViewHolder.tvAddressTitle.setText(contacts.get(i).addressee.username);
+        contactsViewHolder.tvLastMessage.setText(contacts.get(i).lastMessage);
     }
 
     public void onUpdateList(){ // TODO заменить полное изменени списка на локальные изменения
@@ -54,16 +56,12 @@ public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecycl
         notifyDataSetChanged();
     }
 
-    public void addContactByAddress(Addressee addressee){
-
-    }
-
     @Override
     public int getItemCount() {
         return contacts.size();
     }
 
-    class ContactsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    class ContactsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener{
         TextView tvAddressTitle, tvLastMessage;
         LinearLayout container;
         ContactsViewHolder(@NonNull View itemView) {
@@ -74,6 +72,7 @@ public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecycl
             container = itemView.findViewById(R.id.container);
 
             container.setOnClickListener(this);
+            container.setOnLongClickListener(this);
         }
 
 
@@ -81,14 +80,59 @@ public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecycl
         public void onClick(View view) {
             switch (view.getId()){
                 case R.id.container:
-                    Addressee addressee = contacts.get(getAdapterPosition()).getAddressee();
+                    Addressee addressee = contacts.get(getAdapterPosition()).addressee;
                     Intent intent = new Intent(context, ChatActivity.class);
-                    String addressPhone = context.getResources().getString(R.string.intent_key_address_phone);
-                    intent.putExtra(addressPhone, addressee.phone);
+                    String addressId = context.getResources().getString(R.string.intent_key_address_id);
+                    intent.putExtra(addressId, addressee.uuid);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(intent);
                     break;
             }
         }
+
+
+        @Override
+        public boolean onLongClick(View view) {
+            switch (view.getId()) {
+                case R.id.container:
+                    if(!isActiveActionMode)
+                        toolbar.startActionMode(actionModeCallback);
+                    break;
+            }
+            return true;
+        }
+        private boolean isActiveActionMode;
+        private ActionMode.Callback actionModeCallback = new ActionMode.Callback() {
+
+            @Override
+            public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
+                actionMode.getMenuInflater().inflate(R.menu.contacts_menu, menu);
+                isActiveActionMode = true;
+                return true;
+            }
+
+            @Override
+            public boolean onPrepareActionMode(ActionMode actionMode, Menu menu) {
+                return false;
+            }
+
+            @Override
+            public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
+                switch (menuItem.getItemId()) {
+                    case R.id.item_delete:
+                        Addressee addressee = contacts.get(getAdapterPosition()).addressee;
+                        interactor.deleteAddressWithMessages(addressee);
+                        onUpdateList();
+                        actionMode.finish();
+                        break;
+                }
+                return true;
+            }
+
+            @Override
+            public void onDestroyActionMode(ActionMode actionMode) {
+                isActiveActionMode = false;
+            }
+        };
     }
 }
