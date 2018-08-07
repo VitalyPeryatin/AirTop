@@ -4,12 +4,12 @@ import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 import com.example.infinity.airtop.data.db.interactors.ChatInteractor;
 import com.example.infinity.airtop.data.db.model.Message;
+import com.example.infinity.airtop.data.network.request.MessageRequest;
 import com.example.infinity.airtop.data.prefs.app.AppPreferencesHelper;
 import com.example.infinity.airtop.di.components.ChatComponent;
 import com.example.infinity.airtop.di.components.DaggerChatComponent;
-import com.example.infinity.airtop.utils.JsonConverter;
 import com.example.infinity.airtop.utils.MessageEditor;
-import com.example.infinity.airtop.utils.serverWorker.LauncherServerSending;
+import com.example.infinity.airtop.utils.serverWorker.IServerPostman;
 
 import javax.inject.Inject;
 
@@ -24,7 +24,7 @@ public class ChatPresenter extends MvpPresenter<ChatView> implements OnMessageLi
     @Inject
     public ChatInteractor chatInteractor;
     @Inject
-    public LauncherServerSending serverSending;
+    public IServerPostman serverPostman;
     @Inject
     public MessageBus messageBus;
     @Inject
@@ -62,17 +62,14 @@ public class ChatPresenter extends MvpPresenter<ChatView> implements OnMessageLi
     public void sendMessage() {
         if(messageEditor.isNotEmptyMessage()) {
             // Save message in DB and display the message
-            Message message = new Message(messageEditor.getMessage(), Message.ROUTE_OUT);
+
+            MessageRequest messageRequest = messageEditor.getMessage();
+            Message message = messageRequest.toMessageModel();
             chatInteractor.insertMessage(message);
             getViewState().displayMessage(message);
-
-            // Send message to server
-            JsonConverter jsonConverter = new JsonConverter();
-            String json = jsonConverter.toJson(messageEditor.getMessage());
-            serverSending.sendMessage(json);
-
-            // Clear existing message after sending
             messageEditor.clear();
+
+            serverPostman.postRequest(messageRequest);
         }
     }
 

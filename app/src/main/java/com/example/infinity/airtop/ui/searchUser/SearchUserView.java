@@ -1,8 +1,9 @@
 package com.example.infinity.airtop.ui.searchUser;
 
 import com.arellomobile.mvp.MvpView;
-import com.example.infinity.airtop.data.network.SearchableUsers;
+import com.example.infinity.airtop.data.network.request.SearchUserRequest;
+import com.example.infinity.airtop.data.network.response.SearchUserResponse;
 
 public interface SearchUserView extends MvpView {
-    void displaySearchableUsers(SearchableUsers searchableUsers);
+    void displaySearchableUsers(SearchUserResponse response);
 }

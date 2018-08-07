@@ -1,45 +1,39 @@
 package com.example.infinity.airtop.ui.searchUser;
 
-import android.content.Context;
-import android.content.Intent;
-
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 import com.example.infinity.airtop.App;
-import com.example.infinity.airtop.data.network.SearchableUsers;
-import com.example.infinity.airtop.service.ClientService;
-import com.example.infinity.airtop.utils.JsonConverter;
+import com.example.infinity.airtop.data.network.request.SearchUserRequest;
+import com.example.infinity.airtop.data.network.response.SearchUserResponse;
+import com.example.infinity.airtop.utils.serverWorker.ServerPostman;
 
 @InjectViewState
 public class SearchUserPresenter extends MvpPresenter<SearchUserView> implements OnSearchUserListener{
 
-    private SearchableUsers searchableUsers;
-    private Context context;
+    private SearchUserRequest searchUserRequest;
+    private ServerPostman serverPostman;
+
     SearchUserPresenter(){
-        searchableUsers = new SearchableUsers();
+        searchUserRequest = new SearchUserRequest();
     }
 
-    public void onCreate(Context context){
-        this.context = context;
-        App.getInstance().getResponseListeners().getSearchUserListener().subscribe(this);
+    public void onCreate(){
+        App.getInstance().getResponseListeners().getSearchUserBus().subscribe(this);
+        serverPostman = new ServerPostman();
     }
 
-    public void sendSearchableString(String str){
-        searchableUsers.searchableString = str;
-        JsonConverter jsonConverter = new JsonConverter();
-        String json = jsonConverter.toJson(searchableUsers);
-        Intent intent = new Intent(context, ClientService.class);
-        intent.putExtra("request", json);
-        context.startService(intent);
+    public void sendSearchableUsername(String username){
+        searchUserRequest.setSearchUsername(username);
+        serverPostman.postRequest(searchUserRequest);
     }
 
-    public void displaySearchableUsers(SearchableUsers searchableUsers){
-        getViewState().displaySearchableUsers(searchableUsers);
+    public void displaySearchableUsers(SearchUserResponse response){
+        getViewState().displaySearchableUsers(response);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        App.getInstance().getResponseListeners().getSearchUserListener().unsubscribe(this);
+        App.getInstance().getResponseListeners().getSearchUserBus().unsubscribe(this);
     }
 }

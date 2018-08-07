@@ -5,7 +5,7 @@ import com.example.infinity.airtop.data.prefs.app.AppPreferencesHelper;
 import com.example.infinity.airtop.di.modules.RealChatModule;
 import com.example.infinity.airtop.ui.chat.ChatPresenter;
 import com.example.infinity.airtop.ui.chat.MessageBus;
-import com.example.infinity.airtop.utils.serverWorker.LauncherServerSending;
+import com.example.infinity.airtop.utils.serverWorker.IServerPostman;
 
 import dagger.Component;
 
@@ -13,7 +13,7 @@ import dagger.Component;
 public interface ChatComponent {
     void inject(ChatPresenter chatPresenter);
     MessageBus getMessageBus();
-    LauncherServerSending getServerSending();
+    IServerPostman getServerSending();
     ChatInteractor getChatInteractor();
     AppPreferencesHelper getPreferences();
 }

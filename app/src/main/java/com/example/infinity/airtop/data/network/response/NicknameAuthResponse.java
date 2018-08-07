@@ -1,11 +1,5 @@
 package com.example.infinity.airtop.data.network.response;
 
-import android.support.annotation.NonNull;
-
-import java.util.UUID;
-
-import static com.example.infinity.airtop.data.network.RequestModel.TYPE_NICKNAME_AUTH;
-
 public class NicknameAuthResponse {
     private String phone;
     private String uuid;

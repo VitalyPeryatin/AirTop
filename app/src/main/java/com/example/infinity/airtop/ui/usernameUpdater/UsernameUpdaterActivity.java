@@ -14,8 +14,8 @@ import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.example.infinity.airtop.R;
 import com.example.infinity.airtop.data.network.request.UpdateUsernameRequest;
 import com.example.infinity.airtop.service.ClientService;
-import com.example.infinity.airtop.utils.JsonConverter;
 import com.example.infinity.airtop.App;
+import com.example.infinity.airtop.utils.serverWorker.ServerPostman;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -33,6 +33,8 @@ public class UsernameUpdaterActivity extends MvpAppCompatActivity implements Tex
     @InjectPresenter
     UsernameUpdaterPresenter presenter;
 
+    private ServerPostman serverPostman;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,6 +42,7 @@ public class UsernameUpdaterActivity extends MvpAppCompatActivity implements Tex
         unbinder = ButterKnife.bind(this);
         presenter.onCreate(this);
 
+        serverPostman = new ServerPostman();
         editTextUsername.addTextChangedListener(this);
         tvAccessInfo.setVisibility(View.GONE);
     }
@@ -60,12 +63,7 @@ public class UsernameUpdaterActivity extends MvpAppCompatActivity implements Tex
     public void onSendUsername(String username, String availableToUpdate) {
         String phone = App.getInstance().getCurrentUser().phone;
         UpdateUsernameRequest request = new UpdateUsernameRequest(phone, username, availableToUpdate);
-
-        JsonConverter jsonConverter = new JsonConverter();
-        String json = jsonConverter.toJson(request);
-        Intent intent = new Intent(this, ClientService.class);
-        intent.putExtra("request", json);
-        startService(intent);
+        serverPostman.postRequest(request);
     }
 
     @Override

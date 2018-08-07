@@ -46,11 +46,11 @@ public class EntryAuthFragment extends Fragment {
     @OnClick(R.id.btnSendCode)
     void click(){
         String code = editTextSecretCode.getText().toString();
-            if (code.equals(SECRET_CODE)) {
-                sPref.saveEnter(true);
-                parentActivity.changeView();
-            } else {
-                editTextSecretCode.setText("");
-            }
+        if (code.equals(SECRET_CODE)) {
+            sPref.saveEnter(true);
+            parentActivity.changeView();
+        } else {
+            editTextSecretCode.setText("");
+        }
     }
 }

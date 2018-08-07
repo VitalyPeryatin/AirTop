@@ -1,7 +1,7 @@
 package com.example.infinity.airtop.ui.searchUser;
 
-import com.example.infinity.airtop.data.network.SearchableUsers;
+import com.example.infinity.airtop.data.network.response.SearchUserResponse;
 
 public interface OnSearchUserListener {
-    void displaySearchableUsers(SearchableUsers searchableUsers);
+    void displaySearchableUsers(SearchUserResponse response);
 }

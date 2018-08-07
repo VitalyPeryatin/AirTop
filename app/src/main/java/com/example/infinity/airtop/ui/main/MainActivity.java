@@ -15,12 +15,12 @@ import android.view.MenuItem;
 import com.example.infinity.airtop.R;
 import com.example.infinity.airtop.data.db.interactors.UserInteractor;
 import com.example.infinity.airtop.data.db.model.User;
-import com.example.infinity.airtop.data.network.VerifyUserRequest;
-import com.example.infinity.airtop.service.ClientService;
+import com.example.infinity.airtop.data.network.request.VerifyUserRequest;
 import com.example.infinity.airtop.App;
 import com.example.infinity.airtop.ui.auth.AuthActivity;
 import com.example.infinity.airtop.ui.settings.SettingsActivity;
 import com.example.infinity.airtop.ui.contacts.ContactsFragment;
+import com.example.infinity.airtop.utils.serverWorker.ServerPostman;
 
 import java.util.ArrayList;
 
@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     NavigationView navigationView;
     @BindView(R.id.drawer_layout)
     DrawerLayout drawerLayout;
+    ServerPostman serverPostman;
 
     private Unbinder unbinder;
     private static final int AUTH_REQUEST_CODE = 1;
@@ -52,6 +53,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         setFragment(new ContactsFragment());
         navigationView.setNavigationItemSelectedListener(this);
+        serverPostman = new ServerPostman();
 
         User currentUser = App.getInstance().getCurrentUser();
         if(currentUser == null )
@@ -65,10 +67,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         ArrayList<User> users = interactor.getAllUsers();
         for (User user : users) {
             VerifyUserRequest request = new VerifyUserRequest(user.uuid);
-
-            Intent intent = new Intent(this, ClientService.class);
-            intent.putExtra("request", request.toJson());
-            startService(intent);
+            serverPostman.postRequest(request);
         }
     }
 

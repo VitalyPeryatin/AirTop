@@ -12,7 +12,8 @@ import android.view.MenuItem;
 import com.arellomobile.mvp.MvpAppCompatActivity;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.example.infinity.airtop.R;
-import com.example.infinity.airtop.data.network.SearchableUsers;
+import com.example.infinity.airtop.data.network.request.SearchUserRequest;
+import com.example.infinity.airtop.data.network.response.SearchUserResponse;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -34,7 +35,7 @@ public class SearchUserActivity extends MvpAppCompatActivity implements SearchVi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_user);
         unbinder = ButterKnife.bind(this);
-        presenter.onCreate(this);
+        presenter.onCreate();
 
         setSupportActionBar(toolbar);
         recyclerUsers.setLayoutManager(new LinearLayoutManager(this));
@@ -69,7 +70,7 @@ public class SearchUserActivity extends MvpAppCompatActivity implements SearchVi
     @Override
     public boolean onQueryTextChange(String s) {
         if(s.length() >= 5)
-            presenter.sendSearchableString(s);
+            presenter.sendSearchableUsername(s);
         else
             getSearchAdapter().clear();
         return true;
@@ -88,8 +89,8 @@ public class SearchUserActivity extends MvpAppCompatActivity implements SearchVi
     }
 
     @Override
-    public void displaySearchableUsers(SearchableUsers searchableUsers) {
-        runOnUiThread(() -> getSearchAdapter().updateList(searchableUsers.users));
+    public void displaySearchableUsers(SearchUserResponse response) {
+        runOnUiThread(() -> getSearchAdapter().updateList(response.getUsers()));
 
     }
 }

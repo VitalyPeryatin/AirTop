@@ -3,9 +3,6 @@ package com.example.infinity.airtop.service.client;
 
 import android.util.Log;
 
-import com.example.infinity.airtop.service.client.readData.DataReader;
-import com.example.infinity.airtop.service.client.writeData.DataWriter;
-
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;

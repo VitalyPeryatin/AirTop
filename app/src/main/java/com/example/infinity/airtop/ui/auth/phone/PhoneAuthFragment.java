@@ -1,10 +1,10 @@
 package com.example.infinity.airtop.ui.auth.phone;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.telephony.PhoneNumberUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,9 +18,11 @@ import com.example.infinity.airtop.data.db.model.User;
 import com.example.infinity.airtop.data.network.response.PhoneAuthResponse;
 import com.example.infinity.airtop.data.network.request.PhoneAuthRequest;
 import com.example.infinity.airtop.data.prefs.auth.AuthPreference;
-import com.example.infinity.airtop.service.ClientService;
 import com.example.infinity.airtop.ui.auth.AuthActivity;
-import com.example.infinity.airtop.utils.JsonConverter;
+import com.example.infinity.airtop.utils.serverWorker.ServerPostman;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -34,11 +36,13 @@ public class PhoneAuthFragment extends Fragment implements OnPhoneAuthListener {
     private AuthPreference sPref;
     private ChatInteractor interactor;
     private String phone;
+    private ServerPostman serverPostman;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        App.getInstance().getResponseListeners().getPhoneAuthListener().subscribe(this);
+        App.getInstance().getResponseListeners().getPhoneAuthBus().subscribe(this);
+        serverPostman = new ServerPostman();
     }
 
     @Nullable
@@ -76,15 +80,11 @@ public class PhoneAuthFragment extends Fragment implements OnPhoneAuthListener {
 
     public void sendPhone(String phone){
         if(isValidPhone(phone)) {
-            PhoneAuthRequest request = new PhoneAuthRequest();
-            request.setPhoneNumber(phone);
-            // TODO Перед вставкой пользователя в БД проверить, что на сервере данные получены
-
-            JsonConverter jsonConverter = new JsonConverter();
-            String json = jsonConverter.toJson(request);
-            Intent intent = new Intent(parentActivity, ClientService.class);
-            intent.putExtra("request", json);
-            parentActivity.startService(intent);
+            PhoneAuthRequest request = new PhoneAuthRequest(phone);
+            serverPostman.postRequest(request);
+        }
+        else{
+            editTextAuth.setText("");
         }
     }
 
@@ -95,13 +95,14 @@ public class PhoneAuthFragment extends Fragment implements OnPhoneAuthListener {
     }
 
     private boolean isValidPhone(String phone){
-        if(phone.length() < 10) return false;
-        return true;
+        phone = PhoneNumberUtils.stripSeparators(phone);
+        Matcher matcher = Pattern.compile("(\\+7)([0-9]){10}").matcher(phone);
+        return matcher.matches();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        App.getInstance().getResponseListeners().getPhoneAuthListener().unsubscribe(this);
+        App.getInstance().getResponseListeners().getPhoneAuthBus().unsubscribe(this);
     }
 }

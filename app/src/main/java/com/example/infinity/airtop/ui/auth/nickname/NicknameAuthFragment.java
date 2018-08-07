@@ -1,6 +1,5 @@
 package com.example.infinity.airtop.ui.auth.nickname;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -19,9 +18,8 @@ import com.example.infinity.airtop.data.network.response.NicknameAuthResponse;
 import com.example.infinity.airtop.data.network.request.NicknameAuthRequest;
 import com.example.infinity.airtop.data.prefs.app.AppPreference;
 import com.example.infinity.airtop.data.prefs.auth.AuthPreference;
-import com.example.infinity.airtop.service.ClientService;
 import com.example.infinity.airtop.ui.auth.AuthActivity;
-import com.example.infinity.airtop.utils.JsonConverter;
+import com.example.infinity.airtop.utils.serverWorker.ServerPostman;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -33,6 +31,7 @@ public class NicknameAuthFragment extends Fragment implements OnNicknameAuthList
     EditText etFirstName;
     @BindView(R.id.etLastName)
     EditText etLastName;
+    ServerPostman serverPostman;
 
     private AuthActivity parentActivity;
     private AuthPreference sPref;
@@ -49,7 +48,8 @@ public class NicknameAuthFragment extends Fragment implements OnNicknameAuthList
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        App.getInstance().getResponseListeners().getNicknameAuthListener().subscribe(this);
+        App.getInstance().getResponseListeners().getNicknameAuthBus().subscribe(this);
+        serverPostman = new ServerPostman();
     }
 
     @Override
@@ -69,12 +69,7 @@ public class NicknameAuthFragment extends Fragment implements OnNicknameAuthList
             String phone = sPref.getCurrentPhone();
             NicknameAuthRequest request = new NicknameAuthRequest(phone, nickname);
 
-            JsonConverter jsonConverter = new JsonConverter();
-            String json = jsonConverter.toJson(request);
-            Intent intent = new Intent(parentActivity, ClientService.class);
-            intent.putExtra("request", json);
-            parentActivity.startService(intent);
-            parentActivity.changeView();
+            serverPostman.postRequest(request);
         }
         else{
             Toast.makeText(parentActivity, "Короткое имя", Toast.LENGTH_SHORT).show();
@@ -98,6 +93,6 @@ public class NicknameAuthFragment extends Fragment implements OnNicknameAuthList
     @Override
     public void onDestroy() {
         super.onDestroy();
-        App.getInstance().getResponseListeners().getNicknameAuthListener().unsubscribe(this);
+        App.getInstance().getResponseListeners().getNicknameAuthBus().unsubscribe(this);
     }
 }

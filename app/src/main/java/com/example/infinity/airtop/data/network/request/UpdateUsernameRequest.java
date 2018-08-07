@@ -1,6 +1,6 @@
 package com.example.infinity.airtop.data.network.request;
 
-import com.example.infinity.airtop.data.network.RequestModel;
+import com.google.gson.Gson;
 
 public class UpdateUsernameRequest implements RequestModel{
     private String phone;
@@ -20,5 +20,11 @@ public class UpdateUsernameRequest implements RequestModel{
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    @Override
+    public String toJson() {
+        String jsonMessage = new Gson().toJson(this);
+        return jsonMessage.length() + "@" + jsonMessage;
     }
 }

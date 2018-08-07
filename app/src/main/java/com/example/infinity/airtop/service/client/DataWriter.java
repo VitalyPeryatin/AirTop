@@ -1,6 +1,4 @@
-package com.example.infinity.airtop.service.client.writeData;
-
-import com.example.infinity.airtop.service.client.ServerConnection;
+package com.example.infinity.airtop.service.client;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -19,7 +17,7 @@ public class DataWriter extends Thread{
     private DataOutputStream outputStream;
     private LinkedBlockingQueue<String> msgQueue = new LinkedBlockingQueue<>();
 
-    public DataWriter(ServerConnection serverConnection) {
+    DataWriter(ServerConnection serverConnection) {
         this.serverConnection = serverConnection;
     }
 

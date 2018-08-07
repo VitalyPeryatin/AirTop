@@ -35,7 +35,7 @@ public class UsernameUpdaterPresenter extends MvpPresenter<UsernameUpdaterView> 
 
     public void onCreate(Context context){
         this.context = context;
-        App.getInstance().getResponseListeners().getUsernameUpdateListener().subscribe(this);
+        App.getInstance().getResponseListeners().getUsernameUpdateBus().subscribe(this);
     }
 
     public void onTextChanged(String text){
@@ -64,6 +64,6 @@ public class UsernameUpdaterPresenter extends MvpPresenter<UsernameUpdaterView> 
 
     public void onDestroy() {
         super.onDestroy();
-        App.getInstance().getResponseListeners().getUsernameUpdateListener().unsubscribe(this);
+        App.getInstance().getResponseListeners().getUsernameUpdateBus().unsubscribe(this);
     }
 }

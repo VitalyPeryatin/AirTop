@@ -5,7 +5,8 @@ import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
 
-import com.example.infinity.airtop.data.network.MessageRequest;
+import com.example.infinity.airtop.data.network.request.MessageRequest;
+import com.example.infinity.airtop.data.network.response.MessageResponse;
 
 
 @Entity(foreignKeys = @ForeignKey(entity = Addressee.class, parentColumns = "uuid", childColumns = "addressId"),
@@ -30,18 +31,18 @@ public class Message {
      * (The message is received by the addressee)
      * @param route indicates a message: sent or received
      */
-    public Message(MessageRequest messageRequest, String route){
+    public Message(MessageResponse messageResponse, String route){
         this.route = route;
 
         if(route.equals(ROUTE_OUT)) {
-            senderId = messageRequest.toId;
+            senderId = messageResponse.getToId();
             addressId = senderId;
         }
         else {
-            String aSender = messageRequest.fromId;
-            senderId = messageRequest.toId;
+            String aSender = messageResponse.getFromId();
+            senderId = messageResponse.getToId();
             addressId = aSender;
         }
-        text = messageRequest.text;
+        text = messageResponse.getText();
     }
 }

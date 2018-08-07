@@ -93,19 +93,19 @@ public class App extends Application {
             return messageBus;
         }
 
-        public PhoneAuthListener getPhoneAuthListener() {
+        public PhoneAuthListener getPhoneAuthBus() {
             return phoneAuthListener;
         }
 
-        public UsernameUpdateListener getUsernameUpdateListener() {
+        public UsernameUpdateListener getUsernameUpdateBus() {
             return usernameUpdateListener;
         }
 
-        public SearchUserListener getSearchUserListener() {
+        public SearchUserListener getSearchUserBus() {
             return searchUserListener;
         }
 
-        public NicknameAuthListener getNicknameAuthListener() {
+        public NicknameAuthListener getNicknameAuthBus() {
             return nicknameAuthListener;
         }
     }

@@ -1,19 +1,11 @@
 package com.example.infinity.airtop.data.network.request;
 
-import android.support.annotation.NonNull;
-
-import com.example.infinity.airtop.data.db.model.User;
-import com.example.infinity.airtop.data.network.RequestModel;
+import com.google.gson.Gson;
 
 import java.util.UUID;
 
 public class NicknameAuthRequest implements RequestModel {
-    @NonNull
-    public String phone;
-    private String uuid;
-    private String username;
-    private String nickname;
-    private String bio;
+    private String phone, uuid, username, nickname, bio;
 
      private final String TYPE = TYPE_NICKNAME_AUTH;
 
@@ -24,4 +16,10 @@ public class NicknameAuthRequest implements RequestModel {
          username = "NULL";
          bio = "None";
      }
+
+    @Override
+    public String toJson() {
+        String jsonMessage = new Gson().toJson(this);
+        return jsonMessage.length() + "@" + jsonMessage;
+    }
 }

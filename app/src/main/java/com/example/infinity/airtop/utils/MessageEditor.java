@@ -2,7 +2,7 @@ package com.example.infinity.airtop.utils;
 
 import android.graphics.Bitmap;
 
-import com.example.infinity.airtop.data.network.MessageRequest;
+import com.example.infinity.airtop.data.network.request.MessageRequest;
 
 public class MessageEditor{
     private MessageRequest messageRequest;
@@ -36,7 +36,7 @@ public class MessageEditor{
     }
 
     public boolean isNotEmptyMessage(){
-        return messageRequest.getText() != null || messageRequest.getImage() != null;
+        return !messageRequest.isEmptyMessage();
     }
 
     public void clear(){

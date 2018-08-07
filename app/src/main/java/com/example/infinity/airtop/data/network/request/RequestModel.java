@@ -1,4 +1,4 @@
-package com.example.infinity.airtop.data.network;
+package com.example.infinity.airtop.data.network.request;
 
 public interface RequestModel {
     String
@@ -8,4 +8,6 @@ public interface RequestModel {
             TYPE_PHONE_AUTH = "phone_auth",
             TYPE_NICKNAME_AUTH = "nickname_auth",
             TYPE_UPDATE_USERNAME = "update_username";
+
+    String toJson();
 }

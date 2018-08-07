@@ -1,4 +1,4 @@
-package com.example.infinity.airtop.service.client.readData;
+package com.example.infinity.airtop.service.client;
 
 import android.os.Handler;
 import android.os.Looper;
@@ -6,13 +6,12 @@ import android.util.Log;
 
 import com.example.infinity.airtop.data.db.interactors.ChatInteractor;
 import com.example.infinity.airtop.data.db.model.Message;
-import com.example.infinity.airtop.data.network.MessageRequest;
+import com.example.infinity.airtop.data.network.request.SearchUserRequest;
 import com.example.infinity.airtop.data.network.response.MessageResponse;
 import com.example.infinity.airtop.data.network.response.NicknameAuthResponse;
 import com.example.infinity.airtop.data.network.response.PhoneAuthResponse;
-import com.example.infinity.airtop.data.network.SearchableUsers;
+import com.example.infinity.airtop.data.network.response.SearchUserResponse;
 import com.example.infinity.airtop.data.network.response.UpdateUsernameResponse;
-import com.example.infinity.airtop.service.client.ServerConnection;
 import com.example.infinity.airtop.App;
 import com.google.gson.Gson;
 
@@ -36,18 +35,16 @@ public class DataReader extends Thread{
     private App.ResponseListeners responseListeners;
     private ChatInteractor chatInteractor;
 
+    // TODO Срочно исправить говнокод!
     // Constants for pass to handler the type of response
     private static final int
-            MESSAGE_REQUEST_KEY = 1,
-            USER_CREATE_KEY = 2,
-            USER_UPDATE_KEY = 3,
-            SEARCHABLE_USERS_KEY = 4,
-            CHECKING_USERNAME_KEY = 5,
-            PHONE_AUTH_KEY = 6,
-            NICKNAME_AUTH_KEY = 7,
-            UPDATE_USERNAME_KEY = 8;
+            MESSAGE_RESPONSE_KEY = 1,
+            SEARCHABLE_USERS_KEY = 2,
+            PHONE_AUTH_KEY = 3,
+            NICKNAME_AUTH_KEY = 4,
+            UPDATE_USERNAME_KEY = 5;
 
-    public DataReader(ServerConnection serverConnection) {
+    DataReader(ServerConnection serverConnection) {
         this.serverConnection = serverConnection;
         responseListeners = App.getInstance().getResponseListeners();
         chatInteractor = new ChatInteractor();
@@ -100,16 +97,13 @@ public class DataReader extends Thread{
             android.os.Message message = new android.os.Message();
             switch (type) {
                 case "message":
-                    MessageRequest messageRequest = gson.fromJson(jsonText, MessageRequest.class);
-                    if (messageRequest.getText() != null)
-                        new TextDecoder().decode(messageRequest);
-                    if (messageRequest.getEncodedImage() != null)
-                        new ImageDecoder().decode(messageRequest);
+                    MessageResponse messageResponse = gson.fromJson(jsonText, MessageResponse.class);
+                    messageResponse.decode();
 
-                    Message messageModel = new Message(messageRequest, Message.ROUTE_IN);
+                    Message messageModel = new Message(messageResponse, Message.ROUTE_IN);
                     chatInteractor.insertMessage(messageModel);
 
-                    message.what = MESSAGE_REQUEST_KEY;
+                    message.what = MESSAGE_RESPONSE_KEY;
                     message.obj = messageModel;
                     break;
                 case "phone_auth":
@@ -128,9 +122,9 @@ public class DataReader extends Thread{
                     message.obj =  nicknameAuthResponse;
                     break;
                 case "searchable_users":
-                    SearchableUsers searchableUsers = gson.fromJson(jsonText, SearchableUsers.class);
+                    SearchUserResponse SearchUserResponse = gson.fromJson(jsonText, SearchUserResponse.class);
                     message.what = SEARCHABLE_USERS_KEY;
-                    message.obj = searchableUsers;
+                    message.obj = SearchUserResponse;
                     break;
             }
             handler.sendMessage(message);
@@ -146,33 +140,33 @@ public class DataReader extends Thread{
             super.handleMessage(msg);
 
             switch (msg.what){
-                case MESSAGE_REQUEST_KEY:
+                case MESSAGE_RESPONSE_KEY:
                     if(msg.obj instanceof Message)
                         responseListeners.getMessageBus().onMessage((Message) msg.obj);
                     else
                         Log.e("mLogError", "DataReader -> не верный тип объекта. Ожидалось: Message");
                     break;
                 case SEARCHABLE_USERS_KEY:
-                    if(msg.obj instanceof SearchableUsers)
-                        responseListeners.getSearchUserListener().displaySearchableUsers((SearchableUsers) msg.obj);
+                    if(msg.obj instanceof SearchUserResponse)
+                        responseListeners.getSearchUserBus().displaySearchableUsers((SearchUserResponse) msg.obj);
                     else
                         Log.e("mLogError", "DataReader -> не верный тип объекта. Ожидалось: SearchableUsers");
                     break;
                 case PHONE_AUTH_KEY:
                     if(msg.obj instanceof PhoneAuthResponse)
-                        responseListeners.getPhoneAuthListener().onPhoneAuth((PhoneAuthResponse) msg.obj);
+                        responseListeners.getPhoneAuthBus().onPhoneAuth((PhoneAuthResponse) msg.obj);
                     else
                         Log.e("mLogError", "DataReader -> не верный тип объекта. Ожидалось: PhoneAuthResponse");
                     break;
                 case NICKNAME_AUTH_KEY:
                     if(msg.obj instanceof NicknameAuthResponse)
-                        responseListeners.getNicknameAuthListener().onNicknameAuth((NicknameAuthResponse) msg.obj);
+                        responseListeners.getNicknameAuthBus().onNicknameAuth((NicknameAuthResponse) msg.obj);
                     else
                         Log.e("mLogError", "DataReader -> не верный тип объекта. Ожидалось: NicknameAuthResponse");
                     break;
                 case UPDATE_USERNAME_KEY:
                     if(msg.obj instanceof UpdateUsernameResponse)
-                        responseListeners.getUsernameUpdateListener().onUpdateUsername((UpdateUsernameResponse) msg.obj);
+                        responseListeners.getUsernameUpdateBus().onUpdateUsername((UpdateUsernameResponse) msg.obj);
                     else
                         Log.e("mLogError", "DataReader -> не верный тип объекта. Ожидалось: UpdateUsernameResponse");
                     break;
