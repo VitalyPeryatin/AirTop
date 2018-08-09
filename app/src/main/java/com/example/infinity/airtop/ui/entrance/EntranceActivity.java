@@ -39,7 +39,7 @@ public class EntranceActivity extends AppCompatActivity {
                 setResult(RESULT_OK);
                 finish();
             } else {
-                editTextSecretCode.setText("");
+                editTextSecretCode.getText().clear();
             }
         }
         else{

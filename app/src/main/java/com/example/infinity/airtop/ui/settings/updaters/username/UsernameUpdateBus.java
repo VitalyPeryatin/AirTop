@@ -1,10 +1,10 @@
-package com.example.infinity.airtop.ui.usernameUpdater;
+package com.example.infinity.airtop.ui.settings.updaters.username;
 
 import com.example.infinity.airtop.data.network.response.UpdateUsernameResponse;
 
 import java.util.ArrayList;
 
-public class UsernameUpdateListener {
+public class UsernameUpdateBus {
     private ArrayList<OnUsernameUpdateListener> usernameUpdateListeners = new ArrayList<>();
 
     public void subscribe(OnUsernameUpdateListener usernameUpdateListener){

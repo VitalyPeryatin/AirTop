@@ -63,8 +63,6 @@ public class PhoneAuthFragment extends Fragment implements OnPhoneAuthListener {
 
     @Override
     public void onPhoneAuth(PhoneAuthResponse response) {
-        Log.d("mLog2", "" + response.getResult() + " " + response.getUser());
-
         if(response.getResult().equals("RESULT_OK")){
             sPref.saveCurrentPhone(phone);
         }
@@ -84,7 +82,7 @@ public class PhoneAuthFragment extends Fragment implements OnPhoneAuthListener {
             serverPostman.postRequest(request);
         }
         else{
-            editTextAuth.setText("");
+            editTextAuth.getText().clear();
         }
     }
 
@@ -94,9 +92,9 @@ public class PhoneAuthFragment extends Fragment implements OnPhoneAuthListener {
         sendPhone(phone);
     }
 
-    private boolean isValidPhone(String phone){
-        phone = PhoneNumberUtils.stripSeparators(phone);
-        Matcher matcher = Pattern.compile("(\\+7)([0-9]){10}").matcher(phone);
+    private boolean isValidPhone(String phoneNumber){
+        phoneNumber = PhoneNumberUtils.stripSeparators(phoneNumber);
+        Matcher matcher = Pattern.compile("(\\+7)([0-9]){10}").matcher(phoneNumber);
         return matcher.matches();
     }
 

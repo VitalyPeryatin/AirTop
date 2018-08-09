@@ -4,19 +4,12 @@ import android.graphics.Bitmap;
 import android.util.Base64;
 
 import com.example.infinity.airtop.data.db.model.Message;
-import com.google.gson.Gson;
 
 import java.io.ByteArrayOutputStream;
 
-/**
- * Class for constructing messages of various type
- * @autor infinity_coder
- * @version 1.0.0
- */
-public class MessageRequest implements RequestModel {
-    public String text, fromId, toId, encodedImage;
-    public String phone;
-    private final String TYPE = TYPE_MESSAGE;
+
+public class MessageRequest extends RequestModel {
+    private String text, fromId, toId, encodedImage;
     private Bitmap image;
 
     public MessageRequest(){}
@@ -67,8 +60,6 @@ public class MessageRequest implements RequestModel {
     @Override
     public String toJson(){
         encode();
-        String jsonMessage = new Gson().toJson(this);
-        jsonMessage = jsonMessage.length() + "@" + jsonMessage;
-        return jsonMessage;
+        return super.toJson();
     }
 }

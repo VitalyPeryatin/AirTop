@@ -27,9 +27,8 @@ import butterknife.OnClick;
 /**
  *  Activity for sending and receiving messages
  *  @author infinity_coder
- *  @version 1.0.3
+ *  @version 1.0.4
  */
-
 public class ChatActivity extends MvpAppCompatActivity implements ChatView {
 
     @InjectPresenter
@@ -99,17 +98,9 @@ public class ChatActivity extends MvpAppCompatActivity implements ChatView {
 
     @OnClick(R.id.btnSend)
     public void sendMessage() {
-        addTextToMessage();
+        presenter.addTextToMessage(inputField.getText().toString());
         presenter.sendMessage();
-    }
-
-    // Add text to message if text is exists
-    private void addTextToMessage(){
-        String text = inputField.getText().toString();
-        if(text.length() > 0) {
-            presenter.getMessageEditor().addText(text);
-            inputField.getText().clear();
-        }
+        inputField.getText().clear();
     }
 
     @Override

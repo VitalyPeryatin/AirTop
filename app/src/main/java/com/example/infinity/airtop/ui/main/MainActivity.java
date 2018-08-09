@@ -13,14 +13,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
 import com.example.infinity.airtop.R;
-import com.example.infinity.airtop.data.db.interactors.UserInteractor;
 import com.example.infinity.airtop.data.db.model.User;
-import com.example.infinity.airtop.data.network.request.VerifyUserRequest;
 import com.example.infinity.airtop.App;
 import com.example.infinity.airtop.ui.auth.AuthActivity;
 import com.example.infinity.airtop.ui.settings.SettingsActivity;
 import com.example.infinity.airtop.ui.contacts.ContactsFragment;
-import com.example.infinity.airtop.utils.serverWorker.ServerPostman;
 
 import java.util.ArrayList;
 
@@ -32,7 +29,7 @@ import butterknife.Unbinder;
  * Activity for controlling fragment by navigation drawer,
  * show ContactsFragment and verify existing users.
  * @author infinity_coder
- * @version 1.0.3
+ * @version 1.0.4
  */
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
@@ -40,7 +37,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     NavigationView navigationView;
     @BindView(R.id.drawer_layout)
     DrawerLayout drawerLayout;
-    ServerPostman serverPostman;
 
     private Unbinder unbinder;
     private static final int AUTH_REQUEST_CODE = 1;
@@ -53,30 +49,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         setFragment(new ContactsFragment());
         navigationView.setNavigationItemSelectedListener(this);
-        serverPostman = new ServerPostman();
 
         User currentUser = App.getInstance().getCurrentUser();
         if(currentUser == null )
             showLoginActivity();
-        else
-            verifyUserPhone();
-    }
-
-    private void verifyUserPhone(){
-        UserInteractor interactor  = new UserInteractor();
-        ArrayList<User> users = interactor.getAllUsers();
-        for (User user : users) {
-            VerifyUserRequest request = new VerifyUserRequest(user.uuid);
-            serverPostman.postRequest(request);
-        }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == AUTH_REQUEST_CODE && resultCode == RESULT_OK){
-            verifyUserPhone();
-        }
     }
 
     public void showLoginActivity(){

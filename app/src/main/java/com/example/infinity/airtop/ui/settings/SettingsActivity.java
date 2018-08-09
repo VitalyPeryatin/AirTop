@@ -10,8 +10,8 @@ import android.widget.TextView;
 import com.example.infinity.airtop.R;
 import com.example.infinity.airtop.data.db.model.User;
 import com.example.infinity.airtop.App;
-import com.example.infinity.airtop.ui.phoneUpdater.PhoneUpdaterActivity;
-import com.example.infinity.airtop.ui.usernameUpdater.UsernameUpdaterActivity;
+import com.example.infinity.airtop.ui.settings.updaters.phone.PhoneUpdaterActivity;
+import com.example.infinity.airtop.ui.settings.updaters.username.UsernameUpdaterActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

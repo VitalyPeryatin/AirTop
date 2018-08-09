@@ -6,7 +6,6 @@ import com.example.infinity.airtop.data.db.model.Contact;
 import com.example.infinity.airtop.data.db.model.Message;
 import com.example.infinity.airtop.data.db.repositoryDao.AddresseeDao;
 import com.example.infinity.airtop.data.db.repositoryDao.MessageDao;
-import com.example.infinity.airtop.ui.contacts.ContactsPresenter;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;

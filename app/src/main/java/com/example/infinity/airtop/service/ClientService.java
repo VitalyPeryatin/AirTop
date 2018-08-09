@@ -10,7 +10,7 @@ import com.example.infinity.airtop.service.client.ServerConnection;
 /**
  * Service for launching "ServerConnection" and managing queries to server
  * @author infinity_coder
- * @version 1.0.2
+ * @version 1.0.4
  */
 public class ClientService extends Service {
 

@@ -8,12 +8,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.arellomobile.mvp.MvpAppCompatFragment;
-import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.example.infinity.airtop.R;
 import com.example.infinity.airtop.ui.searchUser.SearchUserActivity;
 import com.melnykov.fab.FloatingActionButton;
@@ -23,10 +23,12 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
-public class ContactsFragment extends MvpAppCompatFragment implements ContactsView {
-
-    @InjectPresenter
-    ContactsPresenter presenter;
+/**
+ *  Fragment shows list of last companions
+ *  @author infinity_coder
+ *  @version 1.0.4
+ */
+public class ContactsFragment extends MvpAppCompatFragment implements ContextMenuView{
 
     @BindView(R.id.recycler_contacts)
     RecyclerView recyclerContacts;
@@ -35,8 +37,8 @@ public class ContactsFragment extends MvpAppCompatFragment implements ContactsVi
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 
-    Unbinder unbinder;
-    ContactsRecyclerAdapter adapter;
+    private Unbinder unbinder;
+    private ContactsRecyclerAdapter adapter;
 
     @Nullable
     @Override
@@ -45,10 +47,9 @@ public class ContactsFragment extends MvpAppCompatFragment implements ContactsVi
         unbinder = ButterKnife.bind(this, layout);
 
         assert getActivity() != null;
-        AppCompatActivity parentActivity = (AppCompatActivity)getActivity();
-        parentActivity.setSupportActionBar(toolbar);
-        toolbar.setTitle("Чаты");
-        adapter = new ContactsRecyclerAdapter(toolbar);
+        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
+        toolbar.setTitle(R.string.toolbar_title_main);
+        adapter = new ContactsRecyclerAdapter(this);
         recyclerContacts.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerContacts.setAdapter(adapter);
 
@@ -72,5 +73,10 @@ public class ContactsFragment extends MvpAppCompatFragment implements ContactsVi
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+    }
+
+    @Override
+    public void showMenu(ActionMode.Callback actionModeCallback) {
+        toolbar.startActionMode(actionModeCallback);
     }
 }

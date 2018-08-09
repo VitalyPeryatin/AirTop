@@ -4,7 +4,7 @@ import com.example.infinity.airtop.data.network.response.NicknameAuthResponse;
 
 import java.util.ArrayList;
 
-public class NicknameAuthListener {
+public class NicknameAuthBus {
     private ArrayList<OnNicknameAuthListener> authListeners = new ArrayList<>();
 
     public void subscribe(OnNicknameAuthListener authListener){

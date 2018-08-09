@@ -31,6 +31,7 @@ class DatabaseHelper:
 
     def get_users_by_start_username(self, start_username):
         readable_columns_tuple = ("nickname", "uuid", "phone", "username")
+        print("username: " + str(start_username))
         self.cursor.execute("""
                   SELECT {}, {}, {}, {}
                   FROM users WHERE {} LIKE (?);

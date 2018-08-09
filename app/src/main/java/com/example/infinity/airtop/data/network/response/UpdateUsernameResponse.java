@@ -7,10 +7,6 @@ public class UpdateUsernameResponse {
     private String phone;
     private String username;
 
-    public String getTYPE() {
-        return TYPE;
-    }
-
     public String getResult() {
         return result;
     }

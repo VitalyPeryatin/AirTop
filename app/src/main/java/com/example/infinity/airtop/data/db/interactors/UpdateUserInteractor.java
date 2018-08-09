@@ -2,8 +2,7 @@ package com.example.infinity.airtop.data.db.interactors;
 
 import com.example.infinity.airtop.App;
 import com.example.infinity.airtop.data.db.repositoryDao.UserDao;
-import com.example.infinity.airtop.ui.chat.ChatPresenter;
-import com.example.infinity.airtop.ui.usernameUpdater.UsernameUpdaterPresenter;
+import com.example.infinity.airtop.ui.settings.updaters.username.UsernameUpdaterPresenter;
 
 /**
  * Provides methods to {@link UsernameUpdaterPresenter} for access to database

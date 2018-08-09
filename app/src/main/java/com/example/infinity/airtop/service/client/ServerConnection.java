@@ -11,7 +11,7 @@ import java.net.SocketAddress;
 /**
  * Client of backend part. It connects to server and tune threads for reading and writing data
  * @author infinity_coder
- * @version 1.0.2
+ * @version 1.0.4
  */
 public class ServerConnection extends Thread{
 
@@ -22,6 +22,7 @@ public class ServerConnection extends Thread{
     private static final String HOST = "192.168.1.65";
     private static final int PORT = 9090;
     private boolean quit = true; // Check when programme need to close connection
+    private final Object lock = new Object();
 
     // Client connects to server in a new thread, because working with internet network possible
     // only in a separate thread
@@ -33,22 +34,25 @@ public class ServerConnection extends Thread{
         reader.start();
     }
 
+    @SuppressWarnings("InfiniteLoopStatement")
     @Override
     public void run() {
         super.run();
         while (true) {
             try {
-                while(!isQuit()) {
-                    Thread.yield();
-                }
+                while(!isQuit())
+                    synchronized (lock) {
+                        lock.wait();
+                    }
                 socket = new Socket();
-                socket.connect(address, 500); // Time for connecting to server
+                socket.connect(address, 1000); // Time for connecting to server
                 writer.connectToSocket(socket);
                 reader.connectToSocket(socket);
                 quit = false;
                 Log.d("mLog","Соединение с сервером найдено");
             } catch (Exception e) {
                 quit = true;
+                e.printStackTrace();
                 Log.d("mLog","Подключение разорвано");
             }
         }
@@ -81,6 +85,9 @@ public class ServerConnection extends Thread{
             reader.closeConnection();
             writer.closeConnection();
             socket.close();
+            synchronized (lock){
+                lock.notify();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }

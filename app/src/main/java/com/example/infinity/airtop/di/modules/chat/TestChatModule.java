@@ -1,7 +1,7 @@
-package com.example.infinity.airtop.di.modules;
+package com.example.infinity.airtop.di.modules.chat;
 
 import com.example.infinity.airtop.data.prefs.app.AppPreferencesHelper;
-import com.example.infinity.airtop.data.prefs.app.TestPreference;
+import com.example.infinity.airtop.data.prefs.app.TestAppPreference;
 import com.example.infinity.airtop.ui.chat.MessageBus;
 import com.example.infinity.airtop.utils.serverWorker.IServerPostman;
 import com.example.infinity.airtop.utils.serverWorker.TestIServerPostman;
@@ -25,6 +25,6 @@ public class TestChatModule {
 
     @Provides
     AppPreferencesHelper getPreferences(){
-        return new TestPreference();
+        return new TestAppPreference();
     }
 }

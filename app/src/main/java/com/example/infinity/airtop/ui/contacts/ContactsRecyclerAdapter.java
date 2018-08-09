@@ -4,18 +4,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.infinity.airtop.App;
 import com.example.infinity.airtop.R;
@@ -29,13 +25,14 @@ import java.util.ArrayList;
 public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecyclerAdapter.ContactsViewHolder> {
 
     private ArrayList<Contact> contacts = new ArrayList<>();
-    private Context context;
     private ContactsInteractor interactor = new ContactsInteractor();
-    private Toolbar toolbar;
+    private Context context;
+    private ContextMenuView contextMenuView;
+    private boolean isActiveActionMode;
 
-    ContactsRecyclerAdapter(Toolbar toolbar){
-        context = App.getInstance().getBaseContext();
-        this.toolbar = toolbar;
+    ContactsRecyclerAdapter(ContextMenuView contextMenuView){
+        this.context = App.getInstance().getBaseContext();
+        this.contextMenuView = contextMenuView;
     }
 
     @NonNull
@@ -52,7 +49,7 @@ public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecycl
     }
 
     public void onUpdateList(){ // TODO заменить полное изменени списка на локальные изменения
-        contacts = interactor.getContacts();
+        this.contacts = interactor.getContacts();
         notifyDataSetChanged();
     }
 
@@ -63,7 +60,7 @@ public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecycl
 
     class ContactsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener{
         TextView tvAddressTitle, tvLastMessage;
-        LinearLayout container;
+        private LinearLayout container;
         ContactsViewHolder(@NonNull View itemView) {
             super(itemView);
 
@@ -80,28 +77,32 @@ public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecycl
         public void onClick(View view) {
             switch (view.getId()){
                 case R.id.container:
-                    Addressee addressee = contacts.get(getAdapterPosition()).addressee;
-                    Intent intent = new Intent(context, ChatActivity.class);
-                    String addressId = context.getResources().getString(R.string.intent_key_address_id);
-                    intent.putExtra(addressId, addressee.uuid);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    context.startActivity(intent);
+                    // As a parameter is passed the Contact which clicked by the user
+                    startChatActivity(contacts.get(getAdapterPosition()));
                     break;
             }
         }
 
+        private void startChatActivity(Contact contact){
+            Addressee addressee = contact.addressee;
+            Intent intent = new Intent(context, ChatActivity.class);
+            String addressId = context.getResources().getString(R.string.intent_key_address_id);
+            intent.putExtra(addressId, addressee.uuid);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
+        }
 
         @Override
         public boolean onLongClick(View view) {
             switch (view.getId()) {
                 case R.id.container:
                     if(!isActiveActionMode)
-                        toolbar.startActionMode(actionModeCallback);
+                        contextMenuView.showMenu(actionModeCallback);
                     break;
             }
             return true;
         }
-        private boolean isActiveActionMode;
+
         private ActionMode.Callback actionModeCallback = new ActionMode.Callback() {
 
             @Override

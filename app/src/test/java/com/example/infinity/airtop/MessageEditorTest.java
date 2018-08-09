@@ -1,22 +1,15 @@
 package com.example.infinity.airtop;
 
-import android.content.Context;
 
-import com.example.infinity.airtop.data.network.request.MessageRequest;
+import com.example.infinity.airtop.data.db.model.Message;
 import com.example.infinity.airtop.ui.chat.ChatPresenter;
 import com.example.infinity.airtop.utils.MessageEditor;
 
 import org.junit.Test;
-import org.mockito.Mock;
 
 import static junit.framework.TestCase.assertEquals;
-import static org.mockito.Mockito.mock;
 
 public class MessageEditorTest {
-
-    @Mock
-    Context context;
-
     private MessageEditor messageEditor;
 
     @Test
@@ -24,8 +17,8 @@ public class MessageEditorTest {
         String text = "Привет из Зеландии";
         messageEditor = MessageEditor.edit();
         messageEditor.addText(text);
-        MessageRequest messageRequest = messageEditor.getMessage();
-        assertEquals(text, messageRequest.text);
+        Message message = messageEditor.getMessage().toMessageModel();
+        assertEquals(text, message.text);
     }
 
     @Test
@@ -33,62 +26,61 @@ public class MessageEditorTest {
         String text = "Hello by friends";
         messageEditor = MessageEditor.edit();
         messageEditor.addText(text);
-        MessageRequest messageRequest = messageEditor.getMessage();
-        assertEquals(text, messageRequest.text);
+        Message message = messageEditor.getMessage().toMessageModel();
+        assertEquals(text, message.text);
     }
 
     @Test
-    public void testAddingSender(){
-        String phone = "89855136621";
+    public void setSenderUUID(){
+        String uuid = "123e4567-e89b-12d3-a456-426655440000";
         messageEditor = MessageEditor.edit();
-        messageEditor.setSenderId(phone);
-        MessageRequest messageRequest = messageEditor.getMessage();
-        //assertEquals(phone, messageRequest.sender);
+        messageEditor.setSenderId(uuid);
+        Message message = messageEditor.getMessage().toMessageModel();
+        assertEquals(uuid, message.senderId);
     }
 
     @Test
-    public void testAddingAddressee(){
-        String phone = "89035724917";
+    public void setAddressUUID(){
+        String uuid = "123e4567-e89b-12d3-a456-426655440000";
         messageEditor = MessageEditor.edit();
-        messageEditor.setAddressId(phone);
-        MessageRequest messageRequest = messageEditor.getMessage();
-        //assertEquals(phone, messageRequest.addressee);
+        messageEditor.setAddressId(uuid);
+        Message message = messageEditor.getMessage().toMessageModel();
+        assertEquals(uuid, message.addressId);
     }
 
     @Test
-    public void testAddingMultiplyTest(){
-        String adderessPhone = "749832749823";
-        String senderPhone = "89035724917";
+    public void setAll(){
+        String addressUUID = "123e4567-e89b-12d3-a456-426655440000";
+        String senderUUID = "145e7584-q87b-13g3-a456-428327468720";
         String text = "text";
         messageEditor = MessageEditor.edit();
-        messageEditor.setAddressId(adderessPhone);
-        messageEditor.setSenderId(senderPhone);
+        messageEditor.setAddressId(addressUUID);
+        messageEditor.setSenderId(senderUUID);
         messageEditor.addText(text);
-        MessageRequest messageRequest = messageEditor.getMessage();
-        //assertEquals(adderessPhone, messageRequest.addressee);
-        //assertEquals(senderPhone, messageRequest.sender);
-        assertEquals(text, messageRequest.text);
+        Message message = messageEditor.getMessage().toMessageModel();
+        assertEquals(addressUUID, message.addressId);
+        assertEquals(senderUUID, message.senderId);
+        assertEquals(text, message.text);
     }
 
     @Test
     public void testNonPreparedMessageRequest(){
         ChatPresenter chatPresenter = new ChatPresenter();
         messageEditor = chatPresenter.getMessageEditor();
-        MessageRequest messageRequest = messageEditor.getMessage();
-        //assertEquals(null, messageRequest.getAddressee());
-        //assertEquals(null, messageRequest.getSender());
+        Message message = messageEditor.getMessage().toMessageModel();
+        assertEquals(null, message.addressId);
+        assertEquals(null, message.senderId);
     }
 
     @Test
     public void testPreparedMessageRequest(){
-        context = mock(Context.class);
         ChatPresenter chatPresenter = new ChatPresenter();
-        String addressPhone = "89035724917";
-        String sendPhone = "89688512558";
-        chatPresenter.onCreate(addressPhone, sendPhone);
+        String addressUUID = "123e4567-e89b-12d3-a456-426655440000";
+        String senderUUID = "145e7584-q87b-13g3-a456-428327468720";
+        chatPresenter.onCreate(addressUUID, senderUUID);
         messageEditor = chatPresenter.getMessageEditor();
-        MessageRequest messageRequest = messageEditor.getMessage();
-        //assertEquals(addressPhone, messageRequest.getAddressee());
-        //assertEquals(sendPhone, messageRequest.getSender());
+        Message message = messageEditor.getMessage().toMessageModel();
+        assertEquals(addressUUID, message.addressId);
+        assertEquals(senderUUID, message.senderId);
     }
 }

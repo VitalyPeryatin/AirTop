@@ -1,21 +1,27 @@
 package com.example.infinity.airtop.service.client;
 
+import com.example.infinity.airtop.data.db.interactors.UserInteractor;
+import com.example.infinity.airtop.data.db.model.User;
+import com.example.infinity.airtop.data.network.request.VerifyUserRequest;
+
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.concurrent.LinkedBlockingQueue;
 
 
 /**
  * Class for writing data and sending to server
  * @author infinity_coder
- * @version 1.0.2
+ * @version 1.0.4
  */
 public class DataWriter extends Thread{
 
     private ServerConnection serverConnection;
     private DataOutputStream outputStream;
     private LinkedBlockingQueue<String> msgQueue = new LinkedBlockingQueue<>();
+    private final Object lock = new Object();
 
     DataWriter(ServerConnection serverConnection) {
         this.serverConnection = serverConnection;
@@ -24,23 +30,41 @@ public class DataWriter extends Thread{
     public void connectToSocket(Socket socket){
         try {
             outputStream = new DataOutputStream(socket.getOutputStream());
+            verifyUserPhone();
         } catch (IOException e) { e.printStackTrace(); }
     }
 
-    // Adds a message to the queue for following sending
-    public synchronized void sendMessage(String json) {
-        msgQueue.add(json);
+    private void verifyUserPhone(){
+        UserInteractor interactor  = new UserInteractor();
+        ArrayList<User> users = interactor.getAllUsers();
+        if(users != null) {
+            for (User user : users) {
+                VerifyUserRequest request = new VerifyUserRequest(user.uuid);
+                sendMessage(request.toJson());
+            }
+        }
     }
 
+    // Adds a message to the queue for following sending
+    public void sendMessage(String json) {
+        synchronized (lock) {
+            msgQueue.add(json);
+            lock.notify();
+        }
+    }
+
+    @SuppressWarnings("InfiniteLoopStatement")
     @Override
     public void run() {
         super.run();
-        while(true) {
+        while (true) {
             try {
                 while (serverConnection.isQuit()) // waiting for connection to server
                     Thread.yield();
-                while (msgQueue.size() == 0) // waiting for message queue to be added
-                    Thread.yield();
+                while (msgQueue.size() == 0)  // waiting for message queue to be added
+                    synchronized (lock) {
+                        lock.wait();
+                    }
                 sendJsonToServer(msgQueue.poll());
                 outputStream.flush();
             } catch (Exception e) { // after something error on the client is reconnect to server

@@ -1,4 +1,4 @@
-package com.example.infinity.airtop.di.modules;
+package com.example.infinity.airtop.di.modules.chat;
 
 import com.example.infinity.airtop.App;
 import com.example.infinity.airtop.data.prefs.app.AppPreference;
@@ -14,17 +14,17 @@ import dagger.Provides;
 public class RealChatModule {
 
     @Provides
-    MessageBus getMessageBus(){
+    protected MessageBus getMessageBus(){
         return App.getInstance().getResponseListeners().getMessageBus();
     }
 
     @Provides
-    IServerPostman getServerWorker(){
+    protected IServerPostman getServerWorker(){
         return new ServerPostman();
     }
 
     @Provides
-    AppPreferencesHelper getPreferences(){
+    protected AppPreferencesHelper getPreferences(){
         return new AppPreference();
     }
 

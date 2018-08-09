@@ -21,28 +21,4 @@ public class Message {
 
     public String text;
     // public Bitmap image;
-
-    public Message(){}
-
-    /**
-     * MessageRequest transfer to Message for saving in DataBase.
-     * If the message is sent by the user, then the sender = the addressee.
-     * If the message is received by the user, then the sender and the addressee change places.
-     * (The message is received by the addressee)
-     * @param route indicates a message: sent or received
-     */
-    public Message(MessageResponse messageResponse, String route){
-        this.route = route;
-
-        if(route.equals(ROUTE_OUT)) {
-            senderId = messageResponse.getToId();
-            addressId = senderId;
-        }
-        else {
-            String aSender = messageResponse.getFromId();
-            senderId = messageResponse.getToId();
-            addressId = aSender;
-        }
-        text = messageResponse.getText();
-    }
 }

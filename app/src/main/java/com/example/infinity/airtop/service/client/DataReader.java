@@ -6,7 +6,6 @@ import android.util.Log;
 
 import com.example.infinity.airtop.data.db.interactors.ChatInteractor;
 import com.example.infinity.airtop.data.db.model.Message;
-import com.example.infinity.airtop.data.network.request.SearchUserRequest;
 import com.example.infinity.airtop.data.network.response.MessageResponse;
 import com.example.infinity.airtop.data.network.response.NicknameAuthResponse;
 import com.example.infinity.airtop.data.network.response.PhoneAuthResponse;
@@ -35,7 +34,6 @@ public class DataReader extends Thread{
     private App.ResponseListeners responseListeners;
     private ChatInteractor chatInteractor;
 
-    // TODO Срочно исправить говнокод!
     // Constants for pass to handler the type of response
     private static final int
             MESSAGE_RESPONSE_KEY = 1,
@@ -56,6 +54,7 @@ public class DataReader extends Thread{
         } catch (IOException e) { e.printStackTrace(); }
     }
 
+    @SuppressWarnings("InfiniteLoopStatement")
     @Override
     public void run() {
         super.run();
@@ -96,11 +95,11 @@ public class DataReader extends Thread{
             String type = jsonObject.getString("TYPE");
             android.os.Message message = new android.os.Message();
             switch (type) {
-                case "message":
+                case "MessageRequest":
                     MessageResponse messageResponse = gson.fromJson(jsonText, MessageResponse.class);
                     messageResponse.decode();
 
-                    Message messageModel = new Message(messageResponse, Message.ROUTE_IN);
+                    Message messageModel = messageResponse.toMessageModel();
                     chatInteractor.insertMessage(messageModel);
 
                     message.what = MESSAGE_RESPONSE_KEY;

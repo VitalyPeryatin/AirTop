@@ -5,7 +5,7 @@ import com.example.infinity.airtop.data.network.response.SearchUserResponse;
 
 import java.util.ArrayList;
 
-public class SearchUserListener {
+public class SearchUserBus {
     private ArrayList<OnSearchUserListener> searchUserListeners = new ArrayList<>();
 
     public void subscribe(OnSearchUserListener searchUserListener){

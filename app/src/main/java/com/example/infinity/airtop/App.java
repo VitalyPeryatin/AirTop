@@ -9,12 +9,12 @@ import com.example.infinity.airtop.data.db.interactors.UserInteractor;
 import com.example.infinity.airtop.data.db.model.User;
 import com.example.infinity.airtop.data.prefs.app.AppPreference;
 import com.example.infinity.airtop.service.ClientService;
-import com.example.infinity.airtop.ui.auth.nickname.NicknameAuthListener;
-import com.example.infinity.airtop.ui.auth.phone.PhoneAuthListener;
+import com.example.infinity.airtop.ui.auth.nickname.NicknameAuthBus;
+import com.example.infinity.airtop.ui.auth.phone.PhoneAuthBus;
 import com.example.infinity.airtop.ui.chat.MessageBus;
 import com.example.infinity.airtop.data.db.AppDatabase;
-import com.example.infinity.airtop.ui.searchUser.SearchUserListener;
-import com.example.infinity.airtop.ui.usernameUpdater.UsernameUpdateListener;
+import com.example.infinity.airtop.ui.searchUser.SearchUserBus;
+import com.example.infinity.airtop.ui.settings.updaters.username.UsernameUpdateBus;
 import com.facebook.stetho.Stetho;
 
 public class App extends Application {
@@ -44,7 +44,7 @@ public class App extends Application {
         responseListeners = new ResponseListeners();
         interactor = new UserInteractor();
 
-        Intent intent = new Intent(this, ClientService.class);
+        Intent intent = new Intent(getBaseContext(), ClientService.class);
         startService(intent);
 
         database = Room.databaseBuilder(this, AppDatabase.class, "database.db")
@@ -76,37 +76,37 @@ public class App extends Application {
 
     public static class ResponseListeners {
         private MessageBus messageBus;
-        private PhoneAuthListener phoneAuthListener;
-        private UsernameUpdateListener usernameUpdateListener;
-        private SearchUserListener searchUserListener;
-        private NicknameAuthListener nicknameAuthListener;
+        private PhoneAuthBus phoneAuthBus;
+        private UsernameUpdateBus usernameUpdateBus;
+        private SearchUserBus searchUserBus;
+        private NicknameAuthBus nicknameAuthBus;
 
         ResponseListeners(){
             messageBus = new MessageBus();
-            phoneAuthListener = new PhoneAuthListener();
-            usernameUpdateListener = new UsernameUpdateListener();
-            searchUserListener = new SearchUserListener();
-            nicknameAuthListener = new NicknameAuthListener();
+            phoneAuthBus = new PhoneAuthBus();
+            usernameUpdateBus = new UsernameUpdateBus();
+            searchUserBus = new SearchUserBus();
+            nicknameAuthBus = new NicknameAuthBus();
         }
 
         public MessageBus getMessageBus() {
             return messageBus;
         }
 
-        public PhoneAuthListener getPhoneAuthBus() {
-            return phoneAuthListener;
+        public PhoneAuthBus getPhoneAuthBus() {
+            return phoneAuthBus;
         }
 
-        public UsernameUpdateListener getUsernameUpdateBus() {
-            return usernameUpdateListener;
+        public UsernameUpdateBus getUsernameUpdateBus() {
+            return usernameUpdateBus;
         }
 
-        public SearchUserListener getSearchUserBus() {
-            return searchUserListener;
+        public SearchUserBus getSearchUserBus() {
+            return searchUserBus;
         }
 
-        public NicknameAuthListener getNicknameAuthBus() {
-            return nicknameAuthListener;
+        public NicknameAuthBus getNicknameAuthBus() {
+            return nicknameAuthBus;
         }
     }
 

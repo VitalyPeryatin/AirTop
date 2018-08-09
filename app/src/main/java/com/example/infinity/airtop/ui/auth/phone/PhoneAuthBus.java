@@ -4,7 +4,7 @@ import com.example.infinity.airtop.data.network.response.PhoneAuthResponse;
 
 import java.util.ArrayList;
 
-public class PhoneAuthListener {
+public class PhoneAuthBus {
     private ArrayList<OnPhoneAuthListener> authListeners = new ArrayList<>();
 
     public void subscribe(OnPhoneAuthListener authListener){

@@ -2,12 +2,12 @@ package com.example.infinity.airtop.data.prefs.app;
 
 import java.util.HashMap;
 
-public class TestPreference implements AppPreferencesHelper {
+public class TestAppPreference implements AppPreferencesHelper {
     private HashMap<String, Integer> map = new HashMap<>();
     private String prefix = "position_by_";
     private int default_value = 0;
 
-    public TestPreference(){
+    public TestAppPreference(){
     }
 
     @Override

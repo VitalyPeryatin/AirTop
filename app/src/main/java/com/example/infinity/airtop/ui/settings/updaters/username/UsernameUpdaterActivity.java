@@ -1,7 +1,6 @@
-package com.example.infinity.airtop.ui.usernameUpdater;
+package com.example.infinity.airtop.ui.settings.updaters.username;
 
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -13,7 +12,6 @@ import com.arellomobile.mvp.MvpAppCompatActivity;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.example.infinity.airtop.R;
 import com.example.infinity.airtop.data.network.request.UpdateUsernameRequest;
-import com.example.infinity.airtop.service.ClientService;
 import com.example.infinity.airtop.App;
 import com.example.infinity.airtop.utils.serverWorker.ServerPostman;
 
@@ -40,7 +38,7 @@ public class UsernameUpdaterActivity extends MvpAppCompatActivity implements Tex
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_username_settings);
         unbinder = ButterKnife.bind(this);
-        presenter.onCreate(this);
+        presenter.onCreate();
 
         serverPostman = new ServerPostman();
         editTextUsername.addTextChangedListener(this);
@@ -55,6 +53,7 @@ public class UsernameUpdaterActivity extends MvpAppCompatActivity implements Tex
 
     @Override
     public void onUpdateUsername(){
+        App.getInstance().updateCurrentUser();
         setResult(RESULT_OK);
         finish();
     }
@@ -69,7 +68,7 @@ public class UsernameUpdaterActivity extends MvpAppCompatActivity implements Tex
     @Override
     public void onUsernameFree() {
         tvAccessInfo.setVisibility(View.VISIBLE);
-        tvAccessInfo.setText("Username доступен");
+        tvAccessInfo.setText(R.string.text_username_is_available);
     }
 
     @Override
@@ -80,13 +79,13 @@ public class UsernameUpdaterActivity extends MvpAppCompatActivity implements Tex
     @Override
     public void onSmallUsername() {
         tvAccessInfo.setVisibility(View.VISIBLE);
-        tvAccessInfo.setText("Username должен иметь хотя бы 5 символов");
+        tvAccessInfo.setText(R.string.text_low_username);
     }
 
     @Override
     public void onUsernameIsTaken() {
         tvAccessInfo.setVisibility(View.VISIBLE);
-        tvAccessInfo.setText("Username уже занят другим пользователем");
+        tvAccessInfo.setText(R.string.text_username_taken);
     }
 
     @Override

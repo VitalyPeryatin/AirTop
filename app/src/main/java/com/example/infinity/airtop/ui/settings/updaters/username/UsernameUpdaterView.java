@@ -1,4 +1,4 @@
-package com.example.infinity.airtop.ui.usernameUpdater;
+package com.example.infinity.airtop.ui.settings.updaters.username;
 
 import com.arellomobile.mvp.MvpView;
 

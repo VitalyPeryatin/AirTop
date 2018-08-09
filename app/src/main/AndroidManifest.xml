@@ -27,10 +27,10 @@
             android:name=".ui.settings.SettingsActivity"
             android:label="@string/title_activity_settings" />
         <activity
-            android:name=".ui.phoneUpdater.PhoneUpdaterActivity"
+            android:name=".ui.settings.updaters.phone.PhoneUpdaterActivity"
             android:label="@string/title_activity_phone_settings" />
         <activity
-            android:name=".ui.usernameUpdater.UsernameUpdaterActivity"
+            android:name=".ui.settings.updaters.username.UsernameUpdaterActivity"
             android:label="@string/title_activity_username_settings" />
         <activity android:name=".ui.auth.AuthActivity"/>
 

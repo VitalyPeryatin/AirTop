@@ -1,5 +1,7 @@
 package com.example.infinity.airtop.ui.chat;
 
+import android.support.annotation.NonNull;
+
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 import com.example.infinity.airtop.data.db.interactors.ChatInteractor;
@@ -29,9 +31,10 @@ public class ChatPresenter extends MvpPresenter<ChatView> implements OnMessageLi
     public MessageBus messageBus;
     @Inject
     public AppPreferencesHelper preferencesHelper;
+    @Inject
+    private MessageEditor messageEditor;
 
     private String addressId;
-    private MessageEditor messageEditor;
 
     public ChatPresenter(){
         ChatComponent chatComponent = DaggerChatComponent.create();
@@ -39,7 +42,7 @@ public class ChatPresenter extends MvpPresenter<ChatView> implements OnMessageLi
         messageEditor = MessageEditor.edit();
     }
 
-    public void onCreate(String addressId, String senderId){
+    public void onCreate(@NonNull String addressId, @NonNull String senderId){
         this.addressId = addressId;
         messageBus.subscribe(this);
 
@@ -52,6 +55,11 @@ public class ChatPresenter extends MvpPresenter<ChatView> implements OnMessageLi
         int position = preferencesHelper.getAdapterPosition(addresseePhone);
         if(position == 0) position = defaultPosition;
         return position;
+    }
+
+    public void addTextToMessage(@NonNull String text){
+        if(text.length() > 0)
+            getMessageEditor().addText(text);
     }
 
     public void saveAdapterPosition(String addresseePhone, int position){

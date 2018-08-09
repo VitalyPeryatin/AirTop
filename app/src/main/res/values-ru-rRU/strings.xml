@@ -4,4 +4,7 @@
     <string name="name">Имя</string>
     <string name="picture_attached">Картинка прикреплена</string>
     <string name="choose_image">Выберите картинку</string>
+    <string name="text_username_is_available">Username доступен</string>
+    <string name="text_low_username">Username должен иметь хотя бы 5 символов</string>
+    <string name="text_username_taken">Username занят другим пользователем</string>
 </resources>

@@ -1,4 +1,4 @@
-package com.example.infinity.airtop.ui.phoneUpdater;
+package com.example.infinity.airtop.ui.settings.updaters.phone;
 
 import android.os.Bundle;
 import android.app.Activity;

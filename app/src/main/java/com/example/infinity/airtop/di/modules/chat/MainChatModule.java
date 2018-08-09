@@ -1,4 +1,4 @@
-package com.example.infinity.airtop.di.modules;
+package com.example.infinity.airtop.di.modules.chat;
 
 import com.example.infinity.airtop.data.db.interactors.ChatInteractor;
 
