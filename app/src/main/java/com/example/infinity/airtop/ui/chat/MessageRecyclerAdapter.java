@@ -22,14 +22,13 @@ import butterknife.ButterKnife;
 /**
  *  Adapter for data management in recycler view (list of current messages)
  *  @author infinity_coder
- *  @version 1.0.3
+ *  @version 1.0.4
  */
 public class MessageRecyclerAdapter extends RecyclerView.Adapter<MessageRecyclerAdapter.RecyclerViewHolder> {
     
     private ArrayList<Message> currentMessageRequests;
 
-    MessageRecyclerAdapter(String uuid) {
-        ChatInteractor interactor = new ChatInteractor();
+    public MessageRecyclerAdapter(String uuid, ChatInteractor interactor) {
         currentMessageRequests = interactor.getAllMessagesByUUID(uuid);
     }
 
@@ -89,7 +88,7 @@ public class MessageRecyclerAdapter extends RecyclerView.Adapter<MessageRecycler
         currentMessageRequests.add(message);
     }
 
-    class RecyclerViewHolder extends RecyclerView.ViewHolder{
+    public static class RecyclerViewHolder extends RecyclerView.ViewHolder{
         @BindView(R.id.textView)
         TextView textView;
         @BindView(R.id.msgCardView)
@@ -97,7 +96,7 @@ public class MessageRecyclerAdapter extends RecyclerView.Adapter<MessageRecycler
         /*@BindView(R.id.imageView)
         ImageView imageView;*/
 
-        RecyclerViewHolder(@NonNull View itemView) {
+        public RecyclerViewHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }

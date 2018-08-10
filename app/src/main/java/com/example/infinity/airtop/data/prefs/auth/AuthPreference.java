@@ -48,9 +48,9 @@ public class AuthPreference implements AuthPreferencesHelper {
     }
 
     @Override
-    public void saveHaveNickname(boolean nickname) {
+    public void saveUserHasNickname(boolean has) {
         SharedPreferences.Editor editor = sPref.edit();
-        editor.putBoolean(NICKNAME_KEY, nickname);
+        editor.putBoolean(NICKNAME_KEY, has);
         editor.apply();
     }
 }

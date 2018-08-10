@@ -8,10 +8,8 @@ import com.example.infinity.airtop.data.db.interactors.ChatInteractor;
 import com.example.infinity.airtop.data.db.model.Message;
 import com.example.infinity.airtop.data.network.request.MessageRequest;
 import com.example.infinity.airtop.data.prefs.app.AppPreferencesHelper;
-import com.example.infinity.airtop.di.components.ChatComponent;
-import com.example.infinity.airtop.di.components.DaggerChatComponent;
 import com.example.infinity.airtop.utils.MessageEditor;
-import com.example.infinity.airtop.utils.serverWorker.IServerPostman;
+import com.example.infinity.airtop.utils.ServerPostman;
 
 import javax.inject.Inject;
 
@@ -23,23 +21,24 @@ import javax.inject.Inject;
 @InjectViewState
 public class ChatPresenter extends MvpPresenter<ChatView> implements OnMessageListener {
 
-    @Inject
-    public ChatInteractor chatInteractor;
-    @Inject
-    public IServerPostman serverPostman;
-    @Inject
-    public MessageBus messageBus;
-    @Inject
-    public AppPreferencesHelper preferencesHelper;
-    @Inject
+    private ChatInteractor chatInteractor;
+    private ServerPostman serverPostman;
+    private MessageBus messageBus;
+    private AppPreferencesHelper preferencesHelper;
     private MessageEditor messageEditor;
-
     private String addressId;
 
-    public ChatPresenter(){
-        ChatComponent chatComponent = DaggerChatComponent.create();
-        chatComponent.inject(this);
-        messageEditor = MessageEditor.edit();
+    @Inject
+    public ChatPresenter(ChatInteractor chatInteractor,
+                         ServerPostman serverPostman,
+                         MessageBus messageBus,
+                         MessageEditor messageEditor,
+                         AppPreferencesHelper preferencesHelper){
+        this.chatInteractor = chatInteractor;
+        this.messageBus = messageBus;
+        this.messageEditor = messageEditor;
+        this.preferencesHelper = preferencesHelper;
+        this.serverPostman = serverPostman;
     }
 
     public void onCreate(@NonNull String addressId, @NonNull String senderId){
@@ -59,7 +58,7 @@ public class ChatPresenter extends MvpPresenter<ChatView> implements OnMessageLi
 
     public void addTextToMessage(@NonNull String text){
         if(text.length() > 0)
-            getMessageEditor().addText(text);
+            messageEditor.addText(text);
     }
 
     public void saveAdapterPosition(String addresseePhone, int position){
@@ -79,10 +78,6 @@ public class ChatPresenter extends MvpPresenter<ChatView> implements OnMessageLi
 
             serverPostman.postRequest(messageRequest);
         }
-    }
-
-    public MessageEditor getMessageEditor() {
-        return messageEditor;
     }
 
     public String getNickname() {

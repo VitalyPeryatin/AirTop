@@ -3,46 +3,63 @@ package com.example.infinity.airtop.ui.auth.phone;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.telephony.PhoneNumberUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
-import com.example.infinity.airtop.App;
+import com.arellomobile.mvp.MvpAppCompatFragment;
+import com.arellomobile.mvp.presenter.InjectPresenter;
+import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.example.infinity.airtop.R;
 import com.example.infinity.airtop.data.db.interactors.ChatInteractor;
-import com.example.infinity.airtop.data.db.model.User;
-import com.example.infinity.airtop.data.network.response.PhoneAuthResponse;
-import com.example.infinity.airtop.data.network.request.PhoneAuthRequest;
-import com.example.infinity.airtop.data.prefs.auth.AuthPreference;
+import com.example.infinity.airtop.data.prefs.auth.AuthPreferencesHelper;
+import com.example.infinity.airtop.di.components.DaggerPhoneAuthComponent;
+import com.example.infinity.airtop.di.components.PhoneAuthComponent;
 import com.example.infinity.airtop.ui.auth.AuthActivity;
-import com.example.infinity.airtop.utils.serverWorker.ServerPostman;
+import com.example.infinity.airtop.utils.ServerPostman;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class PhoneAuthFragment extends Fragment implements OnPhoneAuthListener {
+/**
+ *  Fragment for auth user by phone number and validate this phone number
+ *  @author infinity_coder
+ *  @version 1.0.4
+ */
+public class PhoneAuthFragment extends MvpAppCompatFragment implements PhoneAuthView {
 
     @BindView(R.id.etAuthPhone)
     EditText editTextAuth;
+
+    @Inject
+    ChatInteractor interactor;
+    @Inject
+    ServerPostman serverPostman;
+    @Inject
+    PhoneAuthBus phoneAuthBus;
+    @Inject
+    AuthPreferencesHelper authPreference;
+
+    @InjectPresenter
+    PhoneAuthPresenter presenter;
+    @ProvidePresenter
+    PhoneAuthPresenter providePresenter(){
+        return phoneAuthComponent.providePhoneAuthPresenter();
+    }
+
     private AuthActivity parentActivity;
-    private AuthPreference sPref;
-    private ChatInteractor interactor;
-    private String phone;
-    private ServerPostman serverPostman;
+    private PhoneAuthComponent phoneAuthComponent;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
+        phoneAuthComponent = DaggerPhoneAuthComponent.create();
+        phoneAuthComponent.inject(this);
         super.onCreate(savedInstanceState);
-        App.getInstance().getResponseListeners().getPhoneAuthBus().subscribe(this);
-        serverPostman = new ServerPostman();
     }
 
     @Nullable
@@ -50,6 +67,7 @@ public class PhoneAuthFragment extends Fragment implements OnPhoneAuthListener {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view =  inflater.inflate(R.layout.fragment_phone_auth, container, false);
         ButterKnife.bind(this, view);
+        presenter.onCreate();
         return view;
     }
 
@@ -57,50 +75,28 @@ public class PhoneAuthFragment extends Fragment implements OnPhoneAuthListener {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         parentActivity = (AuthActivity) getActivity();
-        sPref = new AuthPreference();
-        interactor = new ChatInteractor();
-    }
-
-    @Override
-    public void onPhoneAuth(PhoneAuthResponse response) {
-        if(response.getResult().equals("RESULT_OK")){
-            sPref.saveCurrentPhone(phone);
-        }
-        else if (response.getResult().equals("RESULT_EXISTS")){
-            User user = response.getUser();
-            sPref.saveCurrentPhone(phone);
-            sPref.saveHaveNickname(true);
-            interactor.insertUser(user);
-            App.getInstance().updateCurrentUser();
-        }
-        parentActivity.changeView();
-    }
-
-    public void sendPhone(String phone){
-        if(isValidPhone(phone)) {
-            PhoneAuthRequest request = new PhoneAuthRequest(phone);
-            serverPostman.postRequest(request);
-        }
-        else{
-            editTextAuth.getText().clear();
-        }
     }
 
     @OnClick(R.id.btnAuth)
     public void auth(){
-        phone = editTextAuth.getText().toString();
-        sendPhone(phone);
-    }
-
-    private boolean isValidPhone(String phoneNumber){
-        phoneNumber = PhoneNumberUtils.stripSeparators(phoneNumber);
-        Matcher matcher = Pattern.compile("(\\+7)([0-9]){10}").matcher(phoneNumber);
-        return matcher.matches();
+        String phone = editTextAuth.getText().toString();
+        phone = PhoneNumberUtils.stripSeparators(phone);
+        presenter.sendPhone(phone);
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        App.getInstance().getResponseListeners().getPhoneAuthBus().unsubscribe(this);
+    public void onDestroyView() {
+        super.onDestroyView();
+        presenter.onDestroy();
+    }
+
+    @Override
+    public void notValidPhone() {
+        editTextAuth.getText().clear();
+    }
+
+    @Override
+    public void successfulPhoneAuth() {
+        parentActivity.changeView();
     }
 }

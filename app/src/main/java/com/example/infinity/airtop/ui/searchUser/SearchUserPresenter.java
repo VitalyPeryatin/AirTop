@@ -5,7 +5,7 @@ import com.arellomobile.mvp.MvpPresenter;
 import com.example.infinity.airtop.App;
 import com.example.infinity.airtop.data.network.request.SearchUserRequest;
 import com.example.infinity.airtop.data.network.response.SearchUserResponse;
-import com.example.infinity.airtop.utils.serverWorker.ServerPostman;
+import com.example.infinity.airtop.utils.ServerPostman;
 
 @InjectViewState
 public class SearchUserPresenter extends MvpPresenter<SearchUserView> implements OnSearchUserListener{

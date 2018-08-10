@@ -14,7 +14,7 @@ import com.example.infinity.airtop.data.prefs.auth.AuthPreference;
 import com.example.infinity.airtop.ui.auth.entry_code.EntryAuthFragment;
 import com.example.infinity.airtop.ui.auth.nickname.NicknameAuthFragment;
 import com.example.infinity.airtop.ui.auth.phone.PhoneAuthFragment;
-import com.example.infinity.airtop.utils.serverWorker.ServerPostman;
+import com.example.infinity.airtop.utils.ServerPostman;
 
 import java.util.ArrayList;
 

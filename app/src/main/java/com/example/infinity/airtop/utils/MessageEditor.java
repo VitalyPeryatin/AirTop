@@ -5,6 +5,8 @@ import android.support.annotation.NonNull;
 
 import com.example.infinity.airtop.data.network.request.MessageRequest;
 
+import org.jetbrains.annotations.NotNull;
+
 public class MessageEditor{
     private MessageRequest messageRequest;
     // Base info for message which saves after clearing message by method "clear()"
@@ -19,20 +21,20 @@ public class MessageEditor{
         return new MessageEditor();
     }
 
-    public void addText(@NonNull String text){
+    public void addText(@NotNull String text){
         messageRequest.setText(text);
     }
 
-    public void addImage(@NonNull Bitmap bitmap) {
+    public void addImage(@NotNull Bitmap bitmap) {
         messageRequest.setImage(bitmap);
     }
 
-    public void setAddressId(@NonNull String id){
+    public void setAddressId(@NotNull String id){
         addressId = id;
         messageRequest.setAddressee(id);
     }
 
-    public void setSenderId(@NonNull String id){
+    public void setSenderId(@NotNull String id){
         senderId = id;
         messageRequest.setSender(id);
     }

@@ -1,13 +1,13 @@
 package com.example.infinity.airtop.di.components;
 
-import com.example.infinity.airtop.di.modules.usernameUpdate.RealUsernameUpdateModule;
-import com.example.infinity.airtop.ui.settings.updaters.username.UsernameUpdateBus;
+import com.example.infinity.airtop.di.modules.UsernameUpdateModule;
+import com.example.infinity.airtop.ui.settings.updaters.username.UsernameUpdaterActivity;
 import com.example.infinity.airtop.ui.settings.updaters.username.UsernameUpdaterPresenter;
 
 import dagger.Component;
 
-@Component(modules = RealUsernameUpdateModule.class)
+@Component(modules = UsernameUpdateModule.class)
 public interface UsernameUpdateComponent {
-    void inject(UsernameUpdaterPresenter chatPresenter);
-    UsernameUpdateBus getUsernameUpdateBus();
+    void inject(UsernameUpdaterActivity activity);
+    UsernameUpdaterPresenter providePresenter();
 }

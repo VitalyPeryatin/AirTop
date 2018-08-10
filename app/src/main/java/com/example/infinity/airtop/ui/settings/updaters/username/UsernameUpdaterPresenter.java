@@ -2,15 +2,8 @@ package com.example.infinity.airtop.ui.settings.updaters.username;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
-import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.example.infinity.airtop.data.db.interactors.UpdateUserInteractor;
 import com.example.infinity.airtop.data.network.response.UpdateUsernameResponse;
-import com.example.infinity.airtop.App;
-import com.example.infinity.airtop.di.components.DaggerChatComponent;
-import com.example.infinity.airtop.di.components.DaggerUsernameUpdateComponent;
-import com.example.infinity.airtop.di.components.UsernameUpdateComponent;
-
-import javax.inject.Inject;
 
 @InjectViewState
 public class UsernameUpdaterPresenter extends MvpPresenter<UsernameUpdaterView> implements OnUsernameUpdateListener{
@@ -18,15 +11,12 @@ public class UsernameUpdaterPresenter extends MvpPresenter<UsernameUpdaterView> 
     // This boolean mast be of string type for successful processing on the server
     private String isAvailableToChange = "false";
 
-    @Inject
-    public UsernameUpdateBus usernameUpdateBus;
-    @Inject
-    public UpdateUserInteractor interactor;
+    private UsernameUpdateBus usernameUpdateBus;
+    private UpdateUserInteractor interactor;
 
-    UsernameUpdaterPresenter(){
-        interactor = new UpdateUserInteractor();
-        UsernameUpdateComponent component = DaggerUsernameUpdateComponent.create();
-        component.inject(this);
+    public UsernameUpdaterPresenter(UpdateUserInteractor interactor, UsernameUpdateBus usernameUpdateBus){
+        this.interactor = interactor;
+        this.usernameUpdateBus = usernameUpdateBus;
     }
 
     @Override

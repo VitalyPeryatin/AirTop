@@ -19,7 +19,7 @@ import com.example.infinity.airtop.data.network.request.NicknameAuthRequest;
 import com.example.infinity.airtop.data.prefs.app.AppPreference;
 import com.example.infinity.airtop.data.prefs.auth.AuthPreference;
 import com.example.infinity.airtop.ui.auth.AuthActivity;
-import com.example.infinity.airtop.utils.serverWorker.ServerPostman;
+import com.example.infinity.airtop.utils.ServerPostman;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -81,7 +81,7 @@ public class NicknameAuthFragment extends Fragment implements OnNicknameAuthList
         if(response != null) {
             User user = new User(response);
             interactor.insertUser(user);
-            sPref.saveHaveNickname(true);
+            sPref.saveUserHasNickname(true);
             new AppPreference().saveCurrentPhone(user.phone);
             App.getInstance().updateCurrentUser();
             parentActivity.changeView();

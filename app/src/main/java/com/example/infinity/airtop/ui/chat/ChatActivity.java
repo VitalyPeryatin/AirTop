@@ -1,24 +1,27 @@
 package com.example.infinity.airtop.ui.chat;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.provider.MediaStore;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.ViewTreeObserver;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.arellomobile.mvp.MvpAppCompatActivity;
 import com.arellomobile.mvp.presenter.InjectPresenter;
+import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.example.infinity.airtop.App;
 import com.example.infinity.airtop.R;
+import com.example.infinity.airtop.data.db.interactors.ChatInteractor;
 import com.example.infinity.airtop.data.db.model.Message;
+import com.example.infinity.airtop.data.prefs.app.AppPreferencesHelper;
+import com.example.infinity.airtop.di.components.ChatComponent;
+import com.example.infinity.airtop.di.components.DaggerChatComponent;
+import com.example.infinity.airtop.utils.MessageEditor;
+import com.example.infinity.airtop.utils.ServerPostman;
 
-import java.io.IOException;
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -31,8 +34,7 @@ import butterknife.OnClick;
  */
 public class ChatActivity extends MvpAppCompatActivity implements ChatView {
 
-    @InjectPresenter
-    ChatPresenter presenter;
+
 
     @BindView(R.id.recyclerView)
     RecyclerView msgRecycler;
@@ -41,22 +43,50 @@ public class ChatActivity extends MvpAppCompatActivity implements ChatView {
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 
+    @Inject
+    ChatInteractor chatInteractor;
+    @Inject
+    ServerPostman serverPostman;
+    @Inject
+    MessageBus messageBus;
+    @Inject
+    MessageEditor messageEditor;
+    @Inject
+    AppPreferencesHelper preferencesHelper;
+
+
     private static final int LOAD_IMAGE_KEY = 1;
     private MessageRecyclerAdapter messageAdapter;
     private String addressId;
     private LinearLayoutManager layoutManager;
+    private ChatComponent chatComponent;
+
+    @InjectPresenter
+    ChatPresenter presenter;
+
+    @ProvidePresenter
+    ChatPresenter providePresenter(){
+        return chatComponent.getPresenter();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        chatComponent = DaggerChatComponent.create();
+        chatComponent.inject(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
         ButterKnife.bind(this);
-        addressId = getIntent().getStringExtra(getResources().getString(R.string.intent_key_address_id));
+
+        if(savedInstanceState != null && savedInstanceState.getString(getResources().getString(R.string.intent_key_address_id)) != null)
+            addressId = savedInstanceState.getString(getResources().getString(R.string.intent_key_address_id));
+        else
+            addressId = getIntent().getStringExtra(getResources().getString(R.string.intent_key_address_id));
+
         String senderId = App.getInstance().getCurrentUser().uuid;
         presenter.onCreate(addressId, senderId);
 
         // Set adapter AFTER restoring list of messages
-        messageAdapter = new MessageRecyclerAdapter(addressId);
+        messageAdapter = new MessageRecyclerAdapter(addressId, chatInteractor);
         msgRecycler.setAdapter(messageAdapter);
         layoutManager = new LinearLayoutManager(this);
         msgRecycler.setLayoutManager(layoutManager);
@@ -73,7 +103,7 @@ public class ChatActivity extends MvpAppCompatActivity implements ChatView {
         toolbar.setTitle(presenter.getNickname());
     }
 
-    @Override
+    /*@Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == LOAD_IMAGE_KEY && resultCode == RESULT_OK && data != null){
@@ -84,7 +114,7 @@ public class ChatActivity extends MvpAppCompatActivity implements ChatView {
             } catch (IOException e) { e.printStackTrace(); }
         }
 
-    }
+    }*/
 
     // After clicking on btnAffix app opens activity for choosing and affixing image
     @OnClick(R.id.btnAffix)
@@ -116,5 +146,11 @@ public class ChatActivity extends MvpAppCompatActivity implements ChatView {
         messageAdapter.addItem(message);
         messageAdapter.notifyDataSetChanged();
         msgRecycler.scrollToPosition(messageAdapter.getItemCount() - 1);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(getResources().getString(R.string.intent_key_address_id), addressId);
     }
 }

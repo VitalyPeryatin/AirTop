@@ -10,10 +10,16 @@ import android.widget.TextView;
 
 import com.arellomobile.mvp.MvpAppCompatActivity;
 import com.arellomobile.mvp.presenter.InjectPresenter;
+import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.example.infinity.airtop.R;
+import com.example.infinity.airtop.data.db.interactors.UpdateUserInteractor;
 import com.example.infinity.airtop.data.network.request.UpdateUsernameRequest;
 import com.example.infinity.airtop.App;
-import com.example.infinity.airtop.utils.serverWorker.ServerPostman;
+import com.example.infinity.airtop.di.components.DaggerUsernameUpdateComponent;
+import com.example.infinity.airtop.di.components.UsernameUpdateComponent;
+import com.example.infinity.airtop.utils.ServerPostman;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -28,19 +34,31 @@ public class UsernameUpdaterActivity extends MvpAppCompatActivity implements Tex
     @BindView(R.id.tvAccessInfo)
     public TextView tvAccessInfo;
 
+    private UsernameUpdateComponent daggerComponent;
+
     @InjectPresenter
     UsernameUpdaterPresenter presenter;
+    @ProvidePresenter
+    UsernameUpdaterPresenter providePresenter(){
+        return daggerComponent.providePresenter();
+    }
 
-    private ServerPostman serverPostman;
+    @Inject
+    UpdateUserInteractor interactor;
+    @Inject
+    ServerPostman serverPostman;
+    @Inject
+    UsernameUpdateBus updateBus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        daggerComponent = DaggerUsernameUpdateComponent.create();
+        daggerComponent.inject(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_username_settings);
         unbinder = ButterKnife.bind(this);
         presenter.onCreate();
 
-        serverPostman = new ServerPostman();
         editTextUsername.addTextChangedListener(this);
         tvAccessInfo.setVisibility(View.GONE);
     }
@@ -61,8 +79,7 @@ public class UsernameUpdaterActivity extends MvpAppCompatActivity implements Tex
     @Override
     public void onSendUsername(String username, String availableToUpdate) {
         String phone = App.getInstance().getCurrentUser().phone;
-        UpdateUsernameRequest request = new UpdateUsernameRequest(phone, username, availableToUpdate);
-        serverPostman.postRequest(request);
+        serverPostman.postRequest(new UpdateUsernameRequest(phone, username, availableToUpdate));
     }
 
     @Override

@@ -42,6 +42,7 @@ public class ChatInteractor extends BaseIntearctor{
             UserDao userDao = App.getInstance().getDatabase().userDao();
             userDao.insert(user);
         });
+        App.getInstance().updateCurrentUser();
     }
 
     public ArrayList<Message> getAllMessagesByUUID(String uuid){

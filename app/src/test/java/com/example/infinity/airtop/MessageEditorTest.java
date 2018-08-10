@@ -2,7 +2,6 @@ package com.example.infinity.airtop;
 
 
 import com.example.infinity.airtop.data.db.model.Message;
-import com.example.infinity.airtop.ui.chat.ChatPresenter;
 import com.example.infinity.airtop.utils.MessageEditor;
 
 import org.junit.Test;
@@ -11,6 +10,7 @@ import static junit.framework.TestCase.assertEquals;
 
 public class MessageEditorTest {
     private MessageEditor messageEditor;
+
 
     @Test
     public void testAddingRussianText(){
@@ -61,26 +61,5 @@ public class MessageEditorTest {
         assertEquals(addressUUID, message.addressId);
         assertEquals(senderUUID, message.senderId);
         assertEquals(text, message.text);
-    }
-
-    @Test
-    public void testNonPreparedMessageRequest(){
-        ChatPresenter chatPresenter = new ChatPresenter();
-        messageEditor = chatPresenter.getMessageEditor();
-        Message message = messageEditor.getMessage().toMessageModel();
-        assertEquals(null, message.addressId);
-        assertEquals(null, message.senderId);
-    }
-
-    @Test
-    public void testPreparedMessageRequest(){
-        ChatPresenter chatPresenter = new ChatPresenter();
-        String addressUUID = "123e4567-e89b-12d3-a456-426655440000";
-        String senderUUID = "145e7584-q87b-13g3-a456-428327468720";
-        chatPresenter.onCreate(addressUUID, senderUUID);
-        messageEditor = chatPresenter.getMessageEditor();
-        Message message = messageEditor.getMessage().toMessageModel();
-        assertEquals(addressUUID, message.addressId);
-        assertEquals(senderUUID, message.senderId);
     }
 }

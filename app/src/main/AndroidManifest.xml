@@ -14,7 +14,6 @@
         android:theme="@style/AppTheme.NoActionBar">
         <activity android:name=".ui.chat.ChatActivity"
             android:windowSoftInputMode="adjustResize|stateHidden"/>
-        <activity android:name=".ui.entrance.EntranceActivity" />
         <activity android:name=".ui.searchUser.SearchUserActivity"/>
         <activity android:name=".ui.main.MainActivity" >
             <intent-filter>
