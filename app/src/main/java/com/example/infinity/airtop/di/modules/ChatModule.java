@@ -3,7 +3,6 @@ package com.example.infinity.airtop.di.modules;
 import com.example.infinity.airtop.App;
 import com.example.infinity.airtop.data.db.interactors.ChatInteractor;
 import com.example.infinity.airtop.data.prefs.app.AppPreference;
-import com.example.infinity.airtop.data.prefs.app.AppPreferencesHelper;
 import com.example.infinity.airtop.ui.chat.ChatPresenter;
 import com.example.infinity.airtop.ui.chat.MessageBus;
 import com.example.infinity.airtop.utils.MessageEditor;
@@ -26,8 +25,8 @@ public class ChatModule {
     }
 
     @Provides
-    AppPreferencesHelper getPreferences(){
-        return new AppPreference();
+    AppPreference getPreferences(){
+        return App.getInstance().getAppPreference();
     }
 
     @Provides
@@ -45,7 +44,7 @@ public class ChatModule {
                                ServerPostman serverPostman,
                                MessageBus messageBus,
                                MessageEditor messageEditor,
-                               AppPreferencesHelper preferencesHelper){
+                               AppPreference preferencesHelper){
         return new ChatPresenter(chatInteractor, serverPostman, messageBus,
                 messageEditor, preferencesHelper);
     }

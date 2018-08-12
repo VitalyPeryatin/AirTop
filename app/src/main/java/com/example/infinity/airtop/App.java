@@ -8,19 +8,32 @@ import android.content.Intent;
 import com.example.infinity.airtop.data.db.interactors.UserInteractor;
 import com.example.infinity.airtop.data.db.model.User;
 import com.example.infinity.airtop.data.prefs.app.AppPreference;
+import com.example.infinity.airtop.data.prefs.auth.AuthPreference;
+import com.example.infinity.airtop.di.components.AppComponent;
+import com.example.infinity.airtop.di.components.DaggerAppComponent;
+import com.example.infinity.airtop.di.modules.AppModule;
+import com.example.infinity.airtop.di.modules.TestAppModule;
 import com.example.infinity.airtop.service.ClientService;
 import com.example.infinity.airtop.ui.auth.nickname.NicknameAuthBus;
 import com.example.infinity.airtop.ui.auth.phone.PhoneAuthBus;
 import com.example.infinity.airtop.ui.chat.MessageBus;
 import com.example.infinity.airtop.data.db.AppDatabase;
+import com.example.infinity.airtop.ui.contacts.ContactUpgradeBus;
 import com.example.infinity.airtop.ui.searchUser.SearchUserBus;
 import com.example.infinity.airtop.ui.settings.updaters.username.UsernameUpdateBus;
 import com.facebook.stetho.Stetho;
 
+import javax.inject.Inject;
+
 public class App extends Application {
     private User currentUser;
     private static App instance;
-    private AppDatabase database;
+    @Inject
+    AppDatabase database;
+    @Inject
+    AppPreference appPreference;
+    @Inject
+    AuthPreference authPreference;
     private ResponseListeners responseListeners;
     private UserInteractor interactor;
 
@@ -34,6 +47,9 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
 
+        AppComponent appComponent = DaggerAppComponent.builder()
+                .appModule(new AppModule(this)).build();
+        appComponent.inject(this);
         Stetho.Initializer initializer = Stetho.newInitializerBuilder(this)
                 .enableWebKitInspector(Stetho.defaultInspectorModulesProvider(this))
                 .build();
@@ -47,11 +63,15 @@ public class App extends Application {
         Intent intent = new Intent(getBaseContext(), ClientService.class);
         startService(intent);
 
-        database = Room.databaseBuilder(this, AppDatabase.class, "database.db")
-                .setJournalMode(RoomDatabase.JournalMode.TRUNCATE)
-                .fallbackToDestructiveMigration()
-                .build();
         updateCurrentUser();
+    }
+
+    public AppPreference getAppPreference() {
+        return appPreference;
+    }
+
+    public AuthPreference getAuthPreference() {
+        return authPreference;
     }
 
     public AppDatabase getDatabase() {
@@ -71,7 +91,7 @@ public class App extends Application {
     }
 
     public void updateCurrentUser(){
-        currentUser = interactor.getUserByPhone(new AppPreference().getCurrentPhone());
+        currentUser = interactor.getUserByPhone(appPreference.getCurrentPhone());
     }
 
     public static class ResponseListeners {
@@ -80,6 +100,7 @@ public class App extends Application {
         private UsernameUpdateBus usernameUpdateBus;
         private SearchUserBus searchUserBus;
         private NicknameAuthBus nicknameAuthBus;
+        private ContactUpgradeBus contactUpgradeBus;
 
         ResponseListeners(){
             messageBus = new MessageBus();
@@ -87,6 +108,7 @@ public class App extends Application {
             usernameUpdateBus = new UsernameUpdateBus();
             searchUserBus = new SearchUserBus();
             nicknameAuthBus = new NicknameAuthBus();
+            contactUpgradeBus = new ContactUpgradeBus();
         }
 
         public MessageBus getMessageBus() {
@@ -107,6 +129,10 @@ public class App extends Application {
 
         public NicknameAuthBus getNicknameAuthBus() {
             return nicknameAuthBus;
+        }
+
+        public ContactUpgradeBus getContactUpgradeBus() {
+            return contactUpgradeBus;
         }
     }
 

@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.arellomobile.mvp.MvpAppCompatFragment;
+import com.example.infinity.airtop.App;
 import com.example.infinity.airtop.R;
 import com.example.infinity.airtop.ui.searchUser.SearchUserActivity;
 import com.melnykov.fab.FloatingActionButton;
@@ -39,13 +40,14 @@ public class ContactsFragment extends MvpAppCompatFragment implements ContextMen
 
     private Unbinder unbinder;
     private ContactsRecyclerAdapter adapter;
+    private ContactUpgradeBus contactUpgradeBus;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View layout = inflater.inflate(R.layout.fragment_contacts, container, false);
         unbinder = ButterKnife.bind(this, layout);
-
+        contactUpgradeBus = App.getInstance().getResponseListeners().getContactUpgradeBus();
         assert getActivity() != null;
         ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
         toolbar.setTitle(R.string.toolbar_title_main);
@@ -61,7 +63,8 @@ public class ContactsFragment extends MvpAppCompatFragment implements ContextMen
     @Override
     public void onStart() {
         super.onStart();
-        adapter.onUpdateList();
+        contactUpgradeBus.subscribe(adapter);
+        adapter.onLoadContacts();
     }
 
     @OnClick(R.id.fab)
@@ -73,6 +76,12 @@ public class ContactsFragment extends MvpAppCompatFragment implements ContextMen
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        contactUpgradeBus.unsubscribe();
     }
 
     @Override

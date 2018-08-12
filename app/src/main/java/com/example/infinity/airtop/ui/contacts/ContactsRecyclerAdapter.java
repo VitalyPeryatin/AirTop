@@ -21,10 +21,13 @@ import com.example.infinity.airtop.data.db.model.Contact;
 import com.example.infinity.airtop.ui.chat.ChatActivity;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
-public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecyclerAdapter.ContactsViewHolder> {
+public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecyclerAdapter.ContactsViewHolder> implements OnContactListListener{
 
+    private HashMap<String, Contact> contactsWithUUID = new HashMap<>();
     private ArrayList<Contact> contacts = new ArrayList<>();
+
     private ContactsInteractor interactor = new ContactsInteractor();
     private Context context;
     private ContextMenuView contextMenuView;
@@ -48,15 +51,29 @@ public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecycl
         contactsViewHolder.tvLastMessage.setText(contacts.get(i).lastMessage);
     }
 
-    public void onUpdateList(){ // TODO заменить полное изменени списка на локальные изменения
-        this.contacts = interactor.getContacts();
+    @Override
+    public int getItemCount() {
+        if (contactsWithUUID == null) return 0;
+        return contactsWithUUID.size();
+    }
+
+    @Override
+    public void onLoadContacts() {
+        this.contactsWithUUID = interactor.getContacts();
+        if(contactsWithUUID != null)
+            this.contacts = new ArrayList<>(contactsWithUUID.values());
+        else
+            this.contacts = new ArrayList<>();
         notifyDataSetChanged();
     }
 
     @Override
-    public int getItemCount() {
-        return contacts.size();
+    public void onUpdateLastMessage(String uuid, String lastMessage) {
+        contactsWithUUID.get(uuid).lastMessage = lastMessage;
+        this.contacts = new ArrayList<>(contactsWithUUID.values());
+        notifyDataSetChanged();
     }
+
 
     class ContactsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener{
         TextView tvAddressTitle, tvLastMessage;
@@ -121,9 +138,9 @@ public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecycl
             public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
                 switch (menuItem.getItemId()) {
                     case R.id.item_delete:
-                        Addressee addressee = contacts.get(getAdapterPosition()).addressee;
+                        Addressee addressee = contactsWithUUID.get(getAdapterPosition()).addressee;
                         interactor.deleteAddressWithMessages(addressee);
-                        onUpdateList();
+                        onLoadContacts();
                         actionMode.finish();
                         break;
                 }

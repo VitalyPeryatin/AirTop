@@ -1,7 +1,5 @@
 package com.example.infinity.airtop.mocks;
 
-import com.example.infinity.airtop.data.prefs.app.AppPreferencesHelper;
-
 import java.util.HashMap;
 import java.util.Map;
 

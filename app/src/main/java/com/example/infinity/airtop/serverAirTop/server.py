@@ -70,6 +70,12 @@ class RequestApi:
         uuid = eval(json_str).get("uuid")
         add_connection(uuid, self.sock)
 
+    def send_address_by_uuid(self, json_str):
+        uuid = eval(json_str).get("uuid")
+        user = self._database.get_user_by_uuid(uuid)
+        response = str({self._TYPE_KEY: "addressee", "addressee": user})
+        send_json(self.sock, response)
+
     __requests = {
         "MessageRequest": send_message,
         "NicknameAuthRequest": create_user,
@@ -77,6 +83,7 @@ class RequestApi:
         "UpdateUsernameRequest": update_username,
         "SearchUserRequest": send_searchable_users,
         "VerifyUserRequest": verify_user,
+        "AddressRequest": send_address_by_uuid,
     }
 
 

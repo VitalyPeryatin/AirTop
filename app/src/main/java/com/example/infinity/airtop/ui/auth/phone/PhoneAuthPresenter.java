@@ -4,12 +4,11 @@ import android.telephony.PhoneNumberUtils;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
-import com.example.infinity.airtop.App;
 import com.example.infinity.airtop.data.db.interactors.ChatInteractor;
-import com.example.infinity.airtop.data.db.model.User;
 import com.example.infinity.airtop.data.network.request.PhoneAuthRequest;
 import com.example.infinity.airtop.data.network.response.PhoneAuthResponse;
-import com.example.infinity.airtop.data.prefs.auth.AuthPreferencesHelper;
+import com.example.infinity.airtop.data.prefs.app.AppPreference;
+import com.example.infinity.airtop.data.prefs.auth.AuthPreference;
 import com.example.infinity.airtop.utils.ServerPostman;
 
 import java.util.regex.Matcher;
@@ -21,11 +20,11 @@ public class PhoneAuthPresenter extends MvpPresenter<PhoneAuthView> implements O
     private ChatInteractor interactor;
     private ServerPostman serverPostman;
     private PhoneAuthBus phoneAuthBus;
-    private AuthPreferencesHelper preferencesHelper;
+    private AuthPreference preferencesHelper;
     private String phone;
 
     public PhoneAuthPresenter(ChatInteractor interactor, ServerPostman serverPostman,
-                              PhoneAuthBus phoneAuthBus, AuthPreferencesHelper preferencesHelper){
+                              PhoneAuthBus phoneAuthBus, AuthPreference preferencesHelper){
         this.interactor = interactor;
         this.serverPostman = serverPostman;
         this.phoneAuthBus = phoneAuthBus;
@@ -60,6 +59,7 @@ public class PhoneAuthPresenter extends MvpPresenter<PhoneAuthView> implements O
     }
 
     private boolean isValidPhone(String phoneNumber){
+        phoneNumber = PhoneNumberUtils.stripSeparators(phoneNumber);
         Matcher matcher = Pattern.compile("(\\+7)([0-9]){10}").matcher(phoneNumber);
         return matcher.matches();
     }

@@ -7,7 +7,7 @@ import com.arellomobile.mvp.MvpPresenter;
 import com.example.infinity.airtop.data.db.interactors.ChatInteractor;
 import com.example.infinity.airtop.data.db.model.Message;
 import com.example.infinity.airtop.data.network.request.MessageRequest;
-import com.example.infinity.airtop.data.prefs.app.AppPreferencesHelper;
+import com.example.infinity.airtop.data.prefs.app.AppPreference;
 import com.example.infinity.airtop.utils.MessageEditor;
 import com.example.infinity.airtop.utils.ServerPostman;
 
@@ -24,7 +24,7 @@ public class ChatPresenter extends MvpPresenter<ChatView> implements OnMessageLi
     private ChatInteractor chatInteractor;
     private ServerPostman serverPostman;
     private MessageBus messageBus;
-    private AppPreferencesHelper preferencesHelper;
+    private AppPreference preferencesHelper;
     private MessageEditor messageEditor;
     private String addressId;
 
@@ -33,7 +33,7 @@ public class ChatPresenter extends MvpPresenter<ChatView> implements OnMessageLi
                          ServerPostman serverPostman,
                          MessageBus messageBus,
                          MessageEditor messageEditor,
-                         AppPreferencesHelper preferencesHelper){
+                         AppPreference preferencesHelper){
         this.chatInteractor = chatInteractor;
         this.messageBus = messageBus;
         this.messageEditor = messageEditor;

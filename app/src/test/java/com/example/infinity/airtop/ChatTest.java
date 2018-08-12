@@ -3,7 +3,6 @@ package com.example.infinity.airtop;
 import com.example.infinity.airtop.data.db.interactors.ChatInteractor;
 import com.example.infinity.airtop.data.db.model.Message;
 import com.example.infinity.airtop.data.network.request.MessageRequest;
-import com.example.infinity.airtop.data.prefs.app.AppPreferencesHelper;
 import com.example.infinity.airtop.mocks.AppPreferenceMock;
 import com.example.infinity.airtop.ui.chat.ChatPresenter;
 import com.example.infinity.airtop.ui.chat.MessageBus;

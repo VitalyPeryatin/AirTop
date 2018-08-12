@@ -4,9 +4,14 @@ package com.example.infinity.airtop.service.client;
 import android.util.Log;
 
 import java.io.IOException;
+import java.net.Inet4Address;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.NetworkInterface;
 import java.net.Socket;
 import java.net.SocketAddress;
+import java.util.Collections;
+import java.util.Enumeration;
 
 /**
  * Client of backend part. It connects to server and tune threads for reading and writing data
@@ -16,11 +21,12 @@ import java.net.SocketAddress;
 public class ServerConnection extends Thread{
 
     private Socket socket;
-    private SocketAddress address = new InetSocketAddress(HOST, PORT);
+
     private DataWriter writer;
     private DataReader reader;
-    private static final String HOST = "192.168.1.67";
+    private static final String HOST = "78.106.116.219";
     private static final int PORT = 9090;
+    private SocketAddress address = new InetSocketAddress(HOST, PORT);
     private boolean quit = true; // Check when programme need to close connection
     private final Object lock = new Object();
 
@@ -44,6 +50,7 @@ public class ServerConnection extends Thread{
                     synchronized (lock) {
                         lock.wait();
                     }
+
                 socket = new Socket();
                 socket.connect(address, 1000); // Time for connecting to server
                 writer.connectToSocket(socket);

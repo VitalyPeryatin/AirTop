@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.example.infinity.airtop.data.db.interactors.ChatInteractor;
 import com.example.infinity.airtop.data.db.model.Message;
+import com.example.infinity.airtop.data.network.response.AddresseResponse;
 import com.example.infinity.airtop.data.network.response.MessageResponse;
 import com.example.infinity.airtop.data.network.response.NicknameAuthResponse;
 import com.example.infinity.airtop.data.network.response.PhoneAuthResponse;
@@ -40,7 +41,8 @@ public class DataReader extends Thread{
             SEARCHABLE_USERS_KEY = 2,
             PHONE_AUTH_KEY = 3,
             NICKNAME_AUTH_KEY = 4,
-            UPDATE_USERNAME_KEY = 5;
+            UPDATE_USERNAME_KEY = 5,
+            ADDRESSEE_KEY = 6;
 
     DataReader(ServerConnection serverConnection) {
         this.serverConnection = serverConnection;
@@ -99,11 +101,8 @@ public class DataReader extends Thread{
                     MessageResponse messageResponse = gson.fromJson(jsonText, MessageResponse.class);
                     messageResponse.decode();
 
-                    Message messageModel = messageResponse.toMessageModel();
-                    chatInteractor.insertMessage(messageModel);
-
                     message.what = MESSAGE_RESPONSE_KEY;
-                    message.obj = messageModel;
+                    message.obj = messageResponse.toMessageModel();
                     break;
                 case "phone_auth":
                     PhoneAuthResponse phoneAuthResponse = gson.fromJson(jsonText, PhoneAuthResponse.class);
@@ -121,9 +120,14 @@ public class DataReader extends Thread{
                     message.obj =  nicknameAuthResponse;
                     break;
                 case "searchable_users":
-                    SearchUserResponse SearchUserResponse = gson.fromJson(jsonText, SearchUserResponse.class);
+                    SearchUserResponse searchUserResponse = gson.fromJson(jsonText, SearchUserResponse.class);
                     message.what = SEARCHABLE_USERS_KEY;
-                    message.obj = SearchUserResponse;
+                    message.obj = searchUserResponse;
+                    break;
+                case "addressee":
+                    AddresseResponse addresseResponse = gson.fromJson(jsonText, AddresseResponse.class);
+                    message.what = ADDRESSEE_KEY;
+                    message.obj = addresseResponse;
                     break;
             }
             handler.sendMessage(message);
@@ -140,8 +144,11 @@ public class DataReader extends Thread{
 
             switch (msg.what){
                 case MESSAGE_RESPONSE_KEY:
-                    if(msg.obj instanceof Message)
-                        responseListeners.getMessageBus().onMessage((Message) msg.obj);
+                    if(msg.obj instanceof Message) {
+                        Message message = (Message) msg.obj;
+                        chatInteractor.insertMessage(message);
+                        responseListeners.getMessageBus().onMessage(message);
+                    }
                     else
                         Log.e("mLogError", "DataReader -> не верный тип объекта. Ожидалось: Message");
                     break;
@@ -168,6 +175,12 @@ public class DataReader extends Thread{
                         responseListeners.getUsernameUpdateBus().onUpdateUsername((UpdateUsernameResponse) msg.obj);
                     else
                         Log.e("mLogError", "DataReader -> не верный тип объекта. Ожидалось: UpdateUsernameResponse");
+                    break;
+                case ADDRESSEE_KEY:
+                    if(msg.obj instanceof AddresseResponse)
+                        responseListeners.getMessageBus().onAddresse((AddresseResponse) msg.obj);
+                    else
+                        Log.e("mLogError", "DataReader -> не верный тип объекта. Ожидалось: AddresseResponse");
                     break;
             }
         }

@@ -15,7 +15,7 @@ import com.example.infinity.airtop.App;
 import com.example.infinity.airtop.R;
 import com.example.infinity.airtop.data.db.interactors.ChatInteractor;
 import com.example.infinity.airtop.data.db.model.Message;
-import com.example.infinity.airtop.data.prefs.app.AppPreferencesHelper;
+import com.example.infinity.airtop.data.prefs.app.AppPreference;
 import com.example.infinity.airtop.di.components.ChatComponent;
 import com.example.infinity.airtop.di.components.DaggerChatComponent;
 import com.example.infinity.airtop.utils.MessageEditor;
@@ -52,7 +52,7 @@ public class ChatActivity extends MvpAppCompatActivity implements ChatView {
     @Inject
     MessageEditor messageEditor;
     @Inject
-    AppPreferencesHelper preferencesHelper;
+    AppPreference preferencesHelper;
 
 
     private static final int LOAD_IMAGE_KEY = 1;

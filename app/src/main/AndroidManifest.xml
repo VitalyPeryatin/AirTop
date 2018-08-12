@@ -14,8 +14,10 @@
         android:theme="@style/AppTheme.NoActionBar">
         <activity android:name=".ui.chat.ChatActivity"
             android:windowSoftInputMode="adjustResize|stateHidden"/>
-        <activity android:name=".ui.searchUser.SearchUserActivity"/>
-        <activity android:name=".ui.main.MainActivity" >
+        <activity android:name=".ui.searchUser.SearchUserActivity"
+            android:launchMode="singleTop"/>
+        <activity android:name=".ui.main.MainActivity"
+            android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -24,14 +26,18 @@
         </activity>
         <activity
             android:name=".ui.settings.SettingsActivity"
-            android:label="@string/title_activity_settings" />
+            android:label="@string/title_activity_settings"
+            android:launchMode="singleTop"/>
         <activity
             android:name=".ui.settings.updaters.phone.PhoneUpdaterActivity"
-            android:label="@string/title_activity_phone_settings" />
+            android:label="@string/title_activity_phone_settings"
+            android:launchMode="singleTop"/>
         <activity
             android:name=".ui.settings.updaters.username.UsernameUpdaterActivity"
-            android:label="@string/title_activity_username_settings" />
-        <activity android:name=".ui.auth.AuthActivity"/>
+            android:label="@string/title_activity_username_settings"
+            android:launchMode="singleTop"/>
+        <activity android:name=".ui.auth.AuthActivity"
+            android:launchMode="singleTop"/>
 
         <service
             android:name=".service.ClientService"

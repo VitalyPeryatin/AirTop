@@ -3,7 +3,6 @@ package com.example.infinity.airtop.ui.auth.phone;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.telephony.PhoneNumberUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +13,7 @@ import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.example.infinity.airtop.R;
 import com.example.infinity.airtop.data.db.interactors.ChatInteractor;
-import com.example.infinity.airtop.data.prefs.auth.AuthPreferencesHelper;
+import com.example.infinity.airtop.data.prefs.auth.AuthPreference;
 import com.example.infinity.airtop.di.components.DaggerPhoneAuthComponent;
 import com.example.infinity.airtop.di.components.PhoneAuthComponent;
 import com.example.infinity.airtop.ui.auth.AuthActivity;
@@ -43,7 +42,7 @@ public class PhoneAuthFragment extends MvpAppCompatFragment implements PhoneAuth
     @Inject
     PhoneAuthBus phoneAuthBus;
     @Inject
-    AuthPreferencesHelper authPreference;
+    AuthPreference authPreference;
 
     @InjectPresenter
     PhoneAuthPresenter presenter;
@@ -80,7 +79,6 @@ public class PhoneAuthFragment extends MvpAppCompatFragment implements PhoneAuth
     @OnClick(R.id.btnAuth)
     public void auth(){
         String phone = editTextAuth.getText().toString();
-        phone = PhoneNumberUtils.stripSeparators(phone);
         presenter.sendPhone(phone);
     }
 

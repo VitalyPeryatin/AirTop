@@ -56,7 +56,7 @@ public class NicknameAuthFragment extends Fragment implements OnNicknameAuthList
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         parentActivity = (AuthActivity) getActivity();
-        sPref = new AuthPreference();
+        sPref = new AuthPreference(getContext());
         interactor = new ChatInteractor();
     }
 
@@ -82,7 +82,7 @@ public class NicknameAuthFragment extends Fragment implements OnNicknameAuthList
             User user = new User(response);
             interactor.insertUser(user);
             sPref.saveUserHasNickname(true);
-            new AppPreference().saveCurrentPhone(user.phone);
+            new AppPreference(getContext()).saveCurrentPhone(user.phone);
             App.getInstance().updateCurrentUser();
             parentActivity.changeView();
         }

@@ -1,5 +1,7 @@
 package com.example.infinity.airtop.data.db.interactors;
 
+import com.example.infinity.airtop.utils.ServerPostman;
+
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -10,5 +12,6 @@ import java.util.concurrent.Executors;
  * @version 1.0.3
  */
 public abstract class BaseIntearctor {
-    protected static ExecutorService service = Executors.newFixedThreadPool(1);
+    protected static ExecutorService service = Executors.newFixedThreadPool(2);
+    protected ServerPostman serverPostman = new ServerPostman();
 }

@@ -70,6 +70,16 @@ class DatabaseHelper:
             user = dict(zip(column_names, result))
         return user
 
+    def get_user_by_uuid(self, uuid):
+        self.cursor.execute("SELECT * FROM users WHERE {} LIKE (?);".format(self.UUID), [uuid])
+        result = self.cursor.fetchone()
+        column_names = [description[0] for description in self.cursor.description]
+        if result is None:
+            user = None
+        else:
+            user = dict(zip(column_names, result))
+        return user
+
     def insert_or_replace_user(self, user_dict):
         try:
             uuid_str = str(user_dict.get("uuid"))

@@ -2,9 +2,8 @@ package com.example.infinity.airtop;
 
 import com.example.infinity.airtop.data.db.interactors.ChatInteractor;
 import com.example.infinity.airtop.data.db.model.User;
-import com.example.infinity.airtop.data.network.response.MessageResponse;
 import com.example.infinity.airtop.data.network.response.PhoneAuthResponse;
-import com.example.infinity.airtop.data.prefs.auth.AuthPreferencesHelper;
+import com.example.infinity.airtop.data.prefs.auth.AuthPreference;
 import com.example.infinity.airtop.ui.auth.phone.PhoneAuthBus;
 import com.example.infinity.airtop.ui.auth.phone.PhoneAuthPresenter;
 import com.example.infinity.airtop.utils.ServerPostman;
@@ -13,13 +12,14 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.MockitoAnnotations;
+import org.robolectric.RobolectricTestRunner;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(RobolectricTestRunner.class)
 public class PhoneAuthTest {
 
     @Mock
@@ -29,12 +29,12 @@ public class PhoneAuthTest {
     @Mock
     private PhoneAuthBus phoneAuthBus;
     @Mock
-    private AuthPreferencesHelper preferencesHelper;
-
+    private AuthPreference preferencesHelper;
     private PhoneAuthPresenter presenter;
 
     @Before
     public void init(){
+        MockitoAnnotations.initMocks(this);
         presenter = new PhoneAuthPresenter(interactor, serverPostman, phoneAuthBus, preferencesHelper);
     }
 

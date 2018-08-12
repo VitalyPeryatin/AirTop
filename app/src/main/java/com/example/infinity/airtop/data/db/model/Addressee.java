@@ -6,7 +6,6 @@ import android.support.annotation.NonNull;
 
 @Entity
 public class Addressee {
-    @NonNull
     public String phone;
     @NonNull
     @PrimaryKey
@@ -16,6 +15,10 @@ public class Addressee {
     public String bio;
 
     public Addressee(){}
+
+    public Addressee(String uuid){
+        this.uuid = uuid;
+    }
 
     public Addressee(User user) {
         uuid = user.uuid;

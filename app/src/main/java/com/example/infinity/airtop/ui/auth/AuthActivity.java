@@ -31,7 +31,7 @@ public class AuthActivity extends AppCompatActivity{
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_auth);
-        sPref = new AuthPreference();
+        sPref = new AuthPreference(getBaseContext());
 
         changeView();
     }
@@ -53,7 +53,7 @@ public class AuthActivity extends AppCompatActivity{
     private void verifyUser(){
         UserInteractor interactor  = new UserInteractor();
         ArrayList<User> users = interactor.getAllUsers();
-        if(users.size() > 0) {
+        if(users != null && users.size() > 0) {
             for (User user : users) {
                 VerifyUserRequest request = new VerifyUserRequest(user.uuid);
                 new ServerPostman().postRequest(request);

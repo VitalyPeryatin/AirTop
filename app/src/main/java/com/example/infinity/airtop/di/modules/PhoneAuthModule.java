@@ -3,14 +3,9 @@ package com.example.infinity.airtop.di.modules;
 import com.example.infinity.airtop.App;
 import com.example.infinity.airtop.data.db.interactors.ChatInteractor;
 import com.example.infinity.airtop.data.prefs.app.AppPreference;
-import com.example.infinity.airtop.data.prefs.app.AppPreferencesHelper;
 import com.example.infinity.airtop.data.prefs.auth.AuthPreference;
-import com.example.infinity.airtop.data.prefs.auth.AuthPreferencesHelper;
 import com.example.infinity.airtop.ui.auth.phone.PhoneAuthBus;
 import com.example.infinity.airtop.ui.auth.phone.PhoneAuthPresenter;
-import com.example.infinity.airtop.ui.chat.ChatPresenter;
-import com.example.infinity.airtop.ui.chat.MessageBus;
-import com.example.infinity.airtop.utils.MessageEditor;
 import com.example.infinity.airtop.utils.ServerPostman;
 
 import dagger.Module;
@@ -29,8 +24,8 @@ public class PhoneAuthModule {
     }
 
     @Provides
-    AuthPreferencesHelper getPreferences(){
-        return new AuthPreference();
+    AuthPreference getPreferences(){
+        return App.getInstance().getAuthPreference();
     }
 
     @Provides
@@ -40,7 +35,7 @@ public class PhoneAuthModule {
 
     @Provides
     PhoneAuthPresenter getPresenter(ChatInteractor interactor, ServerPostman serverPostman,
-                                    PhoneAuthBus phoneAuthBus, AuthPreferencesHelper preferencesHelper){
+                                    PhoneAuthBus phoneAuthBus, AuthPreference preferencesHelper){
         return new PhoneAuthPresenter(interactor, serverPostman, phoneAuthBus, preferencesHelper);
     }
 }

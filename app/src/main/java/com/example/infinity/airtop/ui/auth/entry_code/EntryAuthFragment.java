@@ -13,6 +13,8 @@ import com.example.infinity.airtop.R;
 import com.example.infinity.airtop.data.prefs.auth.AuthPreference;
 import com.example.infinity.airtop.ui.auth.AuthActivity;
 
+import java.util.Objects;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -32,7 +34,7 @@ public class EntryAuthFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         parentActivity = (AuthActivity) getActivity();
-        sPref = new AuthPreference();
+        sPref = new AuthPreference(Objects.requireNonNull(this.getContext()));
     }
 
     @Nullable

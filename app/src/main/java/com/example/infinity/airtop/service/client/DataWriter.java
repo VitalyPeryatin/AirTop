@@ -6,7 +6,9 @@ import com.example.infinity.airtop.data.network.request.VerifyUserRequest;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -47,6 +49,9 @@ public class DataWriter extends Thread{
 
     // Adds a message to the queue for following sending
     public void sendMessage(String json) {
+
+
+
         synchronized (lock) {
             msgQueue.add(json);
             lock.notify();
