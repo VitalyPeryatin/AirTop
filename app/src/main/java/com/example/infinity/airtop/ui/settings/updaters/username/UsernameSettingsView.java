@@ -2,7 +2,7 @@ package com.example.infinity.airtop.ui.settings.updaters.username;
 
 import com.arellomobile.mvp.MvpView;
 
-public interface UsernameUpdaterView extends MvpView {
+public interface UsernameSettingsView extends MvpView {
     void onEmptyUsernameField();
     void onSmallUsername();
     void onUsernameIsTaken();

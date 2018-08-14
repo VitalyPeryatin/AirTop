@@ -15,8 +15,10 @@ import com.example.infinity.airtop.R;
 import com.example.infinity.airtop.data.db.interactors.UpdateUserInteractor;
 import com.example.infinity.airtop.data.network.request.UpdateUsernameRequest;
 import com.example.infinity.airtop.App;
-import com.example.infinity.airtop.di.components.DaggerUsernameUpdateComponent;
-import com.example.infinity.airtop.di.components.UsernameUpdateComponent;
+import com.example.infinity.airtop.data.network.response.updaters.UpdateUsernameResponse;
+import com.example.infinity.airtop.di.components.DaggerSettingsUpdateComponent;
+import com.example.infinity.airtop.di.components.SettingsUpdateComponent;
+import com.example.infinity.airtop.ui.settings.SettingsBus;
 import com.example.infinity.airtop.utils.ServerPostman;
 
 import javax.inject.Inject;
@@ -26,21 +28,21 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
-public class UsernameUpdaterActivity extends MvpAppCompatActivity implements TextWatcher, UsernameUpdaterView {
+public class UsernameSettingsActivity extends MvpAppCompatActivity implements TextWatcher, UsernameSettingsView {
 
     private Unbinder unbinder;
-    @BindView(R.id.editTextUsername)
+    @BindView(R.id.etFirstName)
     public EditText editTextUsername;
     @BindView(R.id.tvAccessInfo)
     public TextView tvAccessInfo;
 
-    private UsernameUpdateComponent daggerComponent;
+    private SettingsUpdateComponent daggerComponent;
 
     @InjectPresenter
-    UsernameUpdaterPresenter presenter;
+    UsernameSettingsPresenter presenter;
     @ProvidePresenter
-    UsernameUpdaterPresenter providePresenter(){
-        return daggerComponent.providePresenter();
+    UsernameSettingsPresenter providePresenter(){
+        return daggerComponent.provideUsernamePresenter();
     }
 
     @Inject
@@ -48,11 +50,11 @@ public class UsernameUpdaterActivity extends MvpAppCompatActivity implements Tex
     @Inject
     ServerPostman serverPostman;
     @Inject
-    UsernameUpdateBus updateBus;
+    SettingsBus<UpdateUsernameResponse> updateBus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        daggerComponent = DaggerUsernameUpdateComponent.create();
+        daggerComponent = DaggerSettingsUpdateComponent.create();
         daggerComponent.inject(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_username_settings);
@@ -78,8 +80,8 @@ public class UsernameUpdaterActivity extends MvpAppCompatActivity implements Tex
 
     @Override
     public void onSendUsername(String username, String availableToUpdate) {
-        String phone = App.getInstance().getCurrentUser().phone;
-        serverPostman.postRequest(new UpdateUsernameRequest(phone, username, availableToUpdate));
+        String uuid = App.getInstance().getCurrentUser().uuid;
+        serverPostman.postRequest(new UpdateUsernameRequest(uuid, username, availableToUpdate));
     }
 
     @Override

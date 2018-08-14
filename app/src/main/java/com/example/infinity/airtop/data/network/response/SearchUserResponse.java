@@ -4,7 +4,7 @@ import com.example.infinity.airtop.data.db.model.User;
 
 import java.util.ArrayList;
 
-public class SearchUserResponse {
+public class SearchUserResponse implements ResponseModel {
     private ArrayList<User> users;
 
     public ArrayList<User> getUsers() {

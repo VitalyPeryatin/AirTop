@@ -1,5 +1,6 @@
 import socket
 import threading
+import pika
 from database_server import DatabaseHelper
 
 
@@ -11,14 +12,20 @@ class RequestApi:
         self._auth_users = {}
         self._database = DatabaseHelper()
 
+    connection = pika.BlockingConnection(pika.ConnectionParameters('localhost', socket_timeout=150))
+    channel_message = connection.channel()
+    channel_user = connection.channel()
+
     def execute(self, json_str):
         request_name = eval(json_str).get(self._TYPE_KEY)
         threading.Thread(target=self.__requests.get(request_name), args=(self, json_str,)).start()
 
     def send_message(self, json_message):
-        to_uuid = eval(json_message).get("toId")
-        address_sock = connections_by_uuid.get(to_uuid)
-        send_json(address_sock, json_message)
+        exchange_uuid = eval(json_message).get("exchangeUUID")
+
+        channel = self.connection.channel()
+        channel.exchange_declare(exchange=exchange_uuid, exchange_type='fanout')
+        channel.basic_publish(exchange=exchange_uuid, routing_key='', body=json_message)
 
     def create_user(self, json_user):
         user_dict = dict(eval(json_user))
@@ -52,12 +59,13 @@ class RequestApi:
 
     def update_username(self, json_str):
         user_dict = dict(eval(json_str))
-        phone = user_dict.get("phone")
+        uuid = user_dict.get("uuid")
         username = user_dict.get("username")
         available_to_update = user_dict.get("availableToUpdate")
-        result = self._database.update_username_by_phone(phone, username, available_to_update)
-        response_dict = {self._TYPE_KEY: "update_username", "result": result, "phone": phone, "username": username}
+        result = self._database.change_username_by_uuid(uuid, username, available_to_update)
+        response_dict = {self._TYPE_KEY: "update_username", "result": result, "uuid": uuid, "username": username}
         json = str(response_dict)
+
         send_json(self.sock, json)
 
     def send_searchable_users(self, json_str):
@@ -66,9 +74,27 @@ class RequestApi:
         json_str = str({"TYPE": "searchable_users", "users": users})
         send_json(self.sock, json_str)
 
+    @staticmethod
+    def callback(ch, method, properties, body):
+        json = str(body.decode())
+        to_uuid = eval(json).get("toId")
+        address_sock = connections_by_uuid.get(to_uuid)
+        send_json(address_sock, json)
+        ch.basic_ack(delivery_tag=method.delivery_tag)
+
     def verify_user(self, json_str):
         uuid = eval(json_str).get("uuid")
         add_connection(uuid, self.sock)
+
+        channel_message = self.channel_message
+        channel_message.exchange_declare(exchange=uuid, exchange_type='fanout')
+        channel_message.queue_declare(queue=uuid)
+        channel_message.queue_bind(exchange=uuid, queue=uuid)
+        channel_message.basic_consume(self.callback, queue=uuid, no_ack=False)
+        try:
+            channel_message.start_consuming()
+        except RecursionError:
+            print('Ошибка BlockingChannel')
 
     def send_address_by_uuid(self, json_str):
         uuid = eval(json_str).get("uuid")
@@ -86,6 +112,9 @@ class RequestApi:
         "AddressRequest": send_address_by_uuid,
     }
 
+    def close(self):
+        self.channel_message.stop_consuming()
+
 
 connections_by_uuid = {}
 connections_by_socket = {}
@@ -93,8 +122,10 @@ connections_by_socket = {}
 portion = 1024
 CHARSET = "windows-1251"
 host = socket.gethostbyname(socket.gethostname())
+
 print(host)
 port = 9090
+run = True
 
 s = socket.socket()
 s.bind((host, port))
@@ -142,6 +173,7 @@ def receiver(sock):
                 request_api.execute(json_str)
 
         except (ConnectionResetError, ConnectionAbortedError):
+            request_api.close()
             remove_connection(sock)
             break
 
@@ -172,11 +204,27 @@ def remove_connection(sock):
     sock.close()
 
 
-while True:
+def exit_control():
+    while True:
+        message = input()
+        if message == 'q':
+            run = False
+            close()
+
+
+threading.Thread(target=exit_control).start()
+
+
+def close():
+    s.close()
+    print("[ Server Stopped ]")
+    exit(0)
+
+
+while run:
+    # noinspection PyBroadException
     try:
         client_sock, address = s.accept()
         threading.Thread(target=receiver, args=(client_sock,)).start()
     except:
-        s.close()
-        print("[ Server Stopped ]")
-        raise
+        break

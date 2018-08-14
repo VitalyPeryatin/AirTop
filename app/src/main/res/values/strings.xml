@@ -14,4 +14,9 @@
     <string name="text_username_is_available">Username is available</string>
     <string name="text_low_username">Username must have at least 5 characters</string>
     <string name="text_username_taken">Username already taken</string>
+    <string name="phone_number_example" translatable="false">+7 (985) 513-66-21</string>
+    <string name="text_phone_number">Phone number</string>
+    <string name="tv_name">Name</string>
+    <string name="text_none">None</string>
+    <string name="text_username">Username</string>
 </resources>

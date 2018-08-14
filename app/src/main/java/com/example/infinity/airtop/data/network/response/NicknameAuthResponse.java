@@ -1,6 +1,6 @@
 package com.example.infinity.airtop.data.network.response;
 
-public class NicknameAuthResponse {
+public class NicknameAuthResponse implements ResponseModel {
     private String phone;
     private String uuid;
     private String username;

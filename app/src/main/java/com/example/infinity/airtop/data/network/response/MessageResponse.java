@@ -6,7 +6,7 @@ import android.util.Base64;
 
 import com.example.infinity.airtop.data.db.model.Message;
 
-public class MessageResponse {
+public class MessageResponse implements ResponseModel {
     private String text, fromId, toId, encodedImage, phone;
     private Bitmap image;
 

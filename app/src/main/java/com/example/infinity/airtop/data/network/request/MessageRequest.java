@@ -27,6 +27,7 @@ public class MessageRequest extends RequestModel {
     }
 
     public void setAddressee(String id) {
+        exchangeUUID = id;
         this.toId = id;
     }
 

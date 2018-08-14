@@ -16,6 +16,8 @@
             android:windowSoftInputMode="adjustResize|stateHidden"/>
         <activity android:name=".ui.searchUser.SearchUserActivity"
             android:launchMode="singleTop"/>
+        <activity android:name=".ui.settings.updaters.name.NameSettingsActivity"
+            android:launchMode="singleTop"/>
         <activity android:name=".ui.main.MainActivity"
             android:launchMode="singleTop">
             <intent-filter>
@@ -33,7 +35,7 @@
             android:label="@string/title_activity_phone_settings"
             android:launchMode="singleTop"/>
         <activity
-            android:name=".ui.settings.updaters.username.UsernameUpdaterActivity"
+            android:name=".ui.settings.updaters.username.UsernameSettingsActivity"
             android:label="@string/title_activity_username_settings"
             android:launchMode="singleTop"/>
         <activity android:name=".ui.auth.AuthActivity"

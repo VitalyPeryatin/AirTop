@@ -1,18 +1,18 @@
 package com.example.infinity.airtop;
 
 import android.app.Application;
-import android.arch.persistence.room.Room;
-import android.arch.persistence.room.RoomDatabase;
 import android.content.Intent;
 
 import com.example.infinity.airtop.data.db.interactors.UserInteractor;
 import com.example.infinity.airtop.data.db.model.User;
+import com.example.infinity.airtop.data.network.response.MessageResponse;
+import com.example.infinity.airtop.data.network.response.updaters.UpdateNameResponse;
+import com.example.infinity.airtop.data.network.response.updaters.UpdateUsernameResponse;
 import com.example.infinity.airtop.data.prefs.app.AppPreference;
 import com.example.infinity.airtop.data.prefs.auth.AuthPreference;
 import com.example.infinity.airtop.di.components.AppComponent;
 import com.example.infinity.airtop.di.components.DaggerAppComponent;
 import com.example.infinity.airtop.di.modules.AppModule;
-import com.example.infinity.airtop.di.modules.TestAppModule;
 import com.example.infinity.airtop.service.ClientService;
 import com.example.infinity.airtop.ui.auth.nickname.NicknameAuthBus;
 import com.example.infinity.airtop.ui.auth.phone.PhoneAuthBus;
@@ -20,7 +20,7 @@ import com.example.infinity.airtop.ui.chat.MessageBus;
 import com.example.infinity.airtop.data.db.AppDatabase;
 import com.example.infinity.airtop.ui.contacts.ContactUpgradeBus;
 import com.example.infinity.airtop.ui.searchUser.SearchUserBus;
-import com.example.infinity.airtop.ui.settings.updaters.username.UsernameUpdateBus;
+import com.example.infinity.airtop.ui.settings.SettingsBus;
 import com.facebook.stetho.Stetho;
 
 import javax.inject.Inject;
@@ -97,7 +97,8 @@ public class App extends Application {
     public static class ResponseListeners {
         private MessageBus messageBus;
         private PhoneAuthBus phoneAuthBus;
-        private UsernameUpdateBus usernameUpdateBus;
+        private SettingsBus<UpdateUsernameResponse> usernameSettingsBus;
+        private SettingsBus<UpdateNameResponse> nameSettingsBus;
         private SearchUserBus searchUserBus;
         private NicknameAuthBus nicknameAuthBus;
         private ContactUpgradeBus contactUpgradeBus;
@@ -105,10 +106,12 @@ public class App extends Application {
         ResponseListeners(){
             messageBus = new MessageBus();
             phoneAuthBus = new PhoneAuthBus();
-            usernameUpdateBus = new UsernameUpdateBus();
             searchUserBus = new SearchUserBus();
             nicknameAuthBus = new NicknameAuthBus();
             contactUpgradeBus = new ContactUpgradeBus();
+
+            usernameSettingsBus = new SettingsBus<>();
+            nameSettingsBus = new SettingsBus<>();
         }
 
         public MessageBus getMessageBus() {
@@ -119,8 +122,12 @@ public class App extends Application {
             return phoneAuthBus;
         }
 
-        public UsernameUpdateBus getUsernameUpdateBus() {
-            return usernameUpdateBus;
+        public SettingsBus<UpdateUsernameResponse> getUsernameSettingsBus() {
+            return usernameSettingsBus;
+        }
+
+        public SettingsBus<UpdateNameResponse> getNameSettingsBus() {
+            return nameSettingsBus;
         }
 
         public SearchUserBus getSearchUserBus() {
@@ -134,6 +141,7 @@ public class App extends Application {
         public ContactUpgradeBus getContactUpgradeBus() {
             return contactUpgradeBus;
         }
+
     }
 
 }

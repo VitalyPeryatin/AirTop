@@ -5,7 +5,7 @@ import android.util.Log;
 import com.example.infinity.airtop.data.db.interactors.ChatInteractor;
 import com.example.infinity.airtop.data.db.model.Addressee;
 import com.example.infinity.airtop.data.db.model.Message;
-import com.example.infinity.airtop.data.network.response.AddresseResponse;
+import com.example.infinity.airtop.data.network.response.AddressResponse;
 import com.example.infinity.airtop.service.notifications.MessageNotification;
 
 /**
@@ -32,9 +32,9 @@ public class MessageBus {
             notification.onMessage(message);
     }
 
-    public void onAddresse(AddresseResponse addresseResponse){
+    public void onAddresse(AddressResponse addressResponse){
         ChatInteractor chatInteractor = new ChatInteractor();
-        Addressee addressee = addresseResponse.getAddressee();
+        Addressee addressee = addressResponse.getAddressee();
         Log.d("mLog2", "adressee: " + addressee);
         chatInteractor.insertAddressee(addressee);
     }

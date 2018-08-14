@@ -97,12 +97,12 @@ class DatabaseHelper:
             raise
         return self.get_user_by_phone(phone_str)
 
-    def update_username_by_phone(self, phone, username, available_to_update):
+    def change_username_by_uuid(self, uuid, username, available_to_update):
         if len(list(self.get_users_by_username(username))) == 0:
             if available_to_update == "true":
                 self.cursor.execute("""
-                        UPDATE users SET username = (?) WHERE phone = (?);
-                    """, [username, phone])
+                        UPDATE users SET username = (?) WHERE uuid = (?);
+                    """, [username, uuid])
                 self.connection.commit()
             return "RESULT_OK"
         else:

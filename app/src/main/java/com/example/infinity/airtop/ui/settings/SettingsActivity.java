@@ -10,8 +10,9 @@ import android.widget.TextView;
 import com.example.infinity.airtop.R;
 import com.example.infinity.airtop.data.db.model.User;
 import com.example.infinity.airtop.App;
+import com.example.infinity.airtop.ui.settings.updaters.name.NameSettingsActivity;
 import com.example.infinity.airtop.ui.settings.updaters.phone.PhoneUpdaterActivity;
-import com.example.infinity.airtop.ui.settings.updaters.username.UsernameUpdaterActivity;
+import com.example.infinity.airtop.ui.settings.updaters.username.UsernameSettingsActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -20,15 +21,20 @@ import butterknife.Unbinder;
 
 public class SettingsActivity extends AppCompatActivity {
 
-    @BindView(R.id.tvUsername)
+    @BindView(R.id.tvName)
+    TextView tvName;
+    @BindView(R.id.tvPhone)
     TextView tvPhone;
-    @BindView(R.id.tvNickname)
+    @BindView(R.id.tvUsername)
     TextView tvUsername;
+    @BindView(R.id.tvBio)
+    TextView tvBio;
 
     private Unbinder unbinder;
     private static final int
         PHONE_CODE = 1,
-        USERNAME_CODE = 2;
+        USERNAME_CODE = 2,
+        NAME_CODE = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +49,8 @@ public class SettingsActivity extends AppCompatActivity {
         User user = App.getInstance().getCurrentUser();
         tvPhone.setText(user.phone);
         tvUsername.setText(user.username);
+        tvName.setText(user.nickname);
+        tvBio.setText(user.bio);
     }
 
     @Override
@@ -51,19 +59,22 @@ public class SettingsActivity extends AppCompatActivity {
         unbinder.unbind();
     }
 
-    @OnClick({R.id.phone_settings, R.id.username_settings})
-    void changeProfileData(View view){
-        Intent intent;
-        switch (view.getId()){
-            case R.id.phone_settings:
-                intent = new Intent(this, PhoneUpdaterActivity.class);
-                startActivityForResult(intent, PHONE_CODE);
-                break;
-            case R.id.username_settings:
-                intent = new Intent(this, UsernameUpdaterActivity.class);
-                startActivityForResult(intent, USERNAME_CODE);
-                break;
-        }
+    @OnClick(R.id.phone_settings)
+    void onChangePhone(){
+        Intent intent = new Intent(this, PhoneUpdaterActivity.class);
+        startActivityForResult(intent, PHONE_CODE);
+    }
+
+    @OnClick(R.id.username_settings)
+    void onChangeUsername(){
+        Intent intent = new Intent(this, UsernameSettingsActivity.class);
+        startActivityForResult(intent, USERNAME_CODE);
+    }
+
+    @OnClick(R.id.name_settings)
+    void onChangeName(){
+        Intent intent = new Intent(this, NameSettingsActivity.class);
+        startActivityForResult(intent, NAME_CODE);
     }
 
     @Override

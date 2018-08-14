@@ -62,17 +62,17 @@ public class SearchUserAdapter extends RecyclerView.Adapter<SearchUserAdapter.Se
 
     class SearchUserViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
-        @BindView(R.id.tvNickname)
-        TextView tvNickname;
         @BindView(R.id.tvUsername)
+        TextView tvNickname;
+        @BindView(R.id.tvPhone)
         TextView tvUsername;
 
         SearchUserViewHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
 
-            tvNickname = itemView.findViewById(R.id.tvNickname);
-            tvUsername = itemView.findViewById(R.id.tvUsername);
+            tvNickname = itemView.findViewById(R.id.tvUsername);
+            tvUsername = itemView.findViewById(R.id.tvPhone);
         }
 
         @OnClick(R.id.cardView)

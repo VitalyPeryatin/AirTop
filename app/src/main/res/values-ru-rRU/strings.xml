@@ -7,4 +7,8 @@
     <string name="text_username_is_available">Username доступен</string>
     <string name="text_low_username">Username должен иметь хотя бы 5 символов</string>
     <string name="text_username_taken">Username занят другим пользователем</string>
+    <string name="text_phone_number">Номер телефона</string>
+    <string name="tv_name" translatable="false">Имя</string>
+    <string name="text_none">None</string>
+    <string name="text_username">Username</string>
 </resources>

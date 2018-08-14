@@ -1,18 +1,20 @@
-package com.example.infinity.airtop.data.network.response;
+package com.example.infinity.airtop.data.network.response.updaters;
 
-public class UpdateUsernameResponse {
+import com.example.infinity.airtop.data.network.response.ResponseModel;
+
+public class UpdateUsernameResponse implements ResponseModel {
     public static String RESULT_OK = "RESULT_OK", RESULT_CANCEL = "RESULT_CANCEL";
     private String TYPE;
     private String result;
-    private String phone;
+    private String uuid;
     private String username;
 
     public String getResult() {
         return result;
     }
 
-    public String getPhone() {
-        return phone;
+    public String getUuid() {
+        return uuid;
     }
 
     public String getUsername() {

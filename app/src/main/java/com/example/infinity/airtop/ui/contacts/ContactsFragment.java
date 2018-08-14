@@ -63,6 +63,7 @@ public class ContactsFragment extends MvpAppCompatFragment implements ContextMen
     @Override
     public void onStart() {
         super.onStart();
+
         contactUpgradeBus.subscribe(adapter);
         adapter.onLoadContacts();
     }

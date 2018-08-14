@@ -3,15 +3,16 @@ package com.example.infinity.airtop.service.client;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.example.infinity.airtop.data.db.interactors.ChatInteractor;
 import com.example.infinity.airtop.data.db.model.Message;
-import com.example.infinity.airtop.data.network.response.AddresseResponse;
+import com.example.infinity.airtop.data.network.response.AddressResponse;
 import com.example.infinity.airtop.data.network.response.MessageResponse;
 import com.example.infinity.airtop.data.network.response.NicknameAuthResponse;
 import com.example.infinity.airtop.data.network.response.PhoneAuthResponse;
 import com.example.infinity.airtop.data.network.response.SearchUserResponse;
-import com.example.infinity.airtop.data.network.response.UpdateUsernameResponse;
+import com.example.infinity.airtop.data.network.response.updaters.UpdateUsernameResponse;
 import com.example.infinity.airtop.App;
 import com.google.gson.Gson;
 
@@ -125,9 +126,9 @@ public class DataReader extends Thread{
                     message.obj = searchUserResponse;
                     break;
                 case "addressee":
-                    AddresseResponse addresseResponse = gson.fromJson(jsonText, AddresseResponse.class);
+                    AddressResponse addressResponse = gson.fromJson(jsonText, AddressResponse.class);
                     message.what = ADDRESSEE_KEY;
-                    message.obj = addresseResponse;
+                    message.obj = addressResponse;
                     break;
             }
             handler.sendMessage(message);
@@ -172,13 +173,13 @@ public class DataReader extends Thread{
                     break;
                 case UPDATE_USERNAME_KEY:
                     if(msg.obj instanceof UpdateUsernameResponse)
-                        responseListeners.getUsernameUpdateBus().onUpdateUsername((UpdateUsernameResponse) msg.obj);
+                        responseListeners.getUsernameSettingsBus().onUpdateSettings((UpdateUsernameResponse) msg.obj);
                     else
                         Log.e("mLogError", "DataReader -> не верный тип объекта. Ожидалось: UpdateUsernameResponse");
                     break;
                 case ADDRESSEE_KEY:
-                    if(msg.obj instanceof AddresseResponse)
-                        responseListeners.getMessageBus().onAddresse((AddresseResponse) msg.obj);
+                    if(msg.obj instanceof AddressResponse)
+                        responseListeners.getMessageBus().onAddresse((AddressResponse) msg.obj);
                     else
                         Log.e("mLogError", "DataReader -> не верный тип объекта. Ожидалось: AddresseResponse");
                     break;

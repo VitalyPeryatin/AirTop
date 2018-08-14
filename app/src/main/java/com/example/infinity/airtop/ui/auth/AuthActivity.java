@@ -30,7 +30,7 @@ public class AuthActivity extends AppCompatActivity{
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_new_auth);
+        setContentView(R.layout.activity_auth);
         sPref = new AuthPreference(getBaseContext());
 
         changeView();

@@ -23,8 +23,8 @@ public abstract class UserDao {
     @Insert(onConflict = REPLACE)
     public abstract void insert(User user);
 
-    @Query("UPDATE user SET username=:username WHERE phone=:phone")
-    public abstract void updateUsername(String phone, String username);
+    @Query("UPDATE user SET username=:username WHERE uuid=:uuid")
+    public abstract void updateUsername(String uuid, String username);
 
     public int getSize(){
         return getAll().size();

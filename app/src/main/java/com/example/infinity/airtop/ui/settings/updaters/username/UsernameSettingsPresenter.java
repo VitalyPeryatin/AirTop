@@ -3,25 +3,27 @@ package com.example.infinity.airtop.ui.settings.updaters.username;
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 import com.example.infinity.airtop.data.db.interactors.UpdateUserInteractor;
-import com.example.infinity.airtop.data.network.response.UpdateUsernameResponse;
+import com.example.infinity.airtop.data.network.response.updaters.UpdateUsernameResponse;
+import com.example.infinity.airtop.ui.settings.OnSettingsListener;
+import com.example.infinity.airtop.ui.settings.SettingsBus;
 
 @InjectViewState
-public class UsernameUpdaterPresenter extends MvpPresenter<UsernameUpdaterView> implements OnUsernameUpdateListener{
-    private String phone, username;
+public class UsernameSettingsPresenter extends MvpPresenter<UsernameSettingsView> implements OnSettingsListener<UpdateUsernameResponse> {
+    private String uuid, username;
     // This boolean mast be of string type for successful processing on the server
     private String isAvailableToChange = "false";
 
-    private UsernameUpdateBus usernameUpdateBus;
+    private SettingsBus<UpdateUsernameResponse> usernameSettingsBus;
     private UpdateUserInteractor interactor;
 
-    public UsernameUpdaterPresenter(UpdateUserInteractor interactor, UsernameUpdateBus usernameUpdateBus){
+    public UsernameSettingsPresenter(UpdateUserInteractor interactor, SettingsBus<UpdateUsernameResponse> usernameSettingsBus){
         this.interactor = interactor;
-        this.usernameUpdateBus = usernameUpdateBus;
+        this.usernameSettingsBus = usernameSettingsBus;
     }
 
     @Override
-    public void onUpdateUsername(UpdateUsernameResponse response){
-        phone = response.getPhone();
+    public void onUpdateSettings(UpdateUsernameResponse response) {
+        uuid = response.getUuid();
         username = response.getUsername();
         if(response.getResult().equals(UpdateUsernameResponse.RESULT_OK)) {
             getViewState().onUsernameFree();
@@ -34,7 +36,7 @@ public class UsernameUpdaterPresenter extends MvpPresenter<UsernameUpdaterView> 
     }
 
     public void onCreate(){
-        usernameUpdateBus.subscribe(this);
+        usernameSettingsBus.subscribe(this);
     }
 
     public void onTextChanged(String text){
@@ -53,7 +55,7 @@ public class UsernameUpdaterPresenter extends MvpPresenter<UsernameUpdaterView> 
     public void saveChanges(){
         if(isAvailableToChange.equals("true")){
             getViewState().onSendUsername(username, isAvailableToChange);
-            interactor.updateUsername(phone, username);
+            interactor.updateUsername(uuid, username);
             getViewState().onUpdateUsername();
             isAvailableToChange = "false";
         }
@@ -61,6 +63,6 @@ public class UsernameUpdaterPresenter extends MvpPresenter<UsernameUpdaterView> 
 
     public void onDestroy() {
         super.onDestroy();
-        usernameUpdateBus.unsubscribe(this);
+        usernameSettingsBus.unsubscribe(this);
     }
 }
