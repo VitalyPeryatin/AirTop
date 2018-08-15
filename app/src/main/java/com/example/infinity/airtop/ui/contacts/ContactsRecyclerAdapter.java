@@ -18,7 +18,9 @@ import com.example.infinity.airtop.R;
 import com.example.infinity.airtop.data.db.interactors.ContactsInteractor;
 import com.example.infinity.airtop.data.db.model.Addressee;
 import com.example.infinity.airtop.data.db.model.Contact;
+import com.example.infinity.airtop.data.network.request.SubscribeUserUpdateRequest;
 import com.example.infinity.airtop.ui.chat.ChatActivity;
+import com.example.infinity.airtop.utils.ServerPostman;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,6 +38,8 @@ public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecycl
     ContactsRecyclerAdapter(ContextMenuView contextMenuView){
         this.context = App.getInstance().getBaseContext();
         this.contextMenuView = contextMenuView;
+        ArrayList<String> uuids = new ArrayList<>(interactor.getContacts().keySet());
+        new ServerPostman().postRequest(new SubscribeUserUpdateRequest(uuids));
     }
 
     @NonNull

@@ -11,10 +11,7 @@ class RequestApi:
         self._TYPE_KEY = "TYPE"
         self._auth_users = {}
         self._database = DatabaseHelper()
-
-    connection = pika.BlockingConnection(pika.ConnectionParameters('localhost', socket_timeout=150))
-    channel_message = connection.channel()
-    channel_user = connection.channel()
+        self.channel_message = None
 
     def execute(self, json_str):
         request_name = eval(json_str).get(self._TYPE_KEY)
@@ -23,7 +20,8 @@ class RequestApi:
     def send_message(self, json_message):
         exchange_uuid = eval(json_message).get("exchangeUUID")
 
-        channel = self.connection.channel()
+        connection = pika.BlockingConnection(pika.ConnectionParameters('localhost', socket_timeout=150))
+        channel = connection.channel()
         channel.exchange_declare(exchange=exchange_uuid, exchange_type='fanout')
         channel.basic_publish(exchange=exchange_uuid, routing_key='', body=json_message)
 
@@ -66,6 +64,9 @@ class RequestApi:
         response_dict = {self._TYPE_KEY: "update_username", "result": result, "uuid": uuid, "username": username}
         json = str(response_dict)
 
+        if available_to_update == 'true':
+            user = self._database.get_user_by_uuid(uuid)
+            self.update_user_info(user)
         send_json(self.sock, json)
 
     def send_searchable_users(self, json_str):
@@ -86,21 +87,48 @@ class RequestApi:
         uuid = eval(json_str).get("uuid")
         add_connection(uuid, self.sock)
 
-        channel_message = self.channel_message
-        channel_message.exchange_declare(exchange=uuid, exchange_type='fanout')
-        channel_message.queue_declare(queue=uuid)
-        channel_message.queue_bind(exchange=uuid, queue=uuid)
-        channel_message.basic_consume(self.callback, queue=uuid, no_ack=False)
-        try:
-            channel_message.start_consuming()
-        except RecursionError:
-            print('Ошибка BlockingChannel')
+        connection = pika.BlockingConnection(pika.ConnectionParameters('localhost', socket_timeout=150))
+        self.channel_message = connection.channel()
+        self.channel_message.exchange_declare(exchange=uuid, exchange_type='fanout')
+        self.channel_message.queue_declare(queue=uuid)
+        self.channel_message.queue_bind(exchange=uuid, queue=uuid)
+        self.channel_message.basic_consume(self.callback, queue=uuid, no_ack=False)
+        self.channel_message.start_consuming()
 
     def send_address_by_uuid(self, json_str):
         uuid = eval(json_str).get("uuid")
         user = self._database.get_user_by_uuid(uuid)
         response = str({self._TYPE_KEY: "addressee", "addressee": user})
         send_json(self.sock, response)
+
+    def update_user_info(self, json_dict):
+        uuid = json_dict.get('uuid')
+        connection = pika.BlockingConnection(pika.ConnectionParameters('localhost', socket_timeout=150))
+        channel = connection.channel()
+        channel.exchange_declare(exchange='UserUpdate', exchange_type='direct')
+        channel.basic_publish(exchange='UserUpdate', routing_key=uuid, body=str(json_dict))
+
+    def callback_user_update(self, ch, method, properties, body):
+        json_addressee = dict(eval(str(body.decode())))
+        json_dict = {self._TYPE_KEY: 'user_update', 'addressee': json_addressee}
+        send_json(self.sock, str(json_dict))
+        ch.basic_ack(delivery_tag=method.delivery_tag)
+
+    def add_consumer(self, uuid):
+        connection = pika.BlockingConnection(pika.ConnectionParameters('localhost', socket_timeout=150))
+        channel = connection.channel()
+        channel.exchange_declare(exchange='UserUpdate', exchange_type='direct')
+        result = channel.queue_declare(exclusive=True)
+        queue_name = result.method.queue
+        channel.queue_bind(exchange='UserUpdate', queue=queue_name, routing_key=uuid)
+        channel.basic_consume(self.callback_user_update, queue=queue_name, no_ack=False)
+        channel.start_consuming()
+
+    def subscribe_user_update(self, json_str):
+        uuids = eval(json_str).get('uuids')
+        for uuid in uuids:
+            threading.Thread(target=self.add_consumer, args=(uuid,)).start()
+
 
     __requests = {
         "MessageRequest": send_message,
@@ -110,6 +138,7 @@ class RequestApi:
         "SearchUserRequest": send_searchable_users,
         "VerifyUserRequest": verify_user,
         "AddressRequest": send_address_by_uuid,
+        "SubscribeUserUpdateRequest": subscribe_user_update,
     }
 
     def close(self):
@@ -137,7 +166,10 @@ print("[ Server Started ]")
 def send_json(address_sock, json_str):
     str_len = str(len(json_str)) + '@'
     json_str = (str_len + json_str).encode(CHARSET)
-    address_sock.sendall(json_str)
+    try:
+        address_sock.sendall(json_str)
+    except:
+        pass
 
 
 def read_data(sock):
