@@ -10,4 +10,13 @@ import com.example.infinity.airtop.ui.contacts.ContactsRecyclerAdapter;
 public class Contact {
     public Addressee addressee;
     public String lastMessage;
+
+    public Contact(Addressee addressee, String lastMessage) {
+        this.addressee = addressee;
+        this.lastMessage = lastMessage;
+    }
+
+    public Contact(){
+
+    }
 }

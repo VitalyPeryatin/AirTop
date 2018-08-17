@@ -18,6 +18,7 @@ public class Addressee {
 
     public Addressee(String uuid){
         this.uuid = uuid;
+        nickname = "Anonymous";
     }
 
     public Addressee(User user) {

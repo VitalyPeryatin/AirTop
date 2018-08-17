@@ -1,8 +1,11 @@
 package com.example.infinity.airtop.ui.contacts;
 
+import android.arch.lifecycle.Observer;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
@@ -24,8 +27,10 @@ import com.example.infinity.airtop.utils.ServerPostman;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
-public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecyclerAdapter.ContactsViewHolder> implements OnContactListListener{
+public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecyclerAdapter.ContactsViewHolder>
+        implements OnContactListListener, Observer<List<Addressee>>{
 
     private HashMap<String, Contact> contactsWithUUID = new HashMap<>();
     private ArrayList<Contact> contacts = new ArrayList<>();
@@ -35,11 +40,10 @@ public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecycl
     private ContextMenuView contextMenuView;
     private boolean isActiveActionMode;
 
-    ContactsRecyclerAdapter(ContextMenuView contextMenuView){
+    ContactsRecyclerAdapter(FragmentActivity activity, ContextMenuView contextMenuView){
         this.context = App.getInstance().getBaseContext();
         this.contextMenuView = contextMenuView;
-        ArrayList<String> uuids = new ArrayList<>(interactor.getContacts().keySet());
-        new ServerPostman().postRequest(new SubscribeUserUpdateRequest(uuids));
+        interactor.getLiveAddress().observe(activity, this);
     }
 
     @NonNull
@@ -62,18 +66,23 @@ public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecycl
     }
 
     @Override
-    public void onLoadContacts() {
-        this.contactsWithUUID = interactor.getContacts();
-        if(contactsWithUUID != null)
-            this.contacts = new ArrayList<>(contactsWithUUID.values());
-        else
-            this.contacts = new ArrayList<>();
+    public void onUpdateContact(String uuid, Contact contact) {
+        this.contactsWithUUID.put(uuid, contact);
+        this.contacts = new ArrayList<>(contactsWithUUID.values());
         notifyDataSetChanged();
     }
 
     @Override
-    public void onUpdateLastMessage(String uuid, String lastMessage) {
-        contactsWithUUID.get(uuid).lastMessage = lastMessage;
+    public void onUpdateContact(String uuid, String lastMessage) {
+        this.contactsWithUUID.get(uuid).lastMessage = lastMessage;
+        notifyDataSetChanged();
+    }
+
+    @Override
+    public void onChanged(@Nullable List<Addressee> addressees) {
+        this.contactsWithUUID = interactor.getUpdatedContacts(addressees);
+        ArrayList<String> uuids = new ArrayList<>(this.contactsWithUUID.keySet());
+        new ServerPostman().postRequest(new SubscribeUserUpdateRequest(uuids));
         this.contacts = new ArrayList<>(contactsWithUUID.values());
         notifyDataSetChanged();
     }
@@ -142,9 +151,9 @@ public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecycl
             public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
                 switch (menuItem.getItemId()) {
                     case R.id.item_delete:
-                        Addressee addressee = contactsWithUUID.get(getAdapterPosition()).addressee;
+                        Addressee addressee = contacts.get(getAdapterPosition()).addressee;
                         interactor.deleteAddressWithMessages(addressee);
-                        onLoadContacts();
+                        notifyDataSetChanged();
                         actionMode.finish();
                         break;
                 }

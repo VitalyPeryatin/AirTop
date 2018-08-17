@@ -1,5 +1,6 @@
 package com.example.infinity.airtop.ui.contacts;
 
+import android.arch.lifecycle.LiveData;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -51,7 +52,7 @@ public class ContactsFragment extends MvpAppCompatFragment implements ContextMen
         assert getActivity() != null;
         ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
         toolbar.setTitle(R.string.toolbar_title_main);
-        adapter = new ContactsRecyclerAdapter(this);
+        adapter = new ContactsRecyclerAdapter(getActivity(), this);
         recyclerContacts.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerContacts.setAdapter(adapter);
 
@@ -63,9 +64,8 @@ public class ContactsFragment extends MvpAppCompatFragment implements ContextMen
     @Override
     public void onStart() {
         super.onStart();
-
-        contactUpgradeBus.subscribe(adapter);
-        adapter.onLoadContacts();
+        contactUpgradeBus.subscribe(getActivity(), adapter);
+        adapter.notifyDataSetChanged();
     }
 
     @OnClick(R.id.fab)

@@ -6,6 +6,8 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.example.infinity.airtop.data.db.interactors.ChatInteractor;
+import com.example.infinity.airtop.data.db.interactors.ContactsInteractor;
+import com.example.infinity.airtop.data.db.model.Addressee;
 import com.example.infinity.airtop.data.db.model.Message;
 import com.example.infinity.airtop.data.network.response.AddressResponse;
 import com.example.infinity.airtop.data.network.response.MessageResponse;
@@ -35,6 +37,7 @@ public class DataReader extends Thread{
     private DataInputStream inputStream;
     private App.ResponseListeners responseListeners;
     private ChatInteractor chatInteractor;
+    private ContactsInteractor contactsInteractor;
 
     // Constants for pass to handler the type of response
     private static final int
@@ -49,6 +52,7 @@ public class DataReader extends Thread{
         this.serverConnection = serverConnection;
         responseListeners = App.getInstance().getResponseListeners();
         chatInteractor = new ChatInteractor();
+        contactsInteractor = new ContactsInteractor();
     }
 
     public void connectToSocket(Socket socket){
@@ -129,6 +133,11 @@ public class DataReader extends Thread{
                     AddressResponse addressResponse = gson.fromJson(jsonText, AddressResponse.class);
                     message.what = ADDRESSEE_KEY;
                     message.obj = addressResponse;
+                    break;
+                case "user_update":
+                    AddressResponse userUpdateResponse = gson.fromJson(jsonText, AddressResponse.class);
+                    Addressee addressee = userUpdateResponse.getAddressee();
+                    chatInteractor.insertAddressee(addressee);
                     break;
             }
             handler.sendMessage(message);

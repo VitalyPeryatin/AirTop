@@ -115,7 +115,7 @@ class RequestApi:
         ch.basic_ack(delivery_tag=method.delivery_tag)
 
     def add_consumer(self, uuid):
-        connection = pika.BlockingConnection(pika.ConnectionParameters('localhost', socket_timeout=150))
+        connection = pika.BlockingConnection(pika.ConnectionParameters(host, socket_timeout=150))
         channel = connection.channel()
         channel.exchange_declare(exchange='UserUpdate', exchange_type='direct')
         result = channel.queue_declare(exclusive=True)
@@ -150,7 +150,8 @@ connections_by_socket = {}
 
 portion = 1024
 CHARSET = "windows-1251"
-host = socket.gethostbyname(socket.gethostname())
+local_host = socket.gethostbyname(socket.gethostname())
+host = '192.168.1.65'
 
 print(host)
 port = 9090

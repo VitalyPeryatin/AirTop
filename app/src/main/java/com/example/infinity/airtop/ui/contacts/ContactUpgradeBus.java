@@ -1,9 +1,15 @@
 package com.example.infinity.airtop.ui.contacts;
 
+import android.app.Activity;
+
+import com.example.infinity.airtop.data.db.model.Contact;
+
 public class ContactUpgradeBus {
     private OnContactListListener contactListListener = null;
+    private Activity activity;
 
-    public void subscribe(OnContactListListener contactListListener){
+    public void subscribe(Activity activity, OnContactListListener contactListListener){
+        this.activity = activity;
         this.contactListListener = contactListListener;
     }
 
@@ -11,13 +17,13 @@ public class ContactUpgradeBus {
         this.contactListListener = null;
     }
 
-    public void onLoadContacts(){
+    public void onUpdateLastMessage(String uuid, Contact contact){
         if(contactListListener != null)
-            contactListListener.onLoadContacts();
+            activity.runOnUiThread(()-> contactListListener.onUpdateContact(uuid, contact));
     }
 
     public void onUpdateLastMessage(String uuid, String lastMessage){
         if(contactListListener != null)
-            contactListListener.onUpdateLastMessage(uuid, lastMessage);
+            activity.runOnUiThread(()-> contactListListener.onUpdateContact(uuid, lastMessage));
     }
 }

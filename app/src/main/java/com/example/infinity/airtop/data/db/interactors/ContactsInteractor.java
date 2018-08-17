@@ -1,5 +1,7 @@
 package com.example.infinity.airtop.data.db.interactors;
 
+import android.arch.lifecycle.LiveData;
+
 import com.example.infinity.airtop.App;
 import com.example.infinity.airtop.data.db.model.Addressee;
 import com.example.infinity.airtop.data.db.model.Contact;
@@ -10,6 +12,7 @@ import com.example.infinity.airtop.ui.contacts.ContactsFragment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -23,13 +26,12 @@ import java.util.concurrent.TimeoutException;
  */
 public class ContactsInteractor extends BaseIntearctor{
 
-    public HashMap<String, Contact> getContacts(){
+    private HashMap<String, Contact> contacts = new HashMap<>();
+
+    public HashMap<String, Contact> getUpdatedContacts(List<Addressee> addressees){
         Future<HashMap<String, Contact>> future = service.submit(() -> {
-            HashMap<String, Contact> contacts = new HashMap<>();
-            AddresseeDao addresseeDao = App.getInstance().getDatabase().addresseeDao();
+            contacts.clear();
             MessageDao messageDao = App.getInstance().getDatabase().messageDao();
-            ArrayList<Addressee> addressees = (ArrayList<Addressee>) addresseeDao.getAll();
-            System.out.println(addressees.size()+"");
             for (Addressee addressee : addressees) {
                 Contact contact = new Contact();
                 contact.addressee = addressee;
@@ -37,7 +39,7 @@ public class ContactsInteractor extends BaseIntearctor{
 
                 // If addressee.phone == null then unknown user sends the message
                 // At this case first user is identified and after insert the message
-                if(message == null && addressee.phone != null){
+                if(message == null){
                     deleteAddressWithMessages(addressee);
                 }
                 else {
@@ -45,8 +47,35 @@ public class ContactsInteractor extends BaseIntearctor{
                     contacts.put(addressee.uuid, contact);
                 }
             }
-            System.out.println();
             return contacts;
+        });
+        try {
+            return future.get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public HashMap<String, Contact> getContacts() {
+        return contacts;
+    }
+
+    public LiveData<List<Addressee>> getLiveAddress(){
+        Future<LiveData<List<Addressee>>> future = service.submit(() -> {
+            AddresseeDao addresseeDao = App.getInstance().getDatabase().addresseeDao();
+            MessageDao messageDao = App.getInstance().getDatabase().messageDao();
+            ArrayList<Addressee> addressees = (ArrayList<Addressee>) addresseeDao.getAll();
+            for (Addressee addressee : addressees) {
+                Message message = messageDao.getLastMessageByAddressId(addressee.uuid);
+
+                // If addressee.phone == null then unknown user sends the message
+                // At this case first user is identified and after insert the message
+                if(message == null && addressee.phone != null){
+                    deleteAddressWithMessages(addressee);
+                }
+            }
+            return addresseeDao.getAllLive();
         });
         try {
             return future.get();

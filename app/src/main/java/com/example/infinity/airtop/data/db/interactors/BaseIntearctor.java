@@ -12,6 +12,5 @@ import java.util.concurrent.Executors;
  * @version 1.0.3
  */
 public abstract class BaseIntearctor {
-    protected static ExecutorService service = Executors.newFixedThreadPool(2);
-    protected ServerPostman serverPostman = new ServerPostman();
+    protected static ExecutorService service = Executors.newFixedThreadPool(5);
 }

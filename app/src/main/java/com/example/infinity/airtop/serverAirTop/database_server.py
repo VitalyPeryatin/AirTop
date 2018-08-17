@@ -31,13 +31,11 @@ class DatabaseHelper:
 
     def get_users_by_start_username(self, start_username):
         readable_columns_tuple = ("nickname", "uuid", "phone", "username")
-        print("username: " + str(start_username))
         self.cursor.execute("""
                   SELECT {}, {}, {}, {}
                   FROM users WHERE {} LIKE (?);
                 """.format(self.NICKNAME, self.UUID, self.PHONE, self.USERNAME, self.USERNAME), [start_username + "%"])
         result = self.cursor.fetchall()
-        print(result)
         result.sort(key=self.sort_by_username_length)
         result = result[:5]
         users = []
@@ -52,7 +50,6 @@ class DatabaseHelper:
                   FROM users WHERE {} LIKE (?);
                 """.format(self.NICKNAME, self.PHONE, self.USERNAME, self.USERNAME), [username])
         result = self.cursor.fetchall()
-        print(result)
         result.sort(key=self.sort_by_username_length)
         result = result[:5]
         users = []

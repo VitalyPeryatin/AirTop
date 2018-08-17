@@ -12,6 +12,7 @@ import com.example.infinity.airtop.data.network.request.AddressRequest;
 import com.example.infinity.airtop.data.network.response.MessageResponse;
 import com.example.infinity.airtop.ui.chat.ChatPresenter;
 import com.example.infinity.airtop.ui.contacts.ContactUpgradeBus;
+import com.example.infinity.airtop.utils.ServerPostman;
 
 import java.util.ArrayList;
 import java.util.concurrent.Callable;
@@ -27,10 +28,25 @@ import java.util.concurrent.TimeoutException;
  */
 public class ChatInteractor extends BaseIntearctor{
 
+    private Callable insertMessageCallable;
+    private final Object lock = new Object();
+    private App app = App.getInstance();
+    private static boolean isUpdatedMessage = true;
+
+
     public String getNicknameById(String id){
         Future<String> future = service.submit(() -> {
-            AddresseeDao addresseeDao = App.getInstance().getDatabase().addresseeDao();
+            AddresseeDao addresseeDao = app.getDatabase().addresseeDao();
             return addresseeDao.getNicknameById(id);
+        });
+        try { return future.get(1, TimeUnit.SECONDS); }
+        catch (InterruptedException | ExecutionException | TimeoutException e) { return null; }
+    }
+
+    public String getUsernameById(String id){
+        Future<String> future = service.submit(() -> {
+            AddresseeDao addresseeDao = app.getDatabase().addresseeDao();
+            return addresseeDao.getUsernameById(id);
         });
         try { return future.get(1, TimeUnit.SECONDS); }
         catch (InterruptedException | ExecutionException | TimeoutException e) { return null; }
@@ -38,32 +54,41 @@ public class ChatInteractor extends BaseIntearctor{
 
     public void insertMessage(Message message){
         String uuid = message.addressId;
-        if(getNicknameById(uuid) == null){
-            Addressee addressee = new Addressee(message.addressId);
-            insertAddressee(addressee);
-            serverPostman.postRequest(new AddressRequest(uuid));
-        }
+
         Future future = service.submit(() -> {
-            MessageDao messageDao = App.getInstance().getDatabase().messageDao();
-            messageDao.insert(message);
+            if (getNicknameById(uuid) == null) {
+                Addressee addressee = new Addressee(uuid);
+                AddresseeDao addresseeDao = app.getDatabase().addresseeDao();
+                addresseeDao.insert(addressee);
+                Contact contact = new Contact(addressee, message.text);
+                MessageDao messageDao = app.getDatabase().messageDao();
+                messageDao.insert(message);
+                app.getResponseListeners().getContactUpgradeBus().onUpdateLastMessage(uuid, contact);
+            }
+            else {
+                MessageDao messageDao = app.getDatabase().messageDao();
+                messageDao.insert(message);
+                app.getResponseListeners().getContactUpgradeBus().onUpdateLastMessage(uuid, message.text);
+            }
             return null;
         });
+
         try {
-            future.get();
-            App.getInstance().getResponseListeners().getContactUpgradeBus().onUpdateLastMessage(message.addressId, message.text);
-        } catch (InterruptedException | ExecutionException e) { e.printStackTrace(); }
+            future.get(1, TimeUnit.SECONDS);
+            if(getUsernameById(uuid) == null){
+                new ServerPostman().postRequest(new AddressRequest(uuid));
+            }
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            e.printStackTrace();
+        }
+
     }
 
     public void insertAddressee(Addressee addressee) {
-        Future<Object> future = service.submit(() -> {
-            AddresseeDao addresseeDao = App.getInstance().getDatabase().addresseeDao();
+        service.submit(() -> {
+            AddresseeDao addresseeDao = app.getDatabase().addresseeDao();
             addresseeDao.insert(addressee);
-            return null;
         });
-        try {
-            future.get();
-            App.getInstance().getResponseListeners().getContactUpgradeBus().onLoadContacts();
-        } catch (InterruptedException | ExecutionException e) { e.printStackTrace(); }
     }
 
     public void insertMessage(MessageResponse message){
