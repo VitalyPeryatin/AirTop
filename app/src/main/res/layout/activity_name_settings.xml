@@ -37,7 +37,7 @@
         app:layout_constraintTop_toBottomOf="@+id/etFirstName" />
 
     <Button
-        android:id="@+id/btnApplyUsername"
+        android:id="@+id/btnChangeName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"

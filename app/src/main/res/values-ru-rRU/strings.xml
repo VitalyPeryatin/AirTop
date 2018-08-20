@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">AirTop</string>
+    <string name="app_name">Villon</string>
     <string name="name">Имя</string>
     <string name="picture_attached">Картинка прикреплена</string>
     <string name="choose_image">Выберите картинку</string>
