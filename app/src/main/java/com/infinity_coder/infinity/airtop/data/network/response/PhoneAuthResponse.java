@@ -7,6 +7,11 @@ public class PhoneAuthResponse implements ResponseModel {
     private String result;
     private User user;
 
+    public PhoneAuthResponse(String result, User user) {
+        this.result = result;
+        this.user = user;
+    }
+
     public String getResult() {
         return result;
     }

@@ -3,9 +3,11 @@ package com.infinity_coder.infinity.airtop.di.modules;
 
 import com.infinity_coder.infinity.airtop.App;
 import com.infinity_coder.infinity.airtop.data.db.interactors.UpdateUserInteractor;
+import com.infinity_coder.infinity.airtop.data.network.response.updaters.UpdateBioResponse;
 import com.infinity_coder.infinity.airtop.data.network.response.updaters.UpdateNameResponse;
 import com.infinity_coder.infinity.airtop.data.network.response.updaters.UpdateUsernameResponse;
 import com.infinity_coder.infinity.airtop.ui.settings.SettingsBus;
+import com.infinity_coder.infinity.airtop.ui.settings.updaters.bio.BioSettingsPresenter;
 import com.infinity_coder.infinity.airtop.ui.settings.updaters.name.NameSettingsPresenter;
 import com.infinity_coder.infinity.airtop.ui.settings.updaters.username.UsernameSettingsPresenter;
 import com.infinity_coder.infinity.airtop.utils.ServerPostman;
@@ -26,6 +28,11 @@ public class SettingsUpdateModule {
     }
 
     @Provides
+    SettingsBus<UpdateBioResponse> getBioUpdateBus(){
+        return App.getInstance().getResponseListeners().getBioSettingsBus();
+    }
+
+    @Provides
     UpdateUserInteractor getInteractor(){
         return new UpdateUserInteractor();
     }
@@ -43,5 +50,10 @@ public class SettingsUpdateModule {
     @Provides
     NameSettingsPresenter provideNamePresenter(UpdateUserInteractor interactor, SettingsBus<UpdateNameResponse> updateBus){
         return new NameSettingsPresenter(interactor, updateBus);
+    }
+
+    @Provides
+    BioSettingsPresenter provideBioPresenter(UpdateUserInteractor interactor, SettingsBus<UpdateBioResponse> updateBus){
+        return new BioSettingsPresenter(interactor, updateBus);
     }
 }

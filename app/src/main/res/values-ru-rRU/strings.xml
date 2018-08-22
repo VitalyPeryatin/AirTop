@@ -11,4 +11,5 @@
     <string name="tv_name" translatable="false">Имя</string>
     <string name="text_none">None</string>
     <string name="text_username">Username</string>
+    <string name="invalid_username">"Извините, это имя пользователя содержит некорректные символы. "</string>
 </resources>

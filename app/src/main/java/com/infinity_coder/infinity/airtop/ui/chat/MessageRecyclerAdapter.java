@@ -1,6 +1,8 @@
 package com.infinity_coder.infinity.airtop.ui.chat;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
@@ -30,9 +32,11 @@ import butterknife.ButterKnife;
 public class MessageRecyclerAdapter extends RecyclerView.Adapter<MessageRecyclerAdapter.RecyclerViewHolder> {
     
     private ArrayList<Message> messages;
+    private Context context;
 
-    public MessageRecyclerAdapter(String uuid, ChatInteractor interactor) {
+    public MessageRecyclerAdapter(Context context, String uuid, ChatInteractor interactor) {
         messages = interactor.getAllMessagesByUUID(uuid);
+        this.context = context;
     }
 
     @NonNull
@@ -44,35 +48,28 @@ public class MessageRecyclerAdapter extends RecyclerView.Adapter<MessageRecycler
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerViewHolder recyclerViewHolder, int position) {
-        String text;
-        String route = messages.get(position).route;
+        Message message = messages.get(position);
 
-        ImageView imageView = recyclerViewHolder.imageView;
+        setText(recyclerViewHolder.textView, message.text);
+        setImage(recyclerViewHolder.imageView, message.imagePath);
+        setMessageStyleByRoute(recyclerViewHolder.msgCardView, message.route);
 
-        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams)
-                recyclerViewHolder.msgCardView.getLayoutParams();
+    }
 
-        // Set text relatively received messages
-        if((text = messages.get(position).text) != null) {
-            recyclerViewHolder.textView.setText(text);
-            recyclerViewHolder.textView.setVisibility(View.VISIBLE);
+    private void setText(TextView textView, String text){
+        if(text != null) {
+            textView.setText(text);
+            textView.setVisibility(View.VISIBLE);
         }
         else {
-            recyclerViewHolder.textView.setText("");
-            recyclerViewHolder.textView.setVisibility(View.GONE);
+            textView.setText("");
+            textView.setVisibility(View.GONE);
         }
+    }
 
-        // Set display type by route relatively received messages
-        if(route.equals(Message.ROUTE_IN))
-            params.gravity = Gravity.START;
-        else if(route.equals(Message.ROUTE_OUT))
-            params.gravity = Gravity.END;
-        recyclerViewHolder.msgCardView.setLayoutParams(params);
-
-
-        if((messages.get(position).imagePath) != null) {
-            String path = messages.get(position).imagePath;
-            File file = new File(path);
+    private void setImage(ImageView imageView, String imagePath){
+        if(imagePath != null) {
+            File file = new File(imagePath);
             Picasso.get().load(file).noFade().into(imageView);
             imageView.setVisibility(View.VISIBLE);
         }
@@ -80,7 +77,23 @@ public class MessageRecyclerAdapter extends RecyclerView.Adapter<MessageRecycler
             imageView.setImageBitmap(null);
             imageView.setVisibility(View.GONE);
         }
+    }
 
+    private void setMessageStyleByRoute(CardView cardView, String route){
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams)cardView.getLayoutParams();
+        int color = 0;
+        switch (route){
+            case Message.ROUTE_IN:
+                params.gravity = Gravity.START;
+                color = R.color.messageIn;
+                break;
+            case Message.ROUTE_OUT:
+                params.gravity = Gravity.END;
+                color = R.color.messageOut;
+                break;
+        }
+        cardView.setCardBackgroundColor(context.getResources().getColor(color));
+        cardView.setLayoutParams(params);
     }
 
     @Override

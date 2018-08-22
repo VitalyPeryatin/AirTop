@@ -6,6 +6,7 @@ class DatabaseHelper:
     PHONE = "phone"
     NICKNAME = "nickname"
     USERNAME = "username"
+    BIO = "bio"
 
     def __init__(self):
         self.connection = sqlite3.connect("testdb.sqlite", check_same_thread=False)
@@ -17,9 +18,10 @@ class DatabaseHelper:
                 {} VARCHAR, 
                 {} VARCHAR UNIQUE,
                 {} VARCHAR UNIQUE, 
+                {} VARCHAR,
                 PRIMARY KEY ({})  
                 );
-            """.format(self.UUID, self.NICKNAME, self.PHONE, self.USERNAME, self.UUID))
+            """.format(self.UUID, self.NICKNAME, self.PHONE, self.USERNAME, self.BIO, self.UUID))
 
         self.cursor.execute("""
             CREATE INDEX IF NOT EXISTS indUsername ON users ({});
@@ -30,11 +32,11 @@ class DatabaseHelper:
         return str(user[2]).__len__()
 
     def get_users_by_start_username(self, start_username):
-        readable_columns_tuple = ("nickname", "uuid", "phone", "username")
+        readable_columns_tuple = ("nickname", "uuid", "phone", "username", "bio")
         self.cursor.execute("""
-                  SELECT {}, {}, {}, {}
+                  SELECT {}, {}, {}, {}, {}
                   FROM users WHERE {} LIKE (?);
-                """.format(self.NICKNAME, self.UUID, self.PHONE, self.USERNAME, self.USERNAME), [start_username + "%"])
+                """.format(self.NICKNAME, self.UUID, self.PHONE, self.USERNAME, self.BIO, self.USERNAME), [start_username + "%"])
         result = self.cursor.fetchall()
         result.sort(key=self.sort_by_username_length)
         result = result[:5]
@@ -44,11 +46,11 @@ class DatabaseHelper:
         return users
 
     def get_users_by_username(self, username):
-        readable_columns_tuple = ("nickname", "phone", "username")
+        readable_columns_tuple = ("nickname", "phone", "username", "bio")
         self.cursor.execute("""
-                  SELECT {}, {}, {}
+                  SELECT {}, {}, {}, {}
                   FROM users WHERE {} LIKE (?);
-                """.format(self.NICKNAME, self.PHONE, self.USERNAME, self.USERNAME), [username])
+                """.format(self.NICKNAME, self.PHONE, self.USERNAME, self.BIO, self.USERNAME), [username])
         result = self.cursor.fetchall()
         result.sort(key=self.sort_by_username_length)
         result = result[:5]
@@ -83,11 +85,12 @@ class DatabaseHelper:
             nickname_str = str(user_dict.get("nickname"))
             phone_str = str(user_dict.get("phone"))
             username_str = str(user_dict.get("username"))
+            bio_str = str(user_dict.get("bio"))
             self.cursor.execute("""
-                INSERT OR REPLACE INTO users ({}, {}, {}, {})
-                VALUES (?, ?, ?, ?);
-            """.format(self.UUID, self.NICKNAME, self.PHONE, self.USERNAME),
-                                (uuid_str, nickname_str, phone_str, username_str))
+                INSERT OR REPLACE INTO users ({}, {}, {}, {}, {})
+                VALUES (?, ?, ?, ?, ?);
+            """.format(self.UUID, self.NICKNAME, self.PHONE, self.USERNAME, self.BIO),
+                                (uuid_str, nickname_str, phone_str, username_str, bio_str))
             self.connection.commit()
         except:
             self.close_database()
@@ -106,14 +109,16 @@ class DatabaseHelper:
             return "RESULT_CANCEL"
 
     def change_name_by_uuid(self, uuid, name):
-        if len(list(self.get_users_by_username(name))) == 0:
-            self.cursor.execute("""
-                    UPDATE users SET nickname = (?) WHERE uuid = (?);
-                """, [name, uuid])
-            self.connection.commit()
-            return "RESULT_OK"
-        else:
-            return "RESULT_CANCEL"
+        self.cursor.execute("""
+                UPDATE users SET nickname = (?) WHERE uuid = (?);
+            """, [name, uuid])
+        self.connection.commit()
+
+    def change_bio_by_uuid(self, uuid, bio):
+        self.cursor.execute("""
+                UPDATE users SET bio = (?) WHERE uuid = (?);
+            """, [bio, uuid])
+        self.connection.commit()
 
     def get_users(self):
         self.cursor.execute("""

@@ -89,7 +89,7 @@ public class ChatActivity extends MvpAppCompatActivity implements ChatView {
         presenter.onCreate(addressId, senderId);
 
         // Set adapter AFTER restoring list of messages
-        messageAdapter = new MessageRecyclerAdapter(addressId, chatInteractor);
+        messageAdapter = new MessageRecyclerAdapter(this, addressId, chatInteractor);
         msgRecycler.setAdapter(messageAdapter);
         layoutManager = new LinearLayoutManager(this);
         msgRecycler.setLayoutManager(layoutManager);

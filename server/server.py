@@ -27,6 +27,7 @@ class RequestApi:
         channel.basic_publish(exchange=exchange_uuid, routing_key='', body=json_message)
 
     def create_user(self, json_user):
+        print("Пользователь: " + str(json_user))
         user_dict = dict(eval(json_user))
         self._database.insert_or_replace_user(user_dict)
         user_dict[self._TYPE_KEY] = "nickname_auth"
@@ -51,8 +52,8 @@ class RequestApi:
             else:
                 self._auth_users[phone] = [self.sock]
         else:
-            response_dict["result"] = "RESULT_EXIST"
-            response_dict["user"] = str(user)
+            response_dict["result"] = "RESULT_EXISTS"
+            response_dict["user"] = user
         response_json = str(response_dict)
         send_json(self.sock, response_json)
 
@@ -74,8 +75,21 @@ class RequestApi:
         user_dict = dict(eval(json_str))
         uuid = user_dict.get("uuid")
         name = user_dict.get("name")
-        result = self._database.change_name_by_uuid(uuid, name)
-        response_dict = {self._TYPE_KEY: "update_name", "result": result, "uuid": uuid, "name": name}
+        self._database.change_name_by_uuid(uuid, name)
+        response_dict = {self._TYPE_KEY: "update_name", "uuid": uuid, "name": name}
+        json = str(response_dict)
+
+        user = self._database.get_user_by_uuid(uuid)
+        self.update_user_info(user)
+
+        send_json(self.sock, json)
+
+    def update_bio(self, json_str):
+        user_dict = dict(eval(json_str))
+        uuid = user_dict.get("uuid")
+        bio = user_dict.get("bio")
+        self._database.change_bio_by_uuid(uuid, bio)
+        response_dict = {self._TYPE_KEY: "update_bio", "uuid": uuid, "bio": bio}
         json = str(response_dict)
 
         user = self._database.get_user_by_uuid(uuid)
@@ -116,6 +130,7 @@ class RequestApi:
         send_json(self.sock, response)
 
     def update_user_info(self, json_dict):
+        print(json_dict)
         uuid = json_dict.get('uuid')
         connection = pika.BlockingConnection(pika.ConnectionParameters('localhost', socket_timeout=150))
         channel = connection.channel()
@@ -154,10 +169,12 @@ class RequestApi:
         "VerifyUserRequest": verify_user,
         "AddressRequest": send_address_by_uuid,
         "SubscribeUserUpdateRequest": subscribe_user_update,
+        "UpdateBioRequest": update_bio,
     }
 
     def close(self):
-        self.channel_message.stop_consuming()
+        if self.channel_message is not None:
+            self.channel_message.stop_consuming()
 
 
 connections_by_uuid = {}

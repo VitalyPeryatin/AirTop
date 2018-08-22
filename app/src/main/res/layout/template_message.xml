@@ -11,13 +11,13 @@
         android:id="@+id/msgCardView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:layout_margin="4dp"
-        app:cardCornerRadius="5dp"
         android:layout_gravity="end"
+        android:layout_margin="4dp"
+        android:layout_weight="1"
+        app:cardBackgroundColor="@color/messageIn"
 
-        app:cardElevation="4dp"
-        app:cardBackgroundColor="@android:color/holo_green_dark"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="2dp"
         tools:ignore="InefficientWeight">
 
         <LinearLayout
@@ -26,22 +26,23 @@
             android:orientation="vertical"
 
             android:padding="8dp">
+
             <TextView
                 android:id="@+id/textView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:maxWidth="296dp"
                 android:adjustViewBounds="true"
-                android:text="" />
+                android:maxWidth="296dp"
+                android:textColor="@android:color/black" />
+
             <ImageView
                 android:id="@+id/imageView"
-                android:maxWidth="296dp"
-                android:maxHeight="336dp"
-                android:adjustViewBounds="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                />
+                android:adjustViewBounds="true"
+                android:maxHeight="336dp"
+                android:maxWidth="296dp" />
         </LinearLayout>
 
     </android.support.v7.widget.CardView>

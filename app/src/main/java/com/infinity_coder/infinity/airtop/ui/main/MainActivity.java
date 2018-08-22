@@ -1,6 +1,7 @@
 package com.infinity_coder.infinity.airtop.ui.main;
 
 import android.Manifest;
+import android.arch.lifecycle.Observer;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -35,7 +36,8 @@ import butterknife.Unbinder;
  * @author infinity_coder
  * @version 1.0.4
  */
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
+public class MainActivity extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener, Observer<User>{
 
     @BindView(R.id.nav_view)
     NavigationView navigationView;
@@ -70,9 +72,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void setHeaderUserInfo(){
-        currentUser = App.getInstance().getCurrentUser();
-        tvName.setText(currentUser.nickname);
-        tvPhone.setText(currentUser.phone);
+        App.getInstance().getCurrentLiveUser().observe(this, this);
     }
 
 
@@ -80,9 +80,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == AUTH_REQUEST_CODE && resultCode == RESULT_OK) {
-            setHeaderUserInfo();
-            App.getInstance().showPermissions(this);
+        if(requestCode == AUTH_REQUEST_CODE){
+            if(resultCode == RESULT_OK) {
+                setHeaderUserInfo();
+                App.getInstance().showPermissions(this);
+            }
+            else{
+                finish();
+            }
         }
     }
 
@@ -121,5 +126,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             drawerLayout.closeDrawer(GravityCompat.START);
         else
             super.onBackPressed();
+    }
+
+    @Override
+    public void onChanged(@Nullable User user) {
+        tvName.setText(user.nickname);
+        tvPhone.setText(user.phone);
     }
 }

@@ -9,7 +9,7 @@ public class NicknameAuthRequest extends RequestModel {
          uuid = UUID.randomUUID().toString();
          this.phone = phone;
          this.nickname = nickname;
-         username = "NULL";
-         bio = "None";
+         username = "";
+         bio = "";
      }
 }

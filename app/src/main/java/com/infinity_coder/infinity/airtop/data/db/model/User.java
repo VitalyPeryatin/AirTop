@@ -22,6 +22,17 @@ public class User{
         this.phone = phone;
     }
 
+    public User(){
+
+    }
+
+    public User(@NonNull String uuid, String nickname, String username, @NonNull String phone) {
+        this.phone = phone;
+        this.uuid = uuid;
+        this.username = username;
+        this.nickname = nickname;
+    }
+
     public User(NicknameAuthResponse response){
         username = response.getUsername();
         nickname = response.getNickname();

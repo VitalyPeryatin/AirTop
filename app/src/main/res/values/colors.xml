@@ -3,4 +3,7 @@
     <color name="colorPrimary">#673AB7</color>
     <color name="colorPrimaryDark">#512DA8</color>
     <color name="colorAccent">#FFA000</color>
+    <color name="messageIn">#ffffff</color>
+    <color name="messageOut">#e2ffc9</color>
+    <color name="chatBackgroundColor">#e0e0e0</color>
 </resources>

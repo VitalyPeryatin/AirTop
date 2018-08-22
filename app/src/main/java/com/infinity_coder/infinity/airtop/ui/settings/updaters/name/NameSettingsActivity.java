@@ -1,6 +1,9 @@
 package com.infinity_coder.infinity.airtop.ui.settings.updaters.name;
 
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.EditText;
 
 import com.arellomobile.mvp.MvpAppCompatActivity;
@@ -30,6 +33,8 @@ public class NameSettingsActivity extends MvpAppCompatActivity implements NameSe
     EditText etFirstName;
     @BindView(R.id.etLastName)
     EditText etLastName;
+    @BindView(R.id.toolbar_name_settings)
+    Toolbar toolbar;
 
     @Inject
     UpdateUserInteractor interactor;
@@ -55,10 +60,25 @@ public class NameSettingsActivity extends MvpAppCompatActivity implements NameSe
         daggerComponent.inject(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_name_settings);
-
-        presenter.onCreate();
         unbinder = ButterKnife.bind(this);
+
+        Bundle bundle = getIntent().getExtras();
+        if(bundle != null) {
+            String firstName = bundle.getString("firstName", "");
+            String lastName = bundle.getString("lastName", "");
+            etFirstName.setText(firstName);
+            etLastName.setText(lastName);
+        }
+
+        setToolbar();
+        presenter.onCreate();
         uuid = App.getInstance().getCurrentUser().uuid;
+    }
+
+    private void setToolbar(){
+        setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(R.drawable.arrow_back);
+        toolbar.setNavigationOnClickListener(view -> onBackPressed());
     }
 
     @Override
@@ -68,8 +88,23 @@ public class NameSettingsActivity extends MvpAppCompatActivity implements NameSe
         super.onDestroy();
     }
 
-    @OnClick(R.id.btnChangeName)
-    public void sendName(){
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_apply, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.item_apply:
+                sendName();
+                break;
+        }
+        return true;
+    }
+
+    private void sendName(){
         String firstName = etFirstName.getText().toString().trim();
         String lastName = etLastName.getText().toString().trim();
         String fullName = (firstName + " " + lastName).trim();

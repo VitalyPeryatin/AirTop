@@ -43,7 +43,7 @@ public class MessageNotification {
         return new Notification.Builder(context)
                 .setContentTitle(nickname)
                 .setContentText(text)
-                .setSmallIcon(R.mipmap.ic_launcher_round)
+                .setSmallIcon(R.mipmap.ic_logo_rounded)
                 .setContentIntent(actionPendingIntent);
     }
 

@@ -7,6 +7,7 @@ public interface UsernameSettingsView extends MvpView {
     void onSmallUsername();
     void onUsernameIsTaken();
     void onUsernameFree();
+    void onInvalidUsername();
 
     void onSendUsername(String username, String availableToUpdate);
     void onUpdateUsername();

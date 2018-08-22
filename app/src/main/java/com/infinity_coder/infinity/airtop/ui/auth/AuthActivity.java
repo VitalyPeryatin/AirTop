@@ -1,5 +1,6 @@
 package com.infinity_coder.infinity.airtop.ui.auth;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -15,6 +16,7 @@ import com.infinity_coder.infinity.airtop.service.client.ServerConnection;
 import com.infinity_coder.infinity.airtop.ui.auth.entry_code.EntryAuthFragment;
 import com.infinity_coder.infinity.airtop.ui.auth.nickname.NicknameAuthFragment;
 import com.infinity_coder.infinity.airtop.ui.auth.phone.PhoneAuthFragment;
+import com.infinity_coder.infinity.airtop.ui.main.MainActivity;
 
 import java.util.ArrayList;
 
@@ -38,11 +40,11 @@ public class AuthActivity extends AppCompatActivity{
 
     public void changeView(){
         if(!sPref.isEntered())
-            setFragment(new EntryAuthFragment());
+            replaceFragment(new EntryAuthFragment());
         else if(sPref.getCurrentPhone() == null)
-            setFragment(new PhoneAuthFragment());
+            replaceFragment(new PhoneAuthFragment());
         else if(!sPref.haveNickname())
-            setFragment(new NicknameAuthFragment());
+            replaceFragment(new NicknameAuthFragment());
         else {
             verifyUser();
             setResult(RESULT_OK);
@@ -61,9 +63,16 @@ public class AuthActivity extends AppCompatActivity{
         }
     }
 
-    private void setFragment(Fragment fragment){
+    private void replaceFragment(Fragment fragment){
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_container, fragment);
+        transaction.commit();
+    }
+
+    public void addFragmentToBackstack(Fragment fragment){
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_container, fragment);
+        transaction.addToBackStack(null);
         transaction.commit();
     }
 }

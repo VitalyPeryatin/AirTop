@@ -13,6 +13,7 @@ import android.util.Log;
 import com.infinity_coder.infinity.airtop.data.db.AppDatabase;
 import com.infinity_coder.infinity.airtop.data.db.interactors.UserInteractor;
 import com.infinity_coder.infinity.airtop.data.db.model.User;
+import com.infinity_coder.infinity.airtop.data.network.response.updaters.UpdateBioResponse;
 import com.infinity_coder.infinity.airtop.data.network.response.updaters.UpdateNameResponse;
 import com.infinity_coder.infinity.airtop.data.network.response.updaters.UpdateUsernameResponse;
 import com.infinity_coder.infinity.airtop.data.prefs.app.AppPreference;
@@ -22,7 +23,7 @@ import com.infinity_coder.infinity.airtop.di.components.DaggerAppComponent;
 import com.infinity_coder.infinity.airtop.di.modules.AppModule;
 import com.infinity_coder.infinity.airtop.service.ClientService;
 import com.infinity_coder.infinity.airtop.ui.auth.nickname.NicknameAuthBus;
-import com.infinity_coder.infinity.airtop.ui.auth.phone.PhoneAuthBus;
+import com.infinity_coder.infinity.airtop.ui.auth.phone_verify.PhoneVerifyBus;
 import com.infinity_coder.infinity.airtop.ui.chat.MessageBus;
 import com.infinity_coder.infinity.airtop.ui.contacts.ContactUpgradeBus;
 import com.infinity_coder.infinity.airtop.ui.searchUser.SearchUserBus;
@@ -66,7 +67,6 @@ public class App extends Application {
         responseListeners = new ResponseListeners();
         interactor = new UserInteractor();
 
-
         Intent intent = new Intent(getBaseContext(), ClientService.class);
         startService(intent);
 
@@ -105,7 +105,8 @@ public class App extends Application {
     }
 
     public LiveData<User> getCurrentLiveUser() {
-        return interactor.getLiveUserByPhone(appPreference.getCurrentPhone());
+        String phone = appPreference.getCurrentPhone();
+        return interactor.getLiveUserByPhone(phone);
     }
 
     public void setCurrentUser(User user) {
@@ -122,30 +123,32 @@ public class App extends Application {
 
     public static class ResponseListeners {
         private MessageBus messageBus;
-        private PhoneAuthBus phoneAuthBus;
+        private PhoneVerifyBus phoneVerifyBus;
         private SettingsBus<UpdateUsernameResponse> usernameSettingsBus;
         private SettingsBus<UpdateNameResponse> nameSettingsBus;
+        private SettingsBus<UpdateBioResponse> bioSettingsBus;
         private SearchUserBus searchUserBus;
         private NicknameAuthBus nicknameAuthBus;
         private ContactUpgradeBus contactUpgradeBus;
 
         ResponseListeners(){
             messageBus = new MessageBus();
-            phoneAuthBus = new PhoneAuthBus();
+            phoneVerifyBus = new PhoneVerifyBus();
             searchUserBus = new SearchUserBus();
             nicknameAuthBus = new NicknameAuthBus();
             contactUpgradeBus = new ContactUpgradeBus();
 
             usernameSettingsBus = new SettingsBus<>();
             nameSettingsBus = new SettingsBus<>();
+            bioSettingsBus = new SettingsBus<>();
         }
 
         public MessageBus getMessageBus() {
             return messageBus;
         }
 
-        public PhoneAuthBus getPhoneAuthBus() {
-            return phoneAuthBus;
+        public PhoneVerifyBus getPhoneAuthBus() {
+            return phoneVerifyBus;
         }
 
         public SettingsBus<UpdateUsernameResponse> getUsernameSettingsBus() {
@@ -154,6 +157,10 @@ public class App extends Application {
 
         public SettingsBus<UpdateNameResponse> getNameSettingsBus() {
             return nameSettingsBus;
+        }
+
+        public SettingsBus<UpdateBioResponse> getBioSettingsBus() {
+            return bioSettingsBus;
         }
 
         public SearchUserBus getSearchUserBus() {

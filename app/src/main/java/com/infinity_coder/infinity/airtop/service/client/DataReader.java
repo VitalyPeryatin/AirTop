@@ -10,11 +10,13 @@ import com.infinity_coder.infinity.airtop.data.db.interactors.ChatInteractor;
 import com.infinity_coder.infinity.airtop.data.db.interactors.ContactsInteractor;
 import com.infinity_coder.infinity.airtop.data.db.model.Addressee;
 import com.infinity_coder.infinity.airtop.data.db.model.Message;
+import com.infinity_coder.infinity.airtop.data.network.request.UpdateBioRequest;
 import com.infinity_coder.infinity.airtop.data.network.response.AddressResponse;
 import com.infinity_coder.infinity.airtop.data.network.response.MessageResponse;
 import com.infinity_coder.infinity.airtop.data.network.response.NicknameAuthResponse;
 import com.infinity_coder.infinity.airtop.data.network.response.PhoneAuthResponse;
 import com.infinity_coder.infinity.airtop.data.network.response.SearchUserResponse;
+import com.infinity_coder.infinity.airtop.data.network.response.updaters.UpdateBioResponse;
 import com.infinity_coder.infinity.airtop.data.network.response.updaters.UpdateNameResponse;
 import com.infinity_coder.infinity.airtop.data.network.response.updaters.UpdateUsernameResponse;
 import com.google.gson.Gson;
@@ -48,7 +50,8 @@ public class DataReader extends Thread{
             NICKNAME_AUTH_KEY = 4,
             ADDRESSEE_KEY = 5,
             UPDATE_USERNAME_KEY = 6,
-            UPDATE_NAME_KEY = 7;
+            UPDATE_NAME_KEY = 7,
+            UPDATE_BIO_KEY = 8;
 
 
     DataReader(ServerConnection serverConnection) {
@@ -113,9 +116,13 @@ public class DataReader extends Thread{
                     message.obj = messageResponse.toMessageModel();
                     break;
                 case "phone_auth":
-                    PhoneAuthResponse phoneAuthResponse = gson.fromJson(jsonText, PhoneAuthResponse.class);
-                    message.what = PHONE_AUTH_KEY;
-                    message.obj =  phoneAuthResponse;
+                    try {
+                        PhoneAuthResponse phoneAuthResponse = gson.fromJson(jsonText, PhoneAuthResponse.class);
+                        message.what = PHONE_AUTH_KEY;
+                        message.obj =  phoneAuthResponse;
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
                     break;
                 case "update_username":
                     UpdateUsernameResponse usernameResponse = gson.fromJson(jsonText, UpdateUsernameResponse.class);
@@ -126,6 +133,11 @@ public class DataReader extends Thread{
                     UpdateNameResponse nameResponse = gson.fromJson(jsonText, UpdateNameResponse.class);
                     message.what = UPDATE_NAME_KEY;
                     message.obj = nameResponse;
+                    break;
+                case "update_bio":
+                    UpdateBioResponse bioResponse = gson.fromJson(jsonText, UpdateBioResponse.class);
+                    message.what = UPDATE_BIO_KEY;
+                    message.obj = bioResponse;
                     break;
                 case "nickname_auth":
                     NicknameAuthResponse nicknameAuthResponse = gson.fromJson(jsonText, NicknameAuthResponse.class);
@@ -178,7 +190,7 @@ public class DataReader extends Thread{
                     break;
                 case PHONE_AUTH_KEY:
                     if(msg.obj instanceof PhoneAuthResponse)
-                        responseListeners.getPhoneAuthBus().onPhoneAuth((PhoneAuthResponse) msg.obj);
+                        responseListeners.getPhoneAuthBus().onPhoneVerify((PhoneAuthResponse) msg.obj);
                     else
                         Log.e("mLogError", "DataReader -> не верный тип объекта. Ожидалось: PhoneAuthResponse");
                     break;
@@ -199,6 +211,12 @@ public class DataReader extends Thread{
                         responseListeners.getNameSettingsBus().onUpdateSettings((UpdateNameResponse) msg.obj);
                     else
                         Log.e("mLogError", "DataReader -> не верный тип объекта. Ожидалось: UpdateNameResponse");
+                    break;
+                case UPDATE_BIO_KEY:
+                    if(msg.obj instanceof UpdateBioResponse)
+                        responseListeners.getBioSettingsBus().onUpdateSettings((UpdateBioResponse) msg.obj);
+                    else
+                        Log.e("mLogError", "DataReader -> не верный тип объекта. Ожидалось: UpdateBioResponse");
                     break;
                 case ADDRESSEE_KEY:
                     if(msg.obj instanceof AddressResponse)

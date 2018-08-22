@@ -3,23 +3,19 @@ package com.infinity_coder.infinity.airtop.ui.auth.phone;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.telephony.PhoneNumberUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
-import com.arellomobile.mvp.MvpAppCompatFragment;
-import com.arellomobile.mvp.presenter.InjectPresenter;
-import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.infinity_coder.infinity.airtop.R;
-import com.infinity_coder.infinity.airtop.data.db.interactors.ChatInteractor;
-import com.infinity_coder.infinity.airtop.data.prefs.auth.AuthPreference;
-import com.infinity_coder.infinity.airtop.di.components.DaggerPhoneAuthComponent;
-import com.infinity_coder.infinity.airtop.di.components.PhoneAuthComponent;
 import com.infinity_coder.infinity.airtop.ui.auth.AuthActivity;
-import com.infinity_coder.infinity.airtop.utils.ServerPostman;
+import com.infinity_coder.infinity.airtop.ui.auth.phone_verify.PhoneVerifyFragment;
 
-import javax.inject.Inject;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -30,43 +26,18 @@ import butterknife.OnClick;
  *  @author infinity_coder
  *  @version 1.0.4
  */
-public class PhoneAuthFragment extends MvpAppCompatFragment implements PhoneAuthView {
+public class PhoneAuthFragment extends Fragment {
 
     @BindView(R.id.etAuthPhone)
     EditText editTextAuth;
 
-    @Inject
-    ChatInteractor interactor;
-    @Inject
-    ServerPostman serverPostman;
-    @Inject
-    PhoneAuthBus phoneAuthBus;
-    @Inject
-    AuthPreference authPreference;
-
-    @InjectPresenter
-    PhoneAuthPresenter presenter;
-    @ProvidePresenter
-    PhoneAuthPresenter providePresenter(){
-        return phoneAuthComponent.providePhoneAuthPresenter();
-    }
-
     private AuthActivity parentActivity;
-    private PhoneAuthComponent phoneAuthComponent;
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        phoneAuthComponent = DaggerPhoneAuthComponent.create();
-        phoneAuthComponent.inject(this);
-        super.onCreate(savedInstanceState);
-    }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view =  inflater.inflate(R.layout.fragment_phone_auth, container, false);
         ButterKnife.bind(this, view);
-        presenter.onCreate();
         return view;
     }
 
@@ -79,22 +50,23 @@ public class PhoneAuthFragment extends MvpAppCompatFragment implements PhoneAuth
     @OnClick(R.id.btnAuth)
     public void auth(){
         String phone = editTextAuth.getText().toString();
-        presenter.sendPhone(phone);
+
+        if(isValidPhone(phone)) {
+            Bundle bundle = new Bundle();
+            bundle.putString("phoneNumber", phone);
+            Fragment phoneVerifyFragment = new PhoneVerifyFragment();
+            phoneVerifyFragment.setArguments(bundle);
+
+            parentActivity.addFragmentToBackstack(phoneVerifyFragment);
+        }
+        else{
+            editTextAuth.getText().clear();
+        }
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        presenter.onDestroy();
-    }
-
-    @Override
-    public void notValidPhone() {
-        editTextAuth.getText().clear();
-    }
-
-    @Override
-    public void successfulPhoneAuth() {
-        parentActivity.changeView();
+    private boolean isValidPhone(String phoneNumber){
+        phoneNumber = PhoneNumberUtils.stripSeparators(phoneNumber);
+        Matcher matcher = Pattern.compile("(\\+7)([0-9]){10}").matcher(phoneNumber);
+        return matcher.matches();
     }
 }

@@ -47,9 +47,6 @@ public class DataWriter extends Thread{
 
     // Adds a message to the queue for following sending
     public void sendMessage(String json) {
-
-
-
         synchronized (lock) {
             msgQueue.add(json);
             lock.notify();
@@ -76,9 +73,10 @@ public class DataWriter extends Thread{
         }
     }
 
-    private synchronized void sendJsonToServer(String jsonStr) throws IOException {
+    private synchronized void sendJsonToServer(String jsonStr) throws IOException, InterruptedException {
         byte[] bytes = jsonStr.getBytes(serverConnection.getCharsetName());
         outputStream.write(bytes, 0, bytes.length);
+        Thread.sleep(100);
     }
 
     public void closeConnection() throws IOException {

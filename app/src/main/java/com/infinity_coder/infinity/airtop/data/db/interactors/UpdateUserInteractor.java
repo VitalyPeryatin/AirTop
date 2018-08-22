@@ -24,4 +24,11 @@ public class UpdateUserInteractor extends BaseIntearctor{
             userDao.updateName(uuid, name);
         });
     }
+
+    public void updateBio(String uuid, String bio){
+        service.submit(() -> {
+            UserDao userDao = App.getInstance().getDatabase().userDao();
+            userDao.updateBio(uuid, bio);
+        });
+    }
 }

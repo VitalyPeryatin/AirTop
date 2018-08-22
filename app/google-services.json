@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "90648938965",
+    "firebase_url": "https://villon-bfd87.firebaseio.com",
+    "project_id": "villon-bfd87",
+    "storage_bucket": "villon-bfd87.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:90648938965:android:f4cbb1b8830b9c36",
+        "android_client_info": {
+          "package_name": "com.infinity_coder.infinity.airtop"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "90648938965-s3qmapth1ircjsm2qrikor6ui80e5tqh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.infinity_coder.infinity.airtop",
+            "certificate_hash": "d2fe037e630a8c809a187f1c9a22e50007d177a5"
+          }
+        },
+        {
+          "client_id": "90648938965-0gcqube24ee96fcrqegl2tauco9mhs99.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAAVSJ12B2IOAcbdV0WTKElj2e8-zYsEIs"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "90648938965-0gcqube24ee96fcrqegl2tauco9mhs99.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

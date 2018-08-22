@@ -7,6 +7,9 @@ import com.infinity_coder.infinity.airtop.data.network.response.updaters.UpdateU
 import com.infinity_coder.infinity.airtop.ui.settings.OnSettingsListener;
 import com.infinity_coder.infinity.airtop.ui.settings.SettingsBus;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 @InjectViewState
 public class UsernameSettingsPresenter extends MvpPresenter<UsernameSettingsView> implements OnSettingsListener<UpdateUsernameResponse> {
     private String uuid, username;
@@ -41,13 +44,19 @@ public class UsernameSettingsPresenter extends MvpPresenter<UsernameSettingsView
 
     public void onTextChanged(String text){
         isAvailableToChange = "false";
+        Matcher matcher = Pattern.compile("^[A-Za-z0-9_]*$").matcher(text);
+
         if(text.length() == 0) {
             getViewState().onEmptyUsernameField();
+        }
+        else if(!matcher.matches()) {
+            getViewState().onInvalidUsername();
         }
         else if(text.length() < 5) {
             getViewState().onSmallUsername();
         }
         else {
+            text = "@".concat(text);
             getViewState().onSendUsername(text, isAvailableToChange);
         }
     }

@@ -2,8 +2,12 @@ package com.infinity_coder.infinity.airtop.ui.settings.updaters.username;
 
 
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -27,15 +31,18 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnItemClick;
 import butterknife.Unbinder;
 
 public class UsernameSettingsActivity extends MvpAppCompatActivity implements TextWatcher, UsernameSettingsView {
 
     private Unbinder unbinder;
     @BindView(R.id.etFirstName)
-    public EditText editTextUsername;
+    EditText editTextUsername;
     @BindView(R.id.tvAccessInfo)
-    public TextView tvAccessInfo;
+    TextView tvAccessInfo;
+    @BindView(R.id.toolbar_username_settings)
+    Toolbar toolbar;
 
     private SettingsUpdateComponent daggerComponent;
 
@@ -62,14 +69,17 @@ public class UsernameSettingsActivity extends MvpAppCompatActivity implements Te
         unbinder = ButterKnife.bind(this);
         presenter.onCreate();
 
+        setToolbar();
+        String username = getIntent().getExtras().getString("username", "");
+        editTextUsername.setText(username);
         editTextUsername.addTextChangedListener(this);
         tvAccessInfo.setVisibility(View.GONE);
     }
 
-
-    @OnClick(R.id.btnApplyUsername)
-    public void applyUsername(){
-        presenter.saveChanges();
+    private void setToolbar(){
+        setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(R.drawable.arrow_back);
+        toolbar.setNavigationOnClickListener(view -> onBackPressed());
     }
 
     @Override
@@ -77,6 +87,22 @@ public class UsernameSettingsActivity extends MvpAppCompatActivity implements Te
         App.getInstance().updateCurrentUser();
         setResult(RESULT_OK);
         finish();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_apply, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.item_apply:
+                presenter.saveChanges();
+                break;
+        }
+        return true;
     }
 
     @Override
@@ -90,6 +116,12 @@ public class UsernameSettingsActivity extends MvpAppCompatActivity implements Te
     public void onUsernameFree() {
         tvAccessInfo.setVisibility(View.VISIBLE);
         tvAccessInfo.setText(R.string.text_username_is_available);
+    }
+
+    @Override
+    public void onInvalidUsername() {
+        tvAccessInfo.setVisibility(View.VISIBLE);
+        tvAccessInfo.setText(R.string.invalid_username);
     }
 
     @Override
