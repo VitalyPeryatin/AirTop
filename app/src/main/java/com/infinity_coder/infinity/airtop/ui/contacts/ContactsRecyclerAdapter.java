@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
@@ -19,20 +18,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.infinity_coder.infinity.airtop.App;
-import com.infinity_coder.infinity.airtop.data.db.interactors.ContactsInteractor;
-import com.infinity_coder.infinity.airtop.data.db.model.Addressee;
-import com.infinity_coder.infinity.airtop.data.db.model.Contact;
-import com.infinity_coder.infinity.airtop.data.network.request.SubscribeUserUpdateRequest;
-import com.infinity_coder.infinity.airtop.service.client.ServerConnection;
 import com.infinity_coder.infinity.airtop.R;
+import com.infinity_coder.infinity.airtop.data.db.interactors.ContactsInteractor;
+import com.infinity_coder.infinity.airtop.data.db.model.Contact;
 import com.infinity_coder.infinity.airtop.ui.chat.ChatActivity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecyclerAdapter.ContactsViewHolder>
-        implements OnContactListListener, Observer<List<Addressee>>{
+        implements OnContactListListener, Observer<Contact>{
 
     private HashMap<String, Contact> contactsWithUUID = new HashMap<>();
     private ArrayList<Contact> contacts = new ArrayList<>();
@@ -42,10 +37,15 @@ public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecycl
     private ContextMenuView contextMenuView;
     private boolean isActiveActionMode;
 
-    ContactsRecyclerAdapter(FragmentActivity activity, ContextMenuView contextMenuView){
+    ContactsRecyclerAdapter(ContactsFragment fragment, ContextMenuView contextMenuView, ContactUpgradeBus contactUpgradeBus){
         this.context = App.getInstance().getBaseContext();
         this.contextMenuView = contextMenuView;
-        interactor.getLiveAddress().observe(activity, this);
+        contactUpgradeBus.subscribe(fragment.getActivity(), this);
+
+        ArrayList<String> addresseeArrayList = (ArrayList<String>) interactor.getUuidList();
+        if(addresseeArrayList != null)
+            for (String uuid : addresseeArrayList)
+                interactor.getLiveAddresseeByUuid(uuid).observe(fragment, this);
     }
 
     @NonNull
@@ -57,7 +57,7 @@ public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecycl
 
     @Override
     public void onBindViewHolder(@NonNull ContactsViewHolder contactsViewHolder, int i) {
-        contactsViewHolder.tvAddressTitle.setText(contacts.get(i).addressee.nickname);
+        contactsViewHolder.tvAddressTitle.setText(contacts.get(i).nickname);
         contactsViewHolder.tvLastMessage.setText(contacts.get(i).lastMessage);
         contactsViewHolder.imageView.setImageBitmap(BitmapFactory.decodeResource(context.getResources() ,R.mipmap.default_avatar));
     }
@@ -69,28 +69,33 @@ public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecycl
     }
 
     @Override
-    public void onUpdateContact(String uuid, Contact contact) {
-        this.contactsWithUUID.put(uuid, contact);
-        this.contacts = new ArrayList<>(contactsWithUUID.values());
+    public void addContact(Contact contact) {
+        this.contactsWithUUID.put(contact.uuid, contact);
+        this.contacts.add(contact);
+        this.notifyDataSetChanged();
+    }
+
+    @Override
+    public void removeContact(Contact contact) {
+        contactsWithUUID.remove(contact.uuid);
+        contacts.remove(contact);
+        this.notifyDataSetChanged();
+    }
+
+    private void remove(Contact contact){
+        this.contactsWithUUID.remove(contact.uuid);
+        this.contacts.remove(contact);
         notifyDataSetChanged();
     }
 
     @Override
-    public void onUpdateContact(String uuid, String lastMessage) {
-        this.contactsWithUUID.get(uuid).lastMessage = lastMessage;
+    public void onChanged(@Nullable Contact contact) {
+        if(contact != null) {
+            this.contactsWithUUID.put(contact.uuid, contact);
+            this.contacts = new ArrayList<>(contactsWithUUID.values());
+        }
         notifyDataSetChanged();
     }
-
-    @Override
-    public void onChanged(@Nullable List<Addressee> addressees) {
-        this.contactsWithUUID = interactor.getUpdatedContacts(addressees);
-        ArrayList<String> uuids = new ArrayList<>(this.contactsWithUUID.keySet());
-        SubscribeUserUpdateRequest request = new SubscribeUserUpdateRequest(uuids);
-        ServerConnection.getInstance().sendRequest(request.toJson());
-        this.contacts = new ArrayList<>(contactsWithUUID.values());
-        notifyDataSetChanged();
-    }
-
 
     class ContactsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener{
         TextView tvAddressTitle, tvLastMessage;
@@ -120,10 +125,9 @@ public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecycl
         }
 
         private void startChatActivity(Contact contact){
-            Addressee addressee = contact.addressee;
             Intent intent = new Intent(context, ChatActivity.class);
             String addressId = context.getResources().getString(R.string.intent_key_address_id);
-            intent.putExtra(addressId, addressee.uuid);
+            intent.putExtra(addressId, contact.uuid);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent);
         }
@@ -157,9 +161,9 @@ public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecycl
             public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
                 switch (menuItem.getItemId()) {
                     case R.id.item_delete:
-                        Addressee addressee = contacts.get(getAdapterPosition()).addressee;
-                        interactor.deleteAddressWithMessages(addressee);
-                        notifyDataSetChanged();
+                        Contact contact = contacts.get(getAdapterPosition());
+                        // remove(contact);
+                        interactor.deleteAddressWithMessages(contact);
                         actionMode.finish();
                         break;
                 }

@@ -3,14 +3,12 @@ package com.infinity_coder.infinity.airtop.service.client;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
-import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.infinity_coder.infinity.airtop.App;
 import com.infinity_coder.infinity.airtop.data.db.interactors.ChatInteractor;
-import com.infinity_coder.infinity.airtop.data.db.interactors.ContactsInteractor;
-import com.infinity_coder.infinity.airtop.data.db.model.Addressee;
+import com.infinity_coder.infinity.airtop.data.db.model.Contact;
 import com.infinity_coder.infinity.airtop.data.db.model.Message;
-import com.infinity_coder.infinity.airtop.data.network.request.UpdateBioRequest;
 import com.infinity_coder.infinity.airtop.data.network.response.AddressResponse;
 import com.infinity_coder.infinity.airtop.data.network.response.MessageResponse;
 import com.infinity_coder.infinity.airtop.data.network.response.NicknameAuthResponse;
@@ -19,7 +17,6 @@ import com.infinity_coder.infinity.airtop.data.network.response.SearchUserRespon
 import com.infinity_coder.infinity.airtop.data.network.response.updaters.UpdateBioResponse;
 import com.infinity_coder.infinity.airtop.data.network.response.updaters.UpdateNameResponse;
 import com.infinity_coder.infinity.airtop.data.network.response.updaters.UpdateUsernameResponse;
-import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -40,7 +37,6 @@ public class DataReader extends Thread{
     private DataInputStream inputStream;
     private App.ResponseListeners responseListeners;
     private ChatInteractor chatInteractor;
-    private ContactsInteractor contactsInteractor;
 
     // Constants for pass to handler the type of response
     private static final int
@@ -58,7 +54,6 @@ public class DataReader extends Thread{
         this.serverConnection = serverConnection;
         responseListeners = App.getInstance().getResponseListeners();
         chatInteractor = new ChatInteractor();
-        contactsInteractor = new ContactsInteractor();
     }
 
     public void connectToSocket(Socket socket){
@@ -110,7 +105,6 @@ public class DataReader extends Thread{
             switch (type) {
                 case "MessageRequest":
                     MessageResponse messageResponse = gson.fromJson(jsonText, MessageResponse.class);
-                    messageResponse.decode();
 
                     message.what = MESSAGE_RESPONSE_KEY;
                     message.obj = messageResponse.toMessageModel();
@@ -156,8 +150,8 @@ public class DataReader extends Thread{
                     break;
                 case "user_update":
                     AddressResponse userUpdateResponse = gson.fromJson(jsonText, AddressResponse.class);
-                    Addressee addressee = userUpdateResponse.getAddressee();
-                    chatInteractor.insertAddressee(addressee);
+                    Contact contact = userUpdateResponse.getContact();
+                    chatInteractor.insertAddressee(contact);
                     break;
             }
             handler.sendMessage(message);
@@ -220,9 +214,9 @@ public class DataReader extends Thread{
                     break;
                 case ADDRESSEE_KEY:
                     if(msg.obj instanceof AddressResponse)
-                        responseListeners.getMessageBus().onAddresse((AddressResponse) msg.obj);
+                        responseListeners.getMessageBus().onAddressee((AddressResponse) msg.obj);
                     else
-                        Log.e("mLogError", "DataReader -> не верный тип объекта. Ожидалось: AddresseResponse");
+                        Log.e("mLogError", "DataReader -> не верный тип объекта. Ожидалось: AddressResponse");
                     break;
             }
         }

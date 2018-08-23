@@ -66,6 +66,7 @@ public class DataWriter extends Thread{
                         lock.wait();
                     }
                 sendJsonToServer(msgQueue.poll());
+                Thread.sleep(100);
                 outputStream.flush();
             } catch (Exception e) { // after something error on the client is reconnect to server
                 serverConnection.reconnectToServer();
@@ -73,10 +74,9 @@ public class DataWriter extends Thread{
         }
     }
 
-    private synchronized void sendJsonToServer(String jsonStr) throws IOException, InterruptedException {
+    private synchronized void sendJsonToServer(String jsonStr) throws IOException {
         byte[] bytes = jsonStr.getBytes(serverConnection.getCharsetName());
         outputStream.write(bytes, 0, bytes.length);
-        Thread.sleep(100);
     }
 
     public void closeConnection() throws IOException {

@@ -104,7 +104,6 @@ public class ChatActivity extends MvpAppCompatActivity implements ChatView {
         });
 
         toolbar.setTitle(presenter.getNickname());
-        App.getInstance().showPermissions(this);
     }
 
     @Override

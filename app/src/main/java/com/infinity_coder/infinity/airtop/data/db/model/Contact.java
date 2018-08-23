@@ -1,22 +1,37 @@
 package com.infinity_coder.infinity.airtop.data.db.model;
 
-import com.infinity_coder.infinity.airtop.ui.contacts.ContactsRecyclerAdapter;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.NonNull;
 
-/**
- * POJO-class for {@linkplain ContactsRecyclerAdapter}
- * @author infinity_coder
- * @version 1.0.3
- */
+import org.jetbrains.annotations.NotNull;
+
+@Entity
 public class Contact {
-    public Addressee addressee;
+    public String phone;
+    @NonNull
+    @PrimaryKey
+    public String uuid;
+    public String username;
+    public String nickname;
+    public String bio;
     public String lastMessage;
 
-    public Contact(Addressee addressee, String lastMessage) {
-        this.addressee = addressee;
-        this.lastMessage = lastMessage;
+    public Contact(){}
+
+    @Ignore
+    public Contact(@NonNull String uuid){
+        this.uuid = uuid;
+        nickname = "Anonymous";
     }
 
-    public Contact(){
-
+    @Ignore
+    public Contact(User user) {
+        uuid = user.uuid;
+        phone = user.phone;
+        username = user.username;
+        nickname = user.nickname;
+        bio = user.bio;
     }
 }

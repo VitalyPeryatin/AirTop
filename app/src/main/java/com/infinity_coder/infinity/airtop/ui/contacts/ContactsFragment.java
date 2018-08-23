@@ -1,6 +1,5 @@
 package com.infinity_coder.infinity.airtop.ui.contacts;
 
-import android.arch.lifecycle.LiveData;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -41,7 +40,6 @@ public class ContactsFragment extends MvpAppCompatFragment implements ContextMen
     Toolbar toolbar;
 
     private Unbinder unbinder;
-    private ContactsRecyclerAdapter adapter;
     private ContactUpgradeBus contactUpgradeBus;
 
     @Nullable
@@ -53,21 +51,14 @@ public class ContactsFragment extends MvpAppCompatFragment implements ContextMen
         assert getActivity() != null;
         ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
         toolbar.setTitle(R.string.toolbar_title_main);
-        adapter = new ContactsRecyclerAdapter(getActivity(), this);
+
+        ContactsRecyclerAdapter adapter = new ContactsRecyclerAdapter(this, this, contactUpgradeBus);
         recyclerContacts.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerContacts.addItemDecoration(new ContactHorizontalLineItemDecoration(getActivity(), R.drawable.divider_horizontal));
         recyclerContacts.setAdapter(adapter);
 
         fab.attachToRecyclerView(recyclerContacts);
-        contactUpgradeBus.subscribe(getActivity(), adapter);
         return layout;
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        adapter.notifyDataSetChanged();
     }
 
     @OnClick(R.id.fab)
@@ -79,7 +70,6 @@ public class ContactsFragment extends MvpAppCompatFragment implements ContextMen
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
-        contactUpgradeBus.unsubscribe();
     }
 
     @Override

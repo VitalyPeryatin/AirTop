@@ -1,12 +1,12 @@
 package com.infinity_coder.infinity.airtop.ui.chat;
 
-import android.util.Log;
-
+import com.infinity_coder.infinity.airtop.App;
 import com.infinity_coder.infinity.airtop.data.db.interactors.ChatInteractor;
-import com.infinity_coder.infinity.airtop.data.db.model.Addressee;
+import com.infinity_coder.infinity.airtop.data.db.model.Contact;
 import com.infinity_coder.infinity.airtop.data.db.model.Message;
 import com.infinity_coder.infinity.airtop.data.network.response.AddressResponse;
 import com.infinity_coder.infinity.airtop.service.notifications.MessageNotification;
+import com.infinity_coder.infinity.airtop.ui.contacts.ContactUpgradeBus;
 
 /**
  * Transfer data(MessageRequest) between different objects and threads
@@ -32,10 +32,11 @@ public class MessageBus {
             notification.onMessage(message);
     }
 
-    public void onAddresse(AddressResponse addressResponse){
+    public void onAddressee(AddressResponse addressResponse){
+        ContactUpgradeBus contactUpgradeBus = App.getInstance().getResponseListeners().getContactUpgradeBus();
         ChatInteractor chatInteractor = new ChatInteractor();
-        Addressee addressee = addressResponse.getAddressee();
-        Log.d("mLog2", "adressee: " + addressee);
-        chatInteractor.insertAddressee(addressee);
+        Contact contact = addressResponse.getContact();
+        chatInteractor.insertAddressee(contact);
+        contactUpgradeBus.addAddressee(contact);
     }
 }

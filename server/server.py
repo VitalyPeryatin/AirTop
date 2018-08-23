@@ -182,8 +182,7 @@ connections_by_socket = {}
 
 portion = 1024
 CHARSET = "windows-1251"
-local_host = socket.gethostbyname(socket.gethostname())
-host = '192.168.1.65'
+host = socket.gethostbyname(socket.gethostname())
 
 print(host)
 port = 9090

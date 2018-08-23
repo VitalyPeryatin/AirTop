@@ -10,7 +10,7 @@
     <string name="intent_key_address_id" translatable="false">addressId</string>
     <string name="picture_attached">Picture attached</string>
     <string name="choose_image">Choose image</string>
-    <string name="toolbar_title_main" translatable="false">AirTop</string>
+    <string name="toolbar_title_main" translatable="false">Villon</string>
     <string name="text_username_is_available">Username is available</string>
     <string name="text_low_username">Username must have at least 5 characters</string>
     <string name="text_username_taken">Username already taken</string>

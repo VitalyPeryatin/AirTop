@@ -6,8 +6,10 @@ import android.app.Application;
 import android.arch.lifecycle.LiveData;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.util.LruCache;
 import android.util.Log;
 
 import com.infinity_coder.infinity.airtop.data.db.AppDatabase;
@@ -44,8 +46,6 @@ public class App extends Application {
     private ResponseListeners responseListeners;
     private UserInteractor interactor;
 
-    private static final String USER_PHONE_KEY = "user_phone_key";
-
     public synchronized static App getInstance() {
         return instance;
     }
@@ -71,21 +71,6 @@ public class App extends Application {
         startService(intent);
 
         updateCurrentUser();
-    }
-
-    public void showPermissions(Activity activity){
-        int permissionStatusRead = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
-        int permissionStatusWrite = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        if(permissionStatusRead == PackageManager.PERMISSION_DENIED || permissionStatusWrite == PackageManager.PERMISSION_DENIED)
-            ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
-    }
-
-    public boolean hasReadAndWriteFilePermission(){
-        int permissionStatusRead = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
-        int permissionStatusWrite = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        Log.d("mLog", String.valueOf(permissionStatusRead == PackageManager.PERMISSION_GRANTED));
-        Log.d("mLog", String.valueOf(permissionStatusWrite == PackageManager.PERMISSION_GRANTED));
-        return permissionStatusRead == PackageManager.PERMISSION_GRANTED && permissionStatusWrite == PackageManager.PERMISSION_GRANTED;
     }
 
     public AppPreference getAppPreference() {
@@ -176,5 +161,4 @@ public class App extends Application {
         }
 
     }
-
 }

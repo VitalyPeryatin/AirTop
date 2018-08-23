@@ -3,7 +3,6 @@ package com.infinity_coder.infinity.airtop.data.network.request;
 import android.graphics.Bitmap;
 import android.os.Environment;
 import android.util.Base64;
-import android.util.Log;
 
 import com.infinity_coder.infinity.airtop.App;
 import com.infinity_coder.infinity.airtop.data.db.model.Message;
@@ -11,12 +10,13 @@ import com.infinity_coder.infinity.airtop.data.db.model.Message;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 
 
 public class MessageRequest extends RequestModel {
     private String text, fromId, toId, encodedImage, imageName, imagePath;
     private Bitmap image;
+    private static final String IMAGE_FOLDER = "MyApplication/Images";
+    private static final String SEPARATOR = "/";
 
     public MessageRequest(){}
 
@@ -51,21 +51,19 @@ public class MessageRequest extends RequestModel {
     }
 
     private void encodeImage(){
+        imagePath = Environment.getExternalStorageState() + SEPARATOR + IMAGE_FOLDER + SEPARATOR + imageName;
+
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         image.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-        try {
-            imagePath = saveImageToFolder();
-        } catch (IOException e) { e.printStackTrace(); }
+        imagePath = saveImageToFolder();
         this.encodedImage = Base64.encodeToString(baos.toByteArray(), Base64.DEFAULT);
     }
 
-    private String saveImageToFolder() throws IOException {
-        if(App.getInstance().hasReadAndWriteFilePermission()) {
-            String path = "MyApplication/Images";
-            File dir = new File(Environment.getExternalStorageDirectory(), "MyApplication/Images");
-            File file = new File(Environment.getExternalStorageDirectory() + "/" + path, imageName);
-
-            Log.d("mLog", "Path: " + file.getAbsolutePath());
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    private String saveImageToFolder() {
+        try {
+            File dir = new File(App.getInstance().getFilesDir(), IMAGE_FOLDER);
+            File file = new File(App.getInstance().getFilesDir() + SEPARATOR + IMAGE_FOLDER, imageName);
             if (!dir.exists())
                 dir.mkdirs();
             if (!file.exists())
@@ -74,6 +72,9 @@ public class MessageRequest extends RequestModel {
             image.compress(Bitmap.CompressFormat.JPEG, 100, stream);
             stream.close();
             return file.getAbsolutePath();
+        }
+        catch (Exception e){
+            e.printStackTrace();
         }
         return null;
     }

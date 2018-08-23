@@ -1,11 +1,9 @@
 package com.infinity_coder.infinity.airtop.data.network.response;
 
-import android.Manifest;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
-import android.support.v4.content.ContextCompat;
+import android.support.v4.util.LruCache;
 import android.util.Base64;
 import android.util.Log;
 
@@ -19,24 +17,21 @@ import java.io.IOException;
 public class MessageResponse implements ResponseModel {
     private String text, fromId, toId, encodedImage, phone, imageName, imagePath;
     private Bitmap image;
+    private static final String IMAGE_FOLDER = "Images";
+    private static final String SEPARATOR = "/";
 
     public void decode(){
         if(encodedImage != null) {
             byte[] decodedString = Base64.decode(encodedImage, Base64.DEFAULT);
             image = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-            try {
-                imagePath = saveImageToFolder();
-            } catch (IOException e) { e.printStackTrace(); }
+            imagePath = saveImageToFolder();
         }
     }
 
-    private String saveImageToFolder() throws IOException {
-        if(App.getInstance().hasReadAndWriteFilePermission()) {
-            String path = "MyApplication/Images";
-            File dir = new File(Environment.getExternalStorageDirectory(), "MyApplication/Images");
-            File file = new File(Environment.getExternalStorageDirectory() + "/" + path, imageName);
-
-            Log.d("mLog", "Path: " + file.getAbsolutePath());
+    private String saveImageToFolder() {
+        try {
+            File dir = new File(App.getInstance().getFilesDir(), IMAGE_FOLDER);
+            File file = new File(App.getInstance().getFilesDir() + SEPARATOR + IMAGE_FOLDER, imageName);
             if (!dir.exists())
                 dir.mkdirs();
             if (!file.exists())
@@ -45,6 +40,9 @@ public class MessageResponse implements ResponseModel {
             image.compress(Bitmap.CompressFormat.JPEG, 100, stream);
             stream.close();
             return file.getAbsolutePath();
+        }
+        catch (Exception e){
+            e.printStackTrace();
         }
         return null;
     }

@@ -67,7 +67,6 @@ public class MainActivity extends AppCompatActivity
             showLoginActivity();
         else {
             setHeaderUserInfo();
-            App.getInstance().showPermissions(this);
         }
     }
 
@@ -83,7 +82,6 @@ public class MainActivity extends AppCompatActivity
         if(requestCode == AUTH_REQUEST_CODE){
             if(resultCode == RESULT_OK) {
                 setHeaderUserInfo();
-                App.getInstance().showPermissions(this);
             }
             else{
                 finish();

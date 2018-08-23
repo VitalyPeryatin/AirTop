@@ -33,8 +33,4 @@ public abstract class UserDao {
 
     @Query("UPDATE user SET bio=:bio WHERE uuid=:uuid")
     public abstract void updateBio(String uuid, String bio);
-
-    public int getSize(){
-        return getAll().size();
-    }
 }

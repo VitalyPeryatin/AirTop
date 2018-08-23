@@ -2,7 +2,6 @@ package com.infinity_coder.infinity.airtop.ui.chat;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
@@ -34,8 +33,8 @@ public class MessageRecyclerAdapter extends RecyclerView.Adapter<MessageRecycler
     private ArrayList<Message> messages;
     private Context context;
 
-    public MessageRecyclerAdapter(Context context, String uuid, ChatInteractor interactor) {
-        messages = interactor.getAllMessagesByUUID(uuid);
+    MessageRecyclerAdapter(Context context, String uuid, ChatInteractor interactor) {
+        this.messages = interactor.getAllMessagesByUUID(uuid);
         this.context = context;
     }
 

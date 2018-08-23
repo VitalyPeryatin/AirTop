@@ -10,9 +10,6 @@ import java.util.List;
 
 @Dao
 public abstract class MessageDao {
-    @Query("SELECT * FROM message")
-    public abstract List<Message> getAll();
-
     @Insert
     public abstract void insert(Message message);
 

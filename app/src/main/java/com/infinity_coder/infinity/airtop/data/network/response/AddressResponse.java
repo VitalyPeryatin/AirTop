@@ -1,11 +1,11 @@
 package com.infinity_coder.infinity.airtop.data.network.response;
 
-import com.infinity_coder.infinity.airtop.data.db.model.Addressee;
+import com.infinity_coder.infinity.airtop.data.db.model.Contact;
 
 public class AddressResponse implements ResponseModel{
-    private Addressee addressee;
+    private Contact contact;
 
-    public Addressee getAddressee() {
-        return addressee;
+    public Contact getContact() {
+        return contact;
     }
 }

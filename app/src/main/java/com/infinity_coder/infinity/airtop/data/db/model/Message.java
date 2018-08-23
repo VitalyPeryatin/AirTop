@@ -4,9 +4,8 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
-import android.graphics.Bitmap;
 
-@Entity(foreignKeys = @ForeignKey(entity = Addressee.class, parentColumns = "uuid", childColumns = "addressId"),
+@Entity(foreignKeys = @ForeignKey(entity = Contact.class, parentColumns = "uuid", childColumns = "addressId"),
         indices = @Index("addressId"))
 public class Message {
     public static final String ROUTE_IN = "in", ROUTE_OUT = "out";

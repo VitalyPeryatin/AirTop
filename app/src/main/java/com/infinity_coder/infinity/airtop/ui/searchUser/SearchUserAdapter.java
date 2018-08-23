@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.infinity_coder.infinity.airtop.R;
 import com.infinity_coder.infinity.airtop.data.db.interactors.SearchUserInteractor;
-import com.infinity_coder.infinity.airtop.data.db.model.Addressee;
+import com.infinity_coder.infinity.airtop.data.db.model.Contact;
 import com.infinity_coder.infinity.airtop.data.db.model.User;
 import com.infinity_coder.infinity.airtop.ui.chat.ChatActivity;
 
@@ -80,9 +80,9 @@ public class SearchUserAdapter extends RecyclerView.Adapter<SearchUserAdapter.Se
 
         @OnClick(R.id.cardView)
         public void onClick(View view) {
-            Addressee addressee = new Addressee(users.get(getAdapterPosition()));
-            interactor.insertAddressee(addressee);
-            startChatActivity(addressee.uuid);
+            Contact contact = new Contact(users.get(getAdapterPosition()));
+            interactor.insertAddressee(contact);
+            startChatActivity(contact.uuid);
         }
 
         // Start Chat Activity with companion by address phone

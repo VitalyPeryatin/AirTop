@@ -36,7 +36,8 @@ class DatabaseHelper:
         self.cursor.execute("""
                   SELECT {}, {}, {}, {}, {}
                   FROM users WHERE {} LIKE (?);
-                """.format(self.NICKNAME, self.UUID, self.PHONE, self.USERNAME, self.BIO, self.USERNAME), [start_username + "%"])
+                """.format(self.NICKNAME, self.UUID, self.PHONE, self.USERNAME, self.BIO, self.USERNAME),
+                            [start_username + "%"])
         result = self.cursor.fetchall()
         result.sort(key=self.sort_by_username_length)
         result = result[:5]

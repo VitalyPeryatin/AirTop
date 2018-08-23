@@ -17,13 +17,13 @@ public class ContactUpgradeBus {
         this.contactListListener = null;
     }
 
-    public void onUpdateLastMessage(String uuid, Contact contact){
-        if(contactListListener != null)
-            activity.runOnUiThread(()-> contactListListener.onUpdateContact(uuid, contact));
+    public void addAddressee(Contact contact){
+        activity.runOnUiThread(()->{
+            contactListListener.addContact(contact);
+        });
     }
 
-    public void onUpdateLastMessage(String uuid, String lastMessage){
-        if(contactListListener != null)
-            activity.runOnUiThread(()-> contactListListener.onUpdateContact(uuid, lastMessage));
+    public void removeAddressee(Contact contact){
+        activity.runOnUiThread(()->contactListListener.removeContact(contact));
     }
 }
