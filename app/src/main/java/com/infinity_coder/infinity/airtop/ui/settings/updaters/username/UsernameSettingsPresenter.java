@@ -2,7 +2,7 @@ package com.infinity_coder.infinity.airtop.ui.settings.updaters.username;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
-import com.infinity_coder.infinity.airtop.data.db.interactors.UpdateUserInteractor;
+import com.infinity_coder.infinity.airtop.data.db.interactors.UserInteractor;
 import com.infinity_coder.infinity.airtop.data.network.response.updaters.UpdateUsernameResponse;
 import com.infinity_coder.infinity.airtop.ui.settings.OnSettingsListener;
 import com.infinity_coder.infinity.airtop.ui.settings.SettingsBus;
@@ -17,9 +17,9 @@ public class UsernameSettingsPresenter extends MvpPresenter<UsernameSettingsView
     private String isAvailableToChange = "false";
 
     private SettingsBus<UpdateUsernameResponse> usernameSettingsBus;
-    private UpdateUserInteractor interactor;
+    private UserInteractor interactor;
 
-    public UsernameSettingsPresenter(UpdateUserInteractor interactor, SettingsBus<UpdateUsernameResponse> usernameSettingsBus){
+    public UsernameSettingsPresenter(UserInteractor interactor, SettingsBus<UpdateUsernameResponse> usernameSettingsBus){
         this.interactor = interactor;
         this.usernameSettingsBus = usernameSettingsBus;
     }

@@ -22,41 +22,12 @@ import java.util.concurrent.Future;
  * @author infinity_coder
  * @version 1.0.3
  */
-public class ContactsInteractor extends BaseIntearctor{
+public class ContactsInteractor extends BaseInteractor {
 
-    private HashMap<String, Contact> contacts = new HashMap<>();
     private ContactUpgradeBus contactUpgradeBus;
 
     public ContactsInteractor(){
         contactUpgradeBus = App.getInstance().getResponseListeners().getContactUpgradeBus();
-    }
-
-    public HashMap<String, Contact> getUpdatedContacts(){
-        Future<HashMap<String, Contact>> future = service.submit(() -> {
-            this.contacts.clear();
-            MessageDao messageDao = App.getInstance().getDatabase().messageDao();
-            ContactDao contactDao = App.getInstance().getDatabase().addresseeDao();
-            ArrayList<Contact> contacts = (ArrayList<Contact>) contactDao.getAll();
-            for (Contact addressee : contacts) {
-                Message message = messageDao.getLastMessageByAddressId(addressee.uuid);
-
-                // If addressee.phone == null then unknown user sends the message
-                // At this case first user is identified and after insert the message
-                if(message == null){
-                    deleteAddressWithMessages(addressee);
-                }
-                else {
-                    this.contacts.put(addressee.uuid, addressee);
-                }
-            }
-            return this.contacts;
-        });
-        try {
-            return future.get();
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-            return null;
-        }
     }
 
     public List<String> getUuidList(){

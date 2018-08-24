@@ -1,17 +1,12 @@
 package com.infinity_coder.infinity.airtop;
 
-import android.Manifest;
-import android.app.Activity;
 import android.app.Application;
 import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.util.LruCache;
-import android.util.Log;
+import android.support.annotation.Nullable;
 
+import com.facebook.stetho.Stetho;
 import com.infinity_coder.infinity.airtop.data.db.AppDatabase;
 import com.infinity_coder.infinity.airtop.data.db.interactors.UserInteractor;
 import com.infinity_coder.infinity.airtop.data.db.model.User;
@@ -30,11 +25,10 @@ import com.infinity_coder.infinity.airtop.ui.chat.MessageBus;
 import com.infinity_coder.infinity.airtop.ui.contacts.ContactUpgradeBus;
 import com.infinity_coder.infinity.airtop.ui.searchUser.SearchUserBus;
 import com.infinity_coder.infinity.airtop.ui.settings.SettingsBus;
-import com.facebook.stetho.Stetho;
 
 import javax.inject.Inject;
 
-public class App extends Application {
+public class App extends Application implements Observer<User>{
     private User currentUser;
     private static App instance;
     @Inject
@@ -70,7 +64,7 @@ public class App extends Application {
         Intent intent = new Intent(getBaseContext(), ClientService.class);
         startService(intent);
 
-        updateCurrentUser();
+        setCurrentUser();
     }
 
     public AppPreference getAppPreference() {
@@ -94,16 +88,18 @@ public class App extends Application {
         return interactor.getLiveUserByPhone(phone);
     }
 
-    public void setCurrentUser(User user) {
-        this.currentUser = user;
+    public void setCurrentUser() {
+        LiveData<User> liveUser = interactor.getLiveUserByPhone(appPreference.getCurrentPhone());
+        liveUser.observeForever(this);
     }
 
     public ResponseListeners getResponseListeners() {
         return responseListeners;
     }
 
-    public void updateCurrentUser(){
-        currentUser = interactor.getUserByPhone(appPreference.getCurrentPhone());
+    @Override
+    public void onChanged(@Nullable User user) {
+        currentUser = user;
     }
 
     public static class ResponseListeners {

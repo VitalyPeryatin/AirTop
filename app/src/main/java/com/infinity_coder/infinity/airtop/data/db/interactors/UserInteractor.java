@@ -18,20 +18,7 @@ import java.util.concurrent.TimeoutException;
  * @author infinity_coder
  * @version 1.0.3
  */
-public class UserInteractor extends BaseIntearctor{
-
-    public User getUserByPhone(String phone){
-        Future<User> future = service.submit(() -> {
-            UserDao userDao = App.getInstance().getDatabase().userDao();
-            return userDao.getByPhone(phone);
-        });
-        try {
-            return future.get(1, TimeUnit.SECONDS);
-        } catch (InterruptedException | ExecutionException | TimeoutException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
+public class UserInteractor extends BaseInteractor {
 
     public LiveData<User> getLiveUserByPhone(String phone){
         Future<LiveData<User>> future = service.submit(() -> {
@@ -57,6 +44,27 @@ public class UserInteractor extends BaseIntearctor{
             e.printStackTrace();
             return null;
         }
+    }
+
+    public void updateUsername(String uuid, String username){
+        service.submit(() -> {
+            UserDao userDao = App.getInstance().getDatabase().userDao();
+            userDao.updateUsername(uuid, username);
+        });
+    }
+
+    public void updateName(String uuid, String name){
+        service.submit(() -> {
+            UserDao userDao = App.getInstance().getDatabase().userDao();
+            userDao.updateName(uuid, name);
+        });
+    }
+
+    public void updateBio(String uuid, String bio){
+        service.submit(() -> {
+            UserDao userDao = App.getInstance().getDatabase().userDao();
+            userDao.updateBio(uuid, bio);
+        });
     }
 
 }

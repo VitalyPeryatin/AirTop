@@ -11,7 +11,6 @@ import com.infinity_coder.infinity.airtop.data.network.request.MessageRequest;
 import com.infinity_coder.infinity.airtop.data.prefs.app.AppPreference;
 import com.infinity_coder.infinity.airtop.service.client.ServerConnection;
 import com.infinity_coder.infinity.airtop.utils.MessageEditor;
-import com.infinity_coder.infinity.airtop.utils.ServerPostman;
 
 import javax.inject.Inject;
 
@@ -24,23 +23,18 @@ import javax.inject.Inject;
 public class ChatPresenter extends MvpPresenter<ChatView> implements OnMessageListener {
 
     private ChatInteractor chatInteractor;
-    private ServerPostman serverPostman;
     private MessageBus messageBus;
     private AppPreference preferencesHelper;
     private MessageEditor messageEditor;
     private String addressId;
 
     @Inject
-    public ChatPresenter(ChatInteractor chatInteractor,
-                         ServerPostman serverPostman,
-                         MessageBus messageBus,
-                         MessageEditor messageEditor,
-                         AppPreference preferencesHelper){
+    public ChatPresenter(ChatInteractor chatInteractor, MessageBus messageBus,
+                         MessageEditor messageEditor, AppPreference preferencesHelper){
         this.chatInteractor = chatInteractor;
         this.messageBus = messageBus;
         this.messageEditor = messageEditor;
         this.preferencesHelper = preferencesHelper;
-        this.serverPostman = serverPostman;
     }
 
     public void onCreate(@NonNull String addressId, @NonNull String senderId){
@@ -99,6 +93,6 @@ public class ChatPresenter extends MvpPresenter<ChatView> implements OnMessageLi
 
     public void onDestroy() {
         super.onDestroy();
-        messageBus.unsubscribe(this);
+        messageBus.unsubscribe();
     }
 }

@@ -13,7 +13,7 @@ import com.arellomobile.mvp.MvpAppCompatActivity;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.infinity_coder.infinity.airtop.R;
 import com.infinity_coder.infinity.airtop.data.network.response.SearchUserResponse;
-import com.infinity_coder.infinity.airtop.utils.SearchUserHorizontalLineItemDecoration;
+import com.infinity_coder.infinity.airtop.utils.decorations.SearchUserHorizontalLineItemDecoration;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

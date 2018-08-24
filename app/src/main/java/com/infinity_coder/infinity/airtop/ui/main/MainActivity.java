@@ -1,30 +1,27 @@
 package com.infinity_coder.infinity.airtop.ui.main;
 
-import android.Manifest;
 import android.arch.lifecycle.Observer;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.infinity_coder.infinity.airtop.App;
 import com.infinity_coder.infinity.airtop.R;
 import com.infinity_coder.infinity.airtop.data.db.model.User;
-import com.infinity_coder.infinity.airtop.App;
 import com.infinity_coder.infinity.airtop.ui.auth.AuthActivity;
-import com.infinity_coder.infinity.airtop.ui.settings.SettingsActivity;
 import com.infinity_coder.infinity.airtop.ui.contacts.ContactsFragment;
+import com.infinity_coder.infinity.airtop.ui.settings.SettingsActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -48,7 +45,6 @@ public class MainActivity extends AppCompatActivity
     private static final int AUTH_REQUEST_CODE = 1;
     private TextView tvName;
     private TextView tvPhone;
-    private User currentUser;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -62,11 +58,11 @@ public class MainActivity extends AppCompatActivity
         tvName = headerView.findViewById(R.id.tvHeaderName);
         tvPhone = headerView.findViewById(R.id.tvHeaderPhone);
 
-        currentUser = App.getInstance().getCurrentUser();
-        if(currentUser == null)
+        if(App.getInstance().getCurrentUser() == null)
             showLoginActivity();
         else {
             setHeaderUserInfo();
+            App.getInstance().setCurrentUser();
         }
     }
 
@@ -74,7 +70,9 @@ public class MainActivity extends AppCompatActivity
         App.getInstance().getCurrentLiveUser().observe(this, this);
     }
 
-
+    public void openDrawer(){
+        drawerLayout.openDrawer(Gravity.START);
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -82,6 +80,7 @@ public class MainActivity extends AppCompatActivity
         if(requestCode == AUTH_REQUEST_CODE){
             if(resultCode == RESULT_OK) {
                 setHeaderUserInfo();
+                App.getInstance().setCurrentUser();
             }
             else{
                 finish();
@@ -127,7 +126,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onChanged(@Nullable User user) {
+    public void onChanged(User user) {
         tvName.setText(user.nickname);
         tvPhone.setText(user.phone);
     }

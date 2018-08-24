@@ -23,7 +23,7 @@ import com.infinity_coder.infinity.airtop.data.prefs.app.AppPreference;
 import com.infinity_coder.infinity.airtop.di.components.ChatComponent;
 import com.infinity_coder.infinity.airtop.di.components.DaggerChatComponent;
 import com.infinity_coder.infinity.airtop.utils.MessageEditor;
-import com.infinity_coder.infinity.airtop.utils.ServerPostman;
+
 import java.io.IOException;
 
 import javax.inject.Inject;
@@ -48,8 +48,6 @@ public class ChatActivity extends MvpAppCompatActivity implements ChatView {
 
     @Inject
     ChatInteractor chatInteractor;
-    @Inject
-    ServerPostman serverPostman;
     @Inject
     MessageBus messageBus;
     @Inject

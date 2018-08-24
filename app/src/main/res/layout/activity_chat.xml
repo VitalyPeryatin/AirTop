@@ -28,7 +28,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/outline_attach_file_24" />
+                app:srcCompat="@drawable/attach_file" />
 
             <EditText
                 android:id="@+id/editText"

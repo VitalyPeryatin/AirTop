@@ -21,7 +21,7 @@ public class MessageBus {
         this.messageListener = messageListener;
     }
 
-    public void unsubscribe(OnMessageListener messageListener){
+    public void unsubscribe(){
         this.messageListener = null;
     }
 

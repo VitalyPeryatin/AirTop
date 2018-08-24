@@ -11,7 +11,7 @@ import java.net.SocketAddress;
 /**
  * Client of backend part. It connects to server and tune threads for reading and writing data
  * @author infinity_coder
- * @version 1.0.4
+ * @version 1.0.5
  */
 public class ServerConnection extends Thread{
 
@@ -19,8 +19,8 @@ public class ServerConnection extends Thread{
 
     private DataWriter writer;
     private DataReader reader;
-    // private static final String HOST = "78.106.116.219";
-    private static final String HOST = "192.168.1.65";
+    private static final String HOST = "78.106.116.219";
+    // private static final String HOST = "192.168.1.65";
     private static final int PORT = 9090;
     private SocketAddress address = new InetSocketAddress(HOST, PORT);
     private boolean quit = true; // Check when programme need to close connection

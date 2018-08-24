@@ -11,20 +11,18 @@ import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.infinity_coder.infinity.airtop.App;
 import com.infinity_coder.infinity.airtop.R;
-import com.infinity_coder.infinity.airtop.data.db.interactors.UpdateUserInteractor;
+import com.infinity_coder.infinity.airtop.data.db.interactors.UserInteractor;
 import com.infinity_coder.infinity.airtop.data.network.request.UpdateNameRequest;
 import com.infinity_coder.infinity.airtop.data.network.response.updaters.UpdateNameResponse;
 import com.infinity_coder.infinity.airtop.di.components.DaggerSettingsUpdateComponent;
 import com.infinity_coder.infinity.airtop.di.components.SettingsUpdateComponent;
 import com.infinity_coder.infinity.airtop.service.client.ServerConnection;
 import com.infinity_coder.infinity.airtop.ui.settings.SettingsBus;
-import com.infinity_coder.infinity.airtop.utils.ServerPostman;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import butterknife.Unbinder;
 
 public class NameSettingsActivity extends MvpAppCompatActivity implements NameSettingsView{
@@ -37,9 +35,7 @@ public class NameSettingsActivity extends MvpAppCompatActivity implements NameSe
     Toolbar toolbar;
 
     @Inject
-    UpdateUserInteractor interactor;
-    @Inject
-    ServerPostman serverPostman;
+    UserInteractor interactor;
     @Inject
     SettingsBus<UpdateNameResponse> updateBus;
 
@@ -116,7 +112,6 @@ public class NameSettingsActivity extends MvpAppCompatActivity implements NameSe
 
     @Override
     public void onUpdateUser() {
-        App.getInstance().updateCurrentUser();
         setResult(RESULT_OK);
         finish();
     }

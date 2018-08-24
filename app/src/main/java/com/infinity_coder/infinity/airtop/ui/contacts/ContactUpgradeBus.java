@@ -18,12 +18,16 @@ public class ContactUpgradeBus {
     }
 
     public void addAddressee(Contact contact){
-        activity.runOnUiThread(()->{
+        // Don't touch these brackets!
+        activity.runOnUiThread(()-> {
             contactListListener.addContact(contact);
         });
     }
 
     public void removeAddressee(Contact contact){
-        activity.runOnUiThread(()->contactListListener.removeContact(contact));
+        // Don't touch these brackets!
+        activity.runOnUiThread(()->{
+            contactListListener.removeContact(contact);
+        });
     }
 }

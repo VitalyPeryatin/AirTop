@@ -23,7 +23,7 @@ import java.util.concurrent.TimeoutException;
  * @author infinity_coder
  * @version 1.0.3
  */
-public class ChatInteractor extends BaseIntearctor{
+public class ChatInteractor extends BaseInteractor {
 
     private App app = App.getInstance();
 
@@ -97,7 +97,6 @@ public class ChatInteractor extends BaseIntearctor{
             UserDao userDao = App.getInstance().getDatabase().userDao();
             userDao.insert(user);
         });
-        App.getInstance().updateCurrentUser();
     }
 
     public ArrayList<Message> getAllMessagesByUUID(String uuid){

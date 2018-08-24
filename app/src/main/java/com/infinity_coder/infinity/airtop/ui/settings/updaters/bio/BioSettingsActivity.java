@@ -2,7 +2,6 @@ package com.infinity_coder.infinity.airtop.ui.settings.updaters.bio;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,15 +12,13 @@ import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.infinity_coder.infinity.airtop.App;
 import com.infinity_coder.infinity.airtop.R;
-import com.infinity_coder.infinity.airtop.data.db.interactors.UpdateUserInteractor;
+import com.infinity_coder.infinity.airtop.data.db.interactors.UserInteractor;
 import com.infinity_coder.infinity.airtop.data.network.request.UpdateBioRequest;
-import com.infinity_coder.infinity.airtop.data.network.request.UpdateNameRequest;
 import com.infinity_coder.infinity.airtop.data.network.response.updaters.UpdateNameResponse;
 import com.infinity_coder.infinity.airtop.di.components.DaggerSettingsUpdateComponent;
 import com.infinity_coder.infinity.airtop.di.components.SettingsUpdateComponent;
 import com.infinity_coder.infinity.airtop.service.client.ServerConnection;
 import com.infinity_coder.infinity.airtop.ui.settings.SettingsBus;
-import com.infinity_coder.infinity.airtop.utils.ServerPostman;
 
 import javax.inject.Inject;
 
@@ -37,9 +34,7 @@ public class BioSettingsActivity extends MvpAppCompatActivity implements BioSett
     EditText etBio;
 
     @Inject
-    UpdateUserInteractor interactor;
-    @Inject
-    ServerPostman serverPostman;
+    UserInteractor interactor;
     @Inject
     SettingsBus<UpdateNameResponse> updateBus;
 
@@ -63,8 +58,11 @@ public class BioSettingsActivity extends MvpAppCompatActivity implements BioSett
         unbinder = ButterKnife.bind(this);
 
         setToolbar();
-        String bio = getIntent().getExtras().getString("bio", "");
-        etBio.setText(bio);
+        Bundle bundle = getIntent().getExtras();
+        if(bundle != null) {
+            String bio = bundle.getString("bio", "");
+            etBio.setText(bio);
+        }
         uuid = App.getInstance().getCurrentUser().uuid;
 
         presenter.onCreate();
@@ -110,7 +108,6 @@ public class BioSettingsActivity extends MvpAppCompatActivity implements BioSett
 
     @Override
     public void onUpdateUser() {
-        App.getInstance().updateCurrentUser();
         setResult(RESULT_OK);
         finish();
     }

@@ -7,7 +7,6 @@ import android.content.Context;
 import com.infinity_coder.infinity.airtop.data.db.AppDatabase;
 import com.infinity_coder.infinity.airtop.data.prefs.app.AppPreference;
 import com.infinity_coder.infinity.airtop.data.prefs.auth.AuthPreference;
-import com.infinity_coder.infinity.airtop.utils.ServerPostman;
 
 import dagger.Module;
 import dagger.Provides;
@@ -37,10 +36,5 @@ public class AppModule {
     @Provides
     AuthPreference provideAuthPreference(){
         return new AuthPreference(context);
-    }
-
-    @Provides
-    ServerPostman provideServerPostman(){
-        return new ServerPostman();
     }
 }

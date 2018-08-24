@@ -1,5 +1,6 @@
 package com.infinity_coder.infinity.airtop.ui.auth.nickname;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -20,7 +21,6 @@ import com.infinity_coder.infinity.airtop.data.prefs.app.AppPreference;
 import com.infinity_coder.infinity.airtop.data.prefs.auth.AuthPreference;
 import com.infinity_coder.infinity.airtop.service.client.ServerConnection;
 import com.infinity_coder.infinity.airtop.ui.auth.AuthActivity;
-import com.infinity_coder.infinity.airtop.utils.ServerPostman;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -32,11 +32,11 @@ public class NicknameAuthFragment extends Fragment implements OnNicknameAuthList
     EditText etFirstName;
     @BindView(R.id.etLastName)
     EditText etLastName;
-    ServerPostman serverPostman;
 
     private AuthActivity parentActivity;
     private AuthPreference sPref;
     private ChatInteractor interactor;
+    private Context context;
 
     @Nullable
     @Override
@@ -50,15 +50,15 @@ public class NicknameAuthFragment extends Fragment implements OnNicknameAuthList
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         App.getInstance().getResponseListeners().getNicknameAuthBus().subscribe(this);
-        serverPostman = new ServerPostman();
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        context = getContext();
         parentActivity = (AuthActivity) getActivity();
-        sPref = new AuthPreference(getContext());
         interactor = new ChatInteractor();
+        sPref = new AuthPreference(context);
     }
 
     @OnClick(R.id.btnNicknameAuth)
@@ -82,8 +82,7 @@ public class NicknameAuthFragment extends Fragment implements OnNicknameAuthList
             User user = new User(response);
             interactor.insertUser(user);
             sPref.saveUserHasNickname(true);
-            new AppPreference(getContext()).saveCurrentPhone(user.phone);
-            App.getInstance().updateCurrentUser();
+            new AppPreference(context).saveCurrentPhone(user.phone);
             parentActivity.changeView();
         }
 

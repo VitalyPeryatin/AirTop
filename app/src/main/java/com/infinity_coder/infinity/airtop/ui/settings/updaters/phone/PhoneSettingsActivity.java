@@ -1,7 +1,6 @@
 package com.infinity_coder.infinity.airtop.ui.settings.updaters.phone;
 
 import android.os.Bundle;
-import android.app.Activity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;

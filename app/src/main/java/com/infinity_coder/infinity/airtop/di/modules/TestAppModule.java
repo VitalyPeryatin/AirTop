@@ -8,8 +8,6 @@ import com.infinity_coder.infinity.airtop.data.db.AppDatabase;
 import com.infinity_coder.infinity.airtop.data.prefs.app.AppPreference;
 import com.infinity_coder.infinity.airtop.data.prefs.app.FakeAppPreference;
 import com.infinity_coder.infinity.airtop.data.prefs.auth.AuthPreference;
-import com.infinity_coder.infinity.airtop.utils.FakeServerPostman;
-import com.infinity_coder.infinity.airtop.utils.ServerPostman;
 
 public class TestAppModule extends AppModule {
     public TestAppModule(Context context){
@@ -32,10 +30,5 @@ public class TestAppModule extends AppModule {
     @Override
     AuthPreference provideAuthPreference(){
         return new AuthPreference(context);
-    }
-
-    @Override
-    ServerPostman provideServerPostman() {
-        return new FakeServerPostman();
     }
 }

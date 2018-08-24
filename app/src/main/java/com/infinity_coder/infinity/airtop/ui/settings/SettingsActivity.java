@@ -121,7 +121,7 @@ public class SettingsActivity extends AppCompatActivity implements Observer<User
     }
 
     @Override
-    public void onChanged(@Nullable User user) {
+    public void onChanged(User user) {
         this.user = user;
 
         toolbar.setTitle(format(user.nickname));

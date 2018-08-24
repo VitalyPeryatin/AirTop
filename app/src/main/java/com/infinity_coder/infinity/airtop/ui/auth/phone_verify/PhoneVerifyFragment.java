@@ -11,12 +11,9 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.google.firebase.FirebaseException;
-import com.google.firebase.FirebaseTooManyRequestsException;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
-import com.infinity_coder.infinity.airtop.App;
 import com.infinity_coder.infinity.airtop.R;
 import com.infinity_coder.infinity.airtop.data.db.interactors.ChatInteractor;
 import com.infinity_coder.infinity.airtop.data.network.request.PhoneAuthRequest;
@@ -39,7 +36,7 @@ import butterknife.OnClick;
 /**
  *  Fragment for auth user by phone number and validate this phone number
  *  @author infinity_coder
- *  @version 1.0.4
+ *  @version 1.0.5
  */
 public class PhoneVerifyFragment extends Fragment implements OnPhoneVerifyListener {
 
@@ -47,7 +44,6 @@ public class PhoneVerifyFragment extends Fragment implements OnPhoneVerifyListen
     private String verifId;
     private String phone;
     private AuthActivity parentActivity;
-    private PhoneAuthComponent phoneAuthComponent;
     @Inject
     ChatInteractor interactor;
     @Inject
@@ -62,7 +58,7 @@ public class PhoneVerifyFragment extends Fragment implements OnPhoneVerifyListen
     EditText etCodeVerify;
 
     public PhoneVerifyFragment(){
-        phoneAuthComponent = DaggerPhoneAuthComponent.create();
+        PhoneAuthComponent phoneAuthComponent = DaggerPhoneAuthComponent.create();
         phoneAuthComponent.inject(this);
     }
 
@@ -110,13 +106,6 @@ public class PhoneVerifyFragment extends Fragment implements OnPhoneVerifyListen
                 public void onVerificationFailed(FirebaseException e) {
                     Log.d("mLogAuth", "onVerificationFailed()");
                     e.printStackTrace();
-                    if (e instanceof FirebaseAuthInvalidCredentialsException) {
-                        // Some code
-                    } else if (e instanceof FirebaseTooManyRequestsException) {
-                        // Some code
-
-                    }
-                    // Show a message and update the UI
                 }
 
                 @Override
@@ -152,12 +141,6 @@ public class PhoneVerifyFragment extends Fragment implements OnPhoneVerifyListen
                         Log.d("mLogAuth", "onComplete():Successful");
                         PhoneAuthRequest request = new PhoneAuthRequest(phone);
                         ServerConnection.getInstance().sendRequest(request.toJson());
-                    } else {
-                        Log.d("mLogAuth", "onComplete():Error");
-                        // Sign in failed, display a message and update the UI
-                        if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
-                            // The verification code entered was invalid
-                        }
                     }
                 });
     }
@@ -170,8 +153,9 @@ public class PhoneVerifyFragment extends Fragment implements OnPhoneVerifyListen
         else if (response.getResult().equals("RESULT_EXISTS")){
             authPref.saveCurrentPhone(phone);
             authPref.saveUserHasNickname(true);
-            new AppPreference(getContext()).saveCurrentPhone(phone);
-            App.getInstance().updateCurrentUser();
+            if(getContext() != null) {
+                new AppPreference(getContext()).saveCurrentPhone(phone);
+            }
             interactor.insertUser(response.getUser());
         }
         parentActivity.changeView();

@@ -1,6 +1,5 @@
 package com.infinity_coder.infinity.airtop.ui.auth;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -16,14 +15,13 @@ import com.infinity_coder.infinity.airtop.service.client.ServerConnection;
 import com.infinity_coder.infinity.airtop.ui.auth.entry_code.EntryAuthFragment;
 import com.infinity_coder.infinity.airtop.ui.auth.nickname.NicknameAuthFragment;
 import com.infinity_coder.infinity.airtop.ui.auth.phone.PhoneAuthFragment;
-import com.infinity_coder.infinity.airtop.ui.main.MainActivity;
 
 import java.util.ArrayList;
 
 /**
  * Activity controls fragments for auth, after full auth verify user on server
  * @author infinity_coder
- * @version 1.0.4
+ * @version 1.0.5
  */
 public class AuthActivity extends AppCompatActivity{
 

@@ -11,7 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.infinity_coder.infinity.airtop.R;
-import com.infinity_coder.infinity.airtop.data.db.interactors.SearchUserInteractor;
+import com.infinity_coder.infinity.airtop.data.db.interactors.ChatInteractor;
 import com.infinity_coder.infinity.airtop.data.db.model.Contact;
 import com.infinity_coder.infinity.airtop.data.db.model.User;
 import com.infinity_coder.infinity.airtop.ui.chat.ChatActivity;
@@ -26,11 +26,11 @@ public class SearchUserAdapter extends RecyclerView.Adapter<SearchUserAdapter.Se
 
     private ArrayList<User> users = new ArrayList<>();
     private SearchUserActivity activity;
-    private SearchUserInteractor interactor;
+    private ChatInteractor interactor;
 
     SearchUserAdapter(SearchUserActivity activity){
         this.activity = activity;
-        interactor = new SearchUserInteractor();
+        interactor = new ChatInteractor();
     }
 
     @NonNull

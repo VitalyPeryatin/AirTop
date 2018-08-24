@@ -23,20 +23,20 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="server.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="server.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/server.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="204">
+            <state relative-caret-position="340">
               <caret line="180" column="26" selection-start-line="180" selection-start-column="26" selection-end-line="180" selection-end-column="26" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="database_server.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="database_server.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/database_server.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1700">
-              <caret line="100" column="75" selection-start-line="100" selection-start-column="75" selection-end-line="100" selection-end-column="75" />
+            <state relative-caret-position="306">
+              <caret line="18" column="34" lean-forward="true" selection-start-line="18" selection-start-column="34" selection-end-line="18" selection-end-column="34" />
             </state>
           </provider>
         </entry>
@@ -129,7 +129,7 @@
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
+  <component name="ProjectFrameBounds" extendedState="7">
     <option name="x" value="50" />
     <option name="y" value="15" />
     <option name="width" value="1840" />
@@ -244,13 +244,14 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.13284865" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.13284865" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.32905984" />
       <window_info anchor="bottom" id="Event Log" order="7" sideWeight="0.41374752" side_tool="true" weight="0.25356126" />
       <window_info anchor="bottom" id="Version Control" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Python Console" order="7" weight="0.32905984" />
-      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.58625245" weight="0.33475783" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.58625245" visible="true" weight="0.33475783" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Terminal" order="7" weight="0.32905984" />
       <window_info id="Favorites" order="2" side_tool="true" />
@@ -457,18 +458,20 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/package_splitter.py" />
-    <entry file="file://$PROJECT_DIR$/testdb.sqlite" />
-    <entry file="file://$PROJECT_DIR$/database_server.py">
+    <entry file="file://$PROJECT_DIR$/server.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1700">
-          <caret line="100" column="75" selection-start-line="100" selection-start-column="75" selection-end-line="100" selection-end-column="75" />
+        <state relative-caret-position="340">
+          <caret line="180" column="26" selection-start-line="180" selection-start-column="26" selection-end-line="180" selection-end-column="26" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/server.py">
+    <entry file="file://$PROJECT_DIR$/testdb.sqlite">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/database_server.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="204">
-          <caret line="180" column="26" selection-start-line="180" selection-start-column="26" selection-end-line="180" selection-end-column="26" />
+        <state relative-caret-position="306">
+          <caret line="18" column="34" lean-forward="true" selection-start-line="18" selection-start-column="34" selection-end-line="18" selection-end-column="34" />
         </state>
       </provider>
     </entry>

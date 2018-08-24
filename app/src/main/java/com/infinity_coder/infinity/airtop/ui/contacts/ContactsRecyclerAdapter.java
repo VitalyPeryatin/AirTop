@@ -82,12 +82,6 @@ public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecycl
         this.notifyDataSetChanged();
     }
 
-    private void remove(Contact contact){
-        this.contactsWithUUID.remove(contact.uuid);
-        this.contacts.remove(contact);
-        notifyDataSetChanged();
-    }
-
     @Override
     public void onChanged(@Nullable Contact contact) {
         if(contact != null) {

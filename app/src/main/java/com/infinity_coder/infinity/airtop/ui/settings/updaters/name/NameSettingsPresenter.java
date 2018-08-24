@@ -2,7 +2,7 @@ package com.infinity_coder.infinity.airtop.ui.settings.updaters.name;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
-import com.infinity_coder.infinity.airtop.data.db.interactors.UpdateUserInteractor;
+import com.infinity_coder.infinity.airtop.data.db.interactors.UserInteractor;
 import com.infinity_coder.infinity.airtop.data.network.response.updaters.UpdateNameResponse;
 import com.infinity_coder.infinity.airtop.ui.settings.OnSettingsListener;
 import com.infinity_coder.infinity.airtop.ui.settings.SettingsBus;
@@ -12,9 +12,9 @@ public class NameSettingsPresenter extends MvpPresenter<NameSettingsView>
         implements OnSettingsListener<UpdateNameResponse> {
 
     private SettingsBus<UpdateNameResponse> settingsBus;
-    private UpdateUserInteractor interactor;
+    private UserInteractor interactor;
 
-    public NameSettingsPresenter(UpdateUserInteractor interactor, SettingsBus<UpdateNameResponse> settingsBus){
+    public NameSettingsPresenter(UserInteractor interactor, SettingsBus<UpdateNameResponse> settingsBus){
         this.interactor = interactor;
         this.settingsBus = settingsBus;
     }

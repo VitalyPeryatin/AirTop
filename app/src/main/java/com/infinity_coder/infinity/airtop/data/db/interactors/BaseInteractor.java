@@ -9,6 +9,6 @@ import java.util.concurrent.Executors;
  * @author infinity_coder
  * @version 1.0.3
  */
-public abstract class BaseIntearctor {
+public abstract class BaseInteractor {
     protected static ExecutorService service = Executors.newFixedThreadPool(5);
 }

@@ -6,7 +6,6 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -17,21 +16,18 @@ import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.infinity_coder.infinity.airtop.App;
 import com.infinity_coder.infinity.airtop.R;
-import com.infinity_coder.infinity.airtop.data.db.interactors.UpdateUserInteractor;
+import com.infinity_coder.infinity.airtop.data.db.interactors.UserInteractor;
 import com.infinity_coder.infinity.airtop.data.network.request.UpdateUsernameRequest;
 import com.infinity_coder.infinity.airtop.data.network.response.updaters.UpdateUsernameResponse;
 import com.infinity_coder.infinity.airtop.di.components.DaggerSettingsUpdateComponent;
 import com.infinity_coder.infinity.airtop.di.components.SettingsUpdateComponent;
 import com.infinity_coder.infinity.airtop.service.client.ServerConnection;
 import com.infinity_coder.infinity.airtop.ui.settings.SettingsBus;
-import com.infinity_coder.infinity.airtop.utils.ServerPostman;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
-import butterknife.OnItemClick;
 import butterknife.Unbinder;
 
 public class UsernameSettingsActivity extends MvpAppCompatActivity implements TextWatcher, UsernameSettingsView {
@@ -54,9 +50,7 @@ public class UsernameSettingsActivity extends MvpAppCompatActivity implements Te
     }
 
     @Inject
-    UpdateUserInteractor interactor;
-    @Inject
-    ServerPostman serverPostman;
+    UserInteractor interactor;
     @Inject
     SettingsBus<UpdateUsernameResponse> updateBus;
 
@@ -70,8 +64,11 @@ public class UsernameSettingsActivity extends MvpAppCompatActivity implements Te
         presenter.onCreate();
 
         setToolbar();
-        String username = getIntent().getExtras().getString("username", "");
-        editTextUsername.setText(username);
+        Bundle bundle = getIntent().getExtras();
+        if(bundle != null) {
+            String username = bundle.getString("username", "");
+            editTextUsername.setText(username);
+        }
         editTextUsername.addTextChangedListener(this);
         tvAccessInfo.setVisibility(View.GONE);
     }
@@ -84,7 +81,6 @@ public class UsernameSettingsActivity extends MvpAppCompatActivity implements Te
 
     @Override
     public void onUpdateUsername(){
-        App.getInstance().updateCurrentUser();
         setResult(RESULT_OK);
         finish();
     }

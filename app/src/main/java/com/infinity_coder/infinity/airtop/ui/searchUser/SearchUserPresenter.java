@@ -6,19 +6,17 @@ import com.infinity_coder.infinity.airtop.App;
 import com.infinity_coder.infinity.airtop.data.network.request.SearchUserRequest;
 import com.infinity_coder.infinity.airtop.data.network.response.SearchUserResponse;
 import com.infinity_coder.infinity.airtop.service.client.ServerConnection;
-import com.infinity_coder.infinity.airtop.utils.ServerPostman;
 
 @InjectViewState
 public class SearchUserPresenter extends MvpPresenter<SearchUserView> implements OnSearchUserListener{
 
-    private ServerPostman serverPostman;
-
     public void onCreate(){
         App.getInstance().getResponseListeners().getSearchUserBus().subscribe(this);
-        serverPostman = new ServerPostman();
     }
 
     public void sendSearchableUsername(String username){
+        if(!username.startsWith("@"))
+            username = "@".concat(username);
         SearchUserRequest request = new SearchUserRequest(username);
         ServerConnection.getInstance().sendRequest(request.toJson());
     }

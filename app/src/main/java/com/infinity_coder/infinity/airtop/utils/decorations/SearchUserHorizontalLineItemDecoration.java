@@ -1,4 +1,4 @@
-package com.infinity_coder.infinity.airtop.utils;
+package com.infinity_coder.infinity.airtop.utils.decorations;
 
 import android.content.Context;
 import android.graphics.Canvas;
