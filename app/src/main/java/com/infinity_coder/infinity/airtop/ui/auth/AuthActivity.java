@@ -3,6 +3,7 @@ package com.infinity_coder.infinity.airtop.ui.auth;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -42,8 +43,10 @@ public class AuthActivity extends AppCompatActivity{
             replaceFragment(new EntryAuthFragment());
         else if(sPref.getCurrentPhone() == null)
             replaceFragment(new PhoneAuthFragment());
-        else if(!sPref.haveNickname())
+        else if(!sPref.haveNickname()) {
+            getSupportFragmentManager().popBackStack();
             replaceFragment(new NicknameAuthFragment());
+        }
         else {
             verifyUser();
             setResult(RESULT_OK);

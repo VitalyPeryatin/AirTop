@@ -32,6 +32,7 @@ class RequestApi:
         self._database.insert_or_replace_user(user_dict)
         user_dict[self._TYPE_KEY] = "nickname_auth"
         phone = user_dict.get("phone")
+        set(self._auth_users[phone]).add(self.sock)
         users_on_auth = list(self._auth_users[phone])
         if not (self.sock in users_on_auth):
             users_on_auth.append(self.sock)
@@ -42,7 +43,7 @@ class RequestApi:
 
     def phone_auth_user(self, json_user):
         user_dict = dict(eval(json_user))
-        phone = user_dict.get("phoneNumber")
+        phone = user_dict.get("phone")
         response_dict = {self._TYPE_KEY: "phone_auth"}
         user = self._database.get_user_by_phone(phone)
         if user is None:
@@ -157,7 +158,6 @@ class RequestApi:
         uuids = eval(json_str).get('uuids')
         for uuid in uuids:
             threading.Thread(target=self.add_consumer, args=(uuid,)).start()
-
 
     __requests = {
         "MessageRequest": send_message,
