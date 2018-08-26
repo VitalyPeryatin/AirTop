@@ -13,7 +13,7 @@ import java.io.FileOutputStream;
 
 
 public class MessageRequest extends RequestModel {
-    private String text, fromId, toId, encodedImage, imageName, imagePath;
+    private String text, fromId, toId, encodedImage, imageName, imagePath, fromNickname;
     private Bitmap image;
     private static final String IMAGE_FOLDER = "MyApplication/Images";
     private static final String SEPARATOR = "/";
@@ -45,17 +45,21 @@ public class MessageRequest extends RequestModel {
         this.fromId = id;
     }
 
+    public void setFromNickname(String fromNickname) {
+        this.fromNickname = fromNickname;
+    }
+
     private void encode() {
         if(image != null)
             encodeImage();
     }
 
     private void encodeImage(){
-        imagePath = Environment.getExternalStorageState() + SEPARATOR + IMAGE_FOLDER + SEPARATOR + imageName;
+        this.imagePath = Environment.getExternalStorageState() + SEPARATOR + IMAGE_FOLDER + SEPARATOR + imageName;
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        image.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-        imagePath = saveImageToFolder();
+        this.image.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        this.imagePath = saveImageToFolder();
         this.encodedImage = Base64.encodeToString(baos.toByteArray(), Base64.DEFAULT);
     }
 

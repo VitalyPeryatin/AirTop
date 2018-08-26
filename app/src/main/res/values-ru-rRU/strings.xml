@@ -12,4 +12,7 @@
     <string name="text_none">None</string>
     <string name="text_username">Username</string>
     <string name="invalid_username">"Извините, это имя пользователя содержит некорректные символы. "</string>
+    <string name="phone_verification_text" translatable="false">Подтверждение номера</string>
+    <string name="your_phone_number_text" translatable="false">Ваш номер телефона</string>
+    <string name="secret_code_text">Секретный код</string>
 </resources>

@@ -40,7 +40,7 @@ public class DataReader extends Thread{
 
     // Constants for pass to handler the type of response
     private static final int
-            MESSAGE_RESPONSE_KEY = 1,
+            MESSAGE_KEY = 1,
             SEARCHABLE_USERS_KEY = 2,
             PHONE_AUTH_KEY = 3,
             NICKNAME_AUTH_KEY = 4,
@@ -106,8 +106,8 @@ public class DataReader extends Thread{
                 case "MessageRequest":
                     MessageResponse messageResponse = gson.fromJson(jsonText, MessageResponse.class);
 
-                    message.what = MESSAGE_RESPONSE_KEY;
-                    message.obj = messageResponse.toMessageModel();
+                    message.what = MESSAGE_KEY;
+                    message.obj = messageResponse;
                     break;
                 case "phone_auth":
                     try {
@@ -143,7 +143,7 @@ public class DataReader extends Thread{
                     message.what = SEARCHABLE_USERS_KEY;
                     message.obj = searchUserResponse;
                     break;
-                case "addressee":
+                case "contact":
                     AddressResponse addressResponse = gson.fromJson(jsonText, AddressResponse.class);
                     message.what = ADDRESSEE_KEY;
                     message.obj = addressResponse;
@@ -167,11 +167,13 @@ public class DataReader extends Thread{
             super.handleMessage(msg);
 
             switch (msg.what){
-                case MESSAGE_RESPONSE_KEY:
-                    if(msg.obj instanceof Message) {
-                        Message message = (Message) msg.obj;
-                        chatInteractor.insertMessage(message);
-                        responseListeners.getMessageBus().onMessage(message);
+                case MESSAGE_KEY:
+                    if(msg.obj instanceof MessageResponse) {
+                        MessageResponse messageResponse = (MessageResponse) msg.obj;
+                        Message message = messageResponse.toMessageModel();
+                        String nickname = messageResponse.getFromNickname();
+                        chatInteractor.insertMessage(nickname, message);
+                        responseListeners.getMessageBus().onMessage(nickname, message);
                     }
                     else
                         Log.e("mLogError", "DataReader -> не верный тип объекта. Ожидалось: Message");

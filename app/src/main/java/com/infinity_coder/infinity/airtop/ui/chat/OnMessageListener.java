@@ -8,5 +8,5 @@ import com.infinity_coder.infinity.airtop.data.db.model.Message;
  * @version 1.0.3
  */
 public interface OnMessageListener {
-    void onMessage(Message message);
+    void onMessage(String nickname, Message message);
 }

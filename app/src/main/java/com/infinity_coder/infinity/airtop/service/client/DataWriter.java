@@ -1,5 +1,7 @@
 package com.infinity_coder.infinity.airtop.service.client;
 
+import android.util.Log;
+
 import com.infinity_coder.infinity.airtop.data.db.interactors.UserInteractor;
 import com.infinity_coder.infinity.airtop.data.db.model.User;
 import com.infinity_coder.infinity.airtop.data.network.request.VerifyUserRequest;
@@ -51,6 +53,7 @@ public class DataWriter extends Thread{
             msgQueue.add(json);
             lock.notify();
         }
+        Log.d("mLog", "json: " + json);
     }
 
     @SuppressWarnings("InfiniteLoopStatement")

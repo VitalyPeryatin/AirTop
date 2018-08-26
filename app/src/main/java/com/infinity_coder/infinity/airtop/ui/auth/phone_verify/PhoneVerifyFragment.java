@@ -4,11 +4,16 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.FirebaseAuth;
@@ -31,7 +36,6 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  *  Fragment for auth user by phone number and validate this phone number
@@ -53,9 +57,10 @@ public class PhoneVerifyFragment extends Fragment implements OnPhoneVerifyListen
     @Inject
     AuthPreference appPref;
 
-
     @BindView(R.id.etCodeVerify)
     EditText etCodeVerify;
+    @BindView(R.id.toolbar_phone_verify)
+    Toolbar toolbar;
 
     public PhoneVerifyFragment(){
         PhoneAuthComponent phoneAuthComponent = DaggerPhoneAuthComponent.create();
@@ -66,14 +71,50 @@ public class PhoneVerifyFragment extends Fragment implements OnPhoneVerifyListen
     public void onCreate(@Nullable Bundle savedInstanceState) {
         auth = FirebaseAuth.getInstance();
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_code_verify, container, false);
+        parentActivity = (AuthActivity) getActivity();
         ButterKnife.bind(this, view);
+        setToolbar(toolbar);
         return view;
+    }
+
+    private void setToolbar(Toolbar toolbar){
+        parentActivity.setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(R.drawable.arrow_back);
+        toolbar.setNavigationOnClickListener(view -> parentActivity.onBackPressed());
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_apply, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.item_apply:
+                submitCode();
+                break;
+        }
+        return true;
+    }
+
+    private void submitCode(){
+        try {
+            String code = etCodeVerify.getText().toString();
+            PhoneAuthCredential credential = PhoneAuthProvider.getCredential(verifId, code);
+            signInWithPhoneAuthCredential(credential);
+        }catch (Exception e){
+            Toast.makeText(getContext(), "Неверный код", Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -116,22 +157,6 @@ public class PhoneVerifyFragment extends Fragment implements OnPhoneVerifyListen
                     verifId = verificationId;
                 }
             };
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        parentActivity = (AuthActivity) getActivity();
-    }
-
-    @OnClick(R.id.btnSubmitCode)
-    public void submitCode(){
-        String code = etCodeVerify.getText().toString();
-
-        PhoneAuthCredential credential = PhoneAuthProvider.getCredential(verifId, code);
-        signInWithPhoneAuthCredential(credential);
-    }
-
-
 
     private void signInWithPhoneAuthCredential(PhoneAuthCredential credential) {
         auth.signInWithCredential(credential)

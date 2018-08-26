@@ -82,14 +82,16 @@ public class SearchUserAdapter extends RecyclerView.Adapter<SearchUserAdapter.Se
         public void onClick(View view) {
             Contact contact = new Contact(users.get(getAdapterPosition()));
             interactor.insertAddressee(contact);
-            startChatActivity(contact.uuid);
+            startChatActivity(contact.uuid, contact.nickname);
         }
 
         // Start Chat Activity with companion by address phone
-        private void startChatActivity(String addressId){
+        private void startChatActivity(String addressId, String nickname){
             Intent intent = new Intent(activity, ChatActivity.class);
-            String addressIdKey = activity.getResources().getString(R.string.intent_key_address_id);
+            String addressIdKey = activity.getString(R.string.intent_key_address_id);
+            String toNicknameKey = activity.getString(R.string.nickname_key);
             intent.putExtra(addressIdKey, addressId);
+            intent.putExtra(toNicknameKey, nickname);
             activity.startActivity(intent);
             activity.finish();
         }

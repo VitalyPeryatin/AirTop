@@ -33,7 +33,7 @@ public abstract class ContactDao {
     public abstract LiveData<Contact> getLiveAddresseeById(String uuid);
 
     @Query("SELECT * FROM Contact WHERE uuid=:uuid")
-    public abstract Contact getAddresseeById(String uuid);
+    public abstract Contact getContactById(String uuid);
 
     @Insert(onConflict = REPLACE)
     public abstract void insert(Contact user);

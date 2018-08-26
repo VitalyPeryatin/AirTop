@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
+import com.infinity_coder.infinity.airtop.App;
 import com.infinity_coder.infinity.airtop.data.db.interactors.ChatInteractor;
 import com.infinity_coder.infinity.airtop.data.db.model.Message;
 import com.infinity_coder.infinity.airtop.data.network.request.MessageRequest;
@@ -27,6 +28,7 @@ public class ChatPresenter extends MvpPresenter<ChatView> implements OnMessageLi
     private AppPreference preferencesHelper;
     private MessageEditor messageEditor;
     private String addressId;
+    private String nickname;
 
     @Inject
     public ChatPresenter(ChatInteractor chatInteractor, MessageBus messageBus,
@@ -40,8 +42,11 @@ public class ChatPresenter extends MvpPresenter<ChatView> implements OnMessageLi
     public void onCreate(@NonNull String addressId, @NonNull String senderId){
         this.addressId = addressId;
         messageBus.subscribe(this);
+        this.nickname = App.getInstance().getCurrentUser().nickname;
 
         // Add to message the base data: "sender" and "addressee"
+        messageEditor = new MessageEditor();
+        messageEditor.setFromNickname(nickname);
         messageEditor.setAddressId(addressId);
         messageEditor.setSenderId(senderId);
     }
@@ -72,7 +77,7 @@ public class ChatPresenter extends MvpPresenter<ChatView> implements OnMessageLi
 
             MessageRequest request = messageEditor.getMessage();
             Message message = request.toMessageModel();
-            chatInteractor.insertMessage(message);
+            chatInteractor.insertMessage(nickname, message);
             getViewState().displayMessage(message);
             messageEditor.clear();
 
@@ -80,13 +85,9 @@ public class ChatPresenter extends MvpPresenter<ChatView> implements OnMessageLi
         }
     }
 
-    public String getNickname() {
-        return chatInteractor.getNicknameById(addressId);
-    }
-
     // Listen events from server with messages throw MessageBus
     @Override
-    public void onMessage(Message message) {
+    public void onMessage(String nickname, Message message) {
         if(message.addressId.equals(addressId))
             getViewState().displayMessage(message);
     }

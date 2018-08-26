@@ -4,7 +4,11 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -23,6 +27,8 @@ public class EntryAuthFragment extends Fragment {
 
     @BindView(R.id.etSecretCode)
     EditText editTextSecretCode;
+    @BindView(R.id.toolbar_secret_code)
+    Toolbar toolbar;
 
     // Show when user already have written entry-code
     private static final String SECRET_CODE = "road12345";
@@ -33,7 +39,6 @@ public class EntryAuthFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        parentActivity = (AuthActivity) getActivity();
         sPref = new AuthPreference(Objects.requireNonNull(this.getContext()));
     }
 
@@ -41,12 +46,30 @@ public class EntryAuthFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_entry_code, container, false);
+        parentActivity = (AuthActivity) getActivity();
+        setHasOptionsMenu(true);
         ButterKnife.bind(this, view);
+        setToolbar(toolbar);
         return view;
     }
 
-    @OnClick(R.id.btnSendCode)
-    void click(){
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_apply, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()){
+            case R.id.item_apply:
+                checkCode();
+                break;
+        }
+        return true;
+    }
+
+    private void checkCode(){
         String code = editTextSecretCode.getText().toString();
         if (code.equals(SECRET_CODE)) {
             sPref.saveEnter(true);
@@ -54,5 +77,9 @@ public class EntryAuthFragment extends Fragment {
         } else {
             editTextSecretCode.setText("");
         }
+    }
+
+    public void setToolbar(Toolbar toolbar) {
+        parentActivity.setSupportActionBar(toolbar);
     }
 }

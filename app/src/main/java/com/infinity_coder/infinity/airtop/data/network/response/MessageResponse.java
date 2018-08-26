@@ -15,7 +15,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class MessageResponse implements ResponseModel {
-    private String text, fromId, toId, encodedImage, phone, imageName, imagePath;
+    private String text, fromId, toId, encodedImage, phone, imageName, imagePath, fromNickname;
     private Bitmap image;
     private static final String IMAGE_FOLDER = "Images";
     private static final String SEPARATOR = "/";
@@ -45,6 +45,10 @@ public class MessageResponse implements ResponseModel {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public String getFromNickname() {
+        return fromNickname;
     }
 
     /**

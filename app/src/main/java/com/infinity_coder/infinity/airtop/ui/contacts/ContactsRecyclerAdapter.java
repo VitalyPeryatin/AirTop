@@ -36,10 +36,12 @@ public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecycl
     private Context context;
     private ContextMenuView contextMenuView;
     private boolean isActiveActionMode;
+    private ContactsFragment fragment;
 
     ContactsRecyclerAdapter(ContactsFragment fragment, ContextMenuView contextMenuView, ContactUpgradeBus contactUpgradeBus){
         this.context = App.getInstance().getBaseContext();
         this.contextMenuView = contextMenuView;
+        this.fragment = fragment;
         contactUpgradeBus.subscribe(fragment.getActivity(), this);
 
         ArrayList<String> addresseeArrayList = (ArrayList<String>) interactor.getUuidList();
@@ -72,6 +74,7 @@ public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecycl
     public void addContact(Contact contact) {
         this.contactsWithUUID.put(contact.uuid, contact);
         this.contacts.add(contact);
+        interactor.getLiveAddresseeByUuid(contact.uuid).observe(fragment, this);
         this.notifyDataSetChanged();
     }
 
@@ -79,6 +82,7 @@ public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecycl
     public void removeContact(Contact contact) {
         contactsWithUUID.remove(contact.uuid);
         contacts.remove(contact);
+        interactor.getLiveAddresseeByUuid(contact.uuid).removeObserver(this);
         this.notifyDataSetChanged();
     }
 
@@ -120,8 +124,10 @@ public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecycl
 
         private void startChatActivity(Contact contact){
             Intent intent = new Intent(context, ChatActivity.class);
-            String addressId = context.getResources().getString(R.string.intent_key_address_id);
-            intent.putExtra(addressId, contact.uuid);
+            String addressIdKey = context.getString(R.string.intent_key_address_id);
+            String nicknameKey = context.getString(R.string.nickname_key);
+            intent.putExtra(addressIdKey, contact.uuid);
+            intent.putExtra(nicknameKey, contact.nickname);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent);
         }
@@ -156,7 +162,6 @@ public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecycl
                 switch (menuItem.getItemId()) {
                     case R.id.item_delete:
                         Contact contact = contacts.get(getAdapterPosition());
-                        // remove(contact);
                         interactor.deleteAddressWithMessages(contact);
                         actionMode.finish();
                         break;

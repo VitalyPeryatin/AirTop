@@ -126,7 +126,7 @@ class RequestApi:
     def send_address_by_uuid(self, json_str):
         uuid = eval(json_str).get("uuid")
         user = self._database.get_user_by_uuid(uuid)
-        response = str({self._TYPE_KEY: "addressee", "addressee": user})
+        response = str({self._TYPE_KEY: "contact", "contact": user})
         send_json(self.sock, response)
 
     def update_user_info(self, json_dict):
@@ -139,7 +139,7 @@ class RequestApi:
 
     def callback_user_update(self, ch, method, properties, body):
         json_addressee = dict(eval(str(body.decode())))
-        json_dict = {self._TYPE_KEY: 'user_update', 'addressee': json_addressee}
+        json_dict = {self._TYPE_KEY: 'user_update', 'contact': json_addressee}
         send_json(self.sock, str(json_dict))
         ch.basic_ack(delivery_tag=method.delivery_tag)
 
