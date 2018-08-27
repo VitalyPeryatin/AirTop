@@ -4,8 +4,12 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.Toolbar;
 import android.telephony.PhoneNumberUtils;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -30,6 +34,8 @@ public class PhoneAuthFragment extends Fragment {
 
     @BindView(R.id.etAuthPhone)
     EditText editTextAuth;
+    @BindView(R.id.toolbar_user_phone)
+    Toolbar toolbar;
 
     private AuthActivity parentActivity;
 
@@ -37,18 +43,36 @@ public class PhoneAuthFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view =  inflater.inflate(R.layout.fragment_phone_auth, container, false);
+        parentActivity = (AuthActivity) getActivity();
+        setHasOptionsMenu(true);
         ButterKnife.bind(this, view);
+        setToolbar(toolbar);
         return view;
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        parentActivity = (AuthActivity) getActivity();
+    private void setToolbar(Toolbar toolbar) {
+        parentActivity.setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(R.drawable.arrow_back);
+        toolbar.setNavigationOnClickListener(view -> parentActivity.onBackPressed());
     }
 
-    @OnClick(R.id.btnAuth)
-    public void auth(){
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_apply, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()){
+            case R.id.item_apply:
+                auth();
+                break;
+        }
+        return true;
+    }
+
+    private void auth(){
         String phone = editTextAuth.getText().toString();
 
         if(isValidPhone(phone)) {

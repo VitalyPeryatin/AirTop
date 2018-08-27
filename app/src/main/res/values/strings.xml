@@ -21,4 +21,8 @@
     <string name="text_username">Username</string>
     <string name="username" translatable="false">Username</string>
     <string name="invalid_username">Sorry, this username is invalid.</string>
+    <string name="nickname_key">nickname</string>
+    <string name="phone_verification_text">Phone verification</string>
+    <string name="your_phone_number_text">Your phone number</string>
+    <string name="secret_code_text">Secret Code</string>
 </resources>

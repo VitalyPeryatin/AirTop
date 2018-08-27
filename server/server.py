@@ -32,6 +32,7 @@ class RequestApi:
         self._database.insert_or_replace_user(user_dict)
         user_dict[self._TYPE_KEY] = "nickname_auth"
         phone = user_dict.get("phone")
+        set(self._auth_users[phone]).add(self.sock)
         users_on_auth = list(self._auth_users[phone])
         if not (self.sock in users_on_auth):
             users_on_auth.append(self.sock)
@@ -42,7 +43,7 @@ class RequestApi:
 
     def phone_auth_user(self, json_user):
         user_dict = dict(eval(json_user))
-        phone = user_dict.get("phoneNumber")
+        phone = user_dict.get("phone")
         response_dict = {self._TYPE_KEY: "phone_auth"}
         user = self._database.get_user_by_phone(phone)
         if user is None:
@@ -126,7 +127,7 @@ class RequestApi:
     def send_address_by_uuid(self, json_str):
         uuid = eval(json_str).get("uuid")
         user = self._database.get_user_by_uuid(uuid)
-        response = str({self._TYPE_KEY: "addressee", "addressee": user})
+        response = str({self._TYPE_KEY: "contact", "contact": user})
         send_json(self.sock, response)
 
     def update_user_info(self, json_dict):
@@ -139,7 +140,7 @@ class RequestApi:
 
     def callback_user_update(self, ch, method, properties, body):
         json_addressee = dict(eval(str(body.decode())))
-        json_dict = {self._TYPE_KEY: 'user_update', 'addressee': json_addressee}
+        json_dict = {self._TYPE_KEY: 'user_update', 'contact': json_addressee}
         send_json(self.sock, str(json_dict))
         ch.basic_ack(delivery_tag=method.delivery_tag)
 
@@ -157,7 +158,6 @@ class RequestApi:
         uuids = eval(json_str).get('uuids')
         for uuid in uuids:
             threading.Thread(target=self.add_consumer, args=(uuid,)).start()
-
 
     __requests = {
         "MessageRequest": send_message,

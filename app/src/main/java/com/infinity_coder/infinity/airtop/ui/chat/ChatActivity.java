@@ -83,6 +83,7 @@ public class ChatActivity extends MvpAppCompatActivity implements ChatView {
         else
             addressId = getIntent().getStringExtra(getResources().getString(R.string.intent_key_address_id));
 
+        String toNickname = getIntent().getStringExtra(getString(R.string.nickname_key));
         String senderId = App.getInstance().getCurrentUser().uuid;
         presenter.onCreate(addressId, senderId);
 
@@ -101,7 +102,7 @@ public class ChatActivity extends MvpAppCompatActivity implements ChatView {
             }
         });
 
-        toolbar.setTitle(presenter.getNickname());
+        toolbar.setTitle(toNickname);
     }
 
     @Override

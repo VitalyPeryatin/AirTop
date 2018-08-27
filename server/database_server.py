@@ -82,11 +82,11 @@ class DatabaseHelper:
 
     def insert_or_replace_user(self, user_dict):
         try:
-            uuid_str = str(user_dict.get("uuid"))
-            nickname_str = str(user_dict.get("nickname"))
-            phone_str = str(user_dict.get("phone"))
-            username_str = str(user_dict.get("username"))
-            bio_str = str(user_dict.get("bio"))
+            uuid_str = str(user_dict.get(self.UUID))
+            nickname_str = str(user_dict.get(self.NICKNAME))
+            phone_str = str(user_dict.get(self.PHONE))
+            username_str = str(user_dict.get(self.USERNAME))
+            bio_str = str(user_dict.get(self.BIO))
             self.cursor.execute("""
                 INSERT OR REPLACE INTO users ({}, {}, {}, {}, {})
                 VALUES (?, ?, ?, ?, ?);

@@ -21,9 +21,9 @@ public class Contact {
     public Contact(){}
 
     @Ignore
-    public Contact(@NonNull String uuid){
+    public Contact(@NonNull String uuid, @NonNull String nickname){
         this.uuid = uuid;
-        nickname = "Anonymous";
+        this.nickname = nickname;
     }
 
     @Ignore

@@ -13,9 +13,9 @@ public class MessageEditor{
     private MessageRequest messageRequest;
     // Base info for message which saves after clearing message by method "clear()"
 
-    private String addressId, senderId;
+    private String addressId, senderId, nickname;
 
-    private MessageEditor(){
+    public MessageEditor(){
         messageRequest = new MessageRequest();
     }
 
@@ -43,6 +43,11 @@ public class MessageEditor{
         messageRequest.setSender(id);
     }
 
+    public void setFromNickname(String nickname){
+        this.nickname = nickname;
+        messageRequest.setFromNickname(nickname);
+    }
+
     public boolean isNotEmptyMessage(){
         return !messageRequest.isEmptyMessage();
     }
@@ -51,6 +56,7 @@ public class MessageEditor{
         messageRequest = new MessageRequest();
         setAddressId(addressId);
         setSenderId(senderId);
+        setFromNickname(nickname);
     }
 
     public MessageRequest getMessage() {

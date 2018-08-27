@@ -1,6 +1,7 @@
 package com.infinity_coder.infinity.airtop.data.db.interactors;
 
 import com.infinity_coder.infinity.airtop.App;
+import com.infinity_coder.infinity.airtop.data.db.AppDatabase;
 import com.infinity_coder.infinity.airtop.data.db.model.Contact;
 import com.infinity_coder.infinity.airtop.data.db.model.Message;
 import com.infinity_coder.infinity.airtop.data.db.model.User;
@@ -25,36 +26,28 @@ import java.util.concurrent.TimeoutException;
  */
 public class ChatInteractor extends BaseInteractor {
 
-    private App app = App.getInstance();
-
-    public String getNicknameById(String id){
-        Future<String> future = service.submit(() -> {
-            ContactDao contactDao = app.getDatabase().addresseeDao();
-            return contactDao.getNicknameById(id);
-        });
-        try { return future.get(1, TimeUnit.SECONDS); }
-        catch (InterruptedException | ExecutionException | TimeoutException e) { return null; }
-    }
+    private AppDatabase database = App.getInstance().getDatabase();
+    private ContactsInteractor contactsInteractor = new ContactsInteractor();
 
     private String getUsernameById(String id){
         Future<String> future = service.submit(() -> {
-            ContactDao contactDao = app.getDatabase().addresseeDao();
+            ContactDao contactDao = database.addresseeDao();
             return contactDao.getUsernameById(id);
         });
         try { return future.get(1, TimeUnit.SECONDS); }
         catch (InterruptedException | ExecutionException | TimeoutException e) { return null; }
     }
 
-    public void insertMessage(Message message){
+    public void insertMessage(String nickname, Message message){
         String uuid = message.addressId;
 
         Future future = service.submit(() -> {
-            ContactDao contactDao = app.getDatabase().addresseeDao();
-            if (getNicknameById(uuid) == null) {
-                Contact contact = new Contact(uuid);
+            ContactDao contactDao = database.addresseeDao();
+            if (contactsInteractor.getNicknameById(uuid) == null) {
+                Contact contact = new Contact(uuid, nickname);
                 contactDao.insert(contact);
             }
-            Contact contact = contactDao.getAddresseeById(uuid);
+            Contact contact = contactDao.getContactById(uuid);
             if(message.text != null)
                 contact.lastMessage = message.text;
             else{
@@ -66,7 +59,7 @@ public class ChatInteractor extends BaseInteractor {
             contactDao.insert(contact);
             ContactUpgradeBus contactUpgradeBus = App.getInstance().getResponseListeners().getContactUpgradeBus();
             contactUpgradeBus.addAddressee(contact);
-            MessageDao messageDao = app.getDatabase().messageDao();
+            MessageDao messageDao = database.messageDao();
             messageDao.insert(message);
             return null;
         });
@@ -85,7 +78,7 @@ public class ChatInteractor extends BaseInteractor {
 
     public void insertAddressee(Contact contact) {
         service.submit(() -> {
-            ContactDao contactDao = app.getDatabase().addresseeDao();
+            ContactDao contactDao = database.addresseeDao();
             contactDao.insert(contact);
             ContactUpgradeBus contactUpgradeBus = App.getInstance().getResponseListeners().getContactUpgradeBus();
             contactUpgradeBus.addAddressee(contact);
