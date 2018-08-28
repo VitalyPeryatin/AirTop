@@ -19,8 +19,8 @@ public class ServerConnection extends Thread{
 
     private DataWriter writer;
     private DataReader reader;
-    private static final String HOST = "78.106.116.219";
-    // private static final String HOST = "192.168.1.67";
+    // private static final String HOST = "78.106.116.219";
+    private static final String HOST = "192.168.1.67";
     private static final int PORT = 9090;
     private SocketAddress address = new InetSocketAddress(HOST, PORT);
     private boolean quit = true; // Check when programme need to close connection
@@ -107,7 +107,7 @@ public class ServerConnection extends Thread{
      * Charset name for sending and receiving data from the server
      */
     public String getCharsetName(){
-        return "windows-1251";
+        return "UTF-8";
     }
 
     /**

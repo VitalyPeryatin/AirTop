@@ -90,7 +90,8 @@ public class DataReader extends Thread{
         int bytesLen = Integer.parseInt(n.toString());
         byte[] bytes = new byte[bytesLen];
         inputStream.readFully(bytes);
-        return new String(bytes, serverConnection.getCharsetName());
+        String s = new String(bytes, serverConnection.getCharsetName());
+        return s;
     }
 
 

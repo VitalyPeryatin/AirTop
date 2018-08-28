@@ -1,8 +1,11 @@
 import json
 import socket
 import threading
+from time import sleep
+
 import pika
 from database_server import DatabaseHelper
+from json_reader import JsonBuffer
 
 
 class RequestApi:
@@ -15,11 +18,11 @@ class RequestApi:
         self.channel_message = None
 
     def execute(self, json_str):
-        request_name = json.loads(json_str).get(self._TYPE_KEY)
+        request_name = json.loads(json_str, encoding=CHARSET).get(self._TYPE_KEY)
         threading.Thread(target=self.__requests.get(request_name), args=(self, json_str,)).start()
 
     def send_message(self, json_message):
-        exchange_uuid = json.loads(json_message).get("exchangeUUID")
+        exchange_uuid = json.loads(json_message, encoding=CHARSET).get("exchangeUUID")
 
         connection = pika.BlockingConnection(pika.ConnectionParameters('localhost', socket_timeout=150))
         channel = connection.channel()
@@ -107,7 +110,7 @@ class RequestApi:
     @staticmethod
     def callback(ch, method, properties, body):
         json_str = str(body.decode())
-        to_uuid = json.loads(json_str).get("toId")
+        to_uuid = json.loads(json_str, encoding=CHARSET).get("toId")
         address_sock = connections_by_uuid.get(to_uuid)
         send_json(address_sock, json_str)
         ch.basic_ack(delivery_tag=method.delivery_tag)
@@ -180,8 +183,8 @@ class RequestApi:
 connections_by_uuid = {}
 connections_by_socket = {}
 
-portion = 1024
-CHARSET = "windows-1251"
+portion = 64
+CHARSET = "UTF-8"
 host = socket.gethostbyname(socket.gethostname())
 
 print(host)
@@ -196,7 +199,7 @@ print("[ Server Started ]")
 
 
 def send_json(address_sock, json_str):
-    str_len = str(len(json_str)) + '@'
+    str_len = str(len_json(json_str)) + '@'
     json_str = (str_len + json_str).encode(CHARSET)
     try:
         address_sock.sendall(json_str)
@@ -204,9 +207,11 @@ def send_json(address_sock, json_str):
         pass
 
 
-def read_data(sock):
-    json_message = ""
-    str_len = 0
+def len_json(json):
+    return len(bytes(str(json), encoding=CHARSET))
+
+
+def listen_messages(sock, buffer):
     while True:
         try:
             receive = sock.recv(portion)
@@ -216,22 +221,21 @@ def read_data(sock):
         if receive == b'':
             raise ConnectionResetError
 
-        received_str = receive.decode(CHARSET)
-        if str_len == 0:
-            str_len = int(str(received_str).split("@", 1)[0])
-            json_message = str(received_str).split("@", 1)[1]
-        else:
-            json_message += str(received_str)
-        if len(json_message) >= str_len:
-            break
-    return json_message
+        try:
+            received_str = receive.decode(CHARSET, errors='ignore')
+            buffer.post(received_str)
+        except:
+            print(str(receive))
+            raise
 
 
 def receiver(sock):
     request_api = RequestApi(sock)
+    json_buffer = JsonBuffer(sock, CHARSET)
+    threading.Thread(target=listen_messages, args=(sock, json_buffer)).start()
     while True:
         try:
-            json_str = read_data(sock)
+            json_str = json_buffer.read()
             if json_str != "":
                 print(json_str)
                 request_api.execute(json_str)
