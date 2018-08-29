@@ -42,7 +42,8 @@ class Server:
                 raise ConnectionResetError
             # Когда сервер получает от клиента только пустые сообщения, значит клиент отключен
             if receive == b'':
-                raise ConnectionResetError
+                self.remove_connection(sock)
+                break
 
             try:
                 received_str = receive.decode(self.CHARSET, errors='ignore')

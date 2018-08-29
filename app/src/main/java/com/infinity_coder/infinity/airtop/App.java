@@ -60,6 +60,7 @@ public class App extends Application implements Observer<User>{
         instance = this;
         responseListeners = new ResponseListeners();
         interactor = new UserInteractor();
+        setCurrentUser();
     }
 
     public AppPreference getAppPreference() {

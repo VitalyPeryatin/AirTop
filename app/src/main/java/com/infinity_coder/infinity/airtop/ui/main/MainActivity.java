@@ -62,7 +62,6 @@ public class MainActivity extends AppCompatActivity
 
         intentClientService = new Intent(getBaseContext(), ClientService.class);
         startService(intentClientService);
-        App.getInstance().setCurrentUser();
         if(App.getInstance().getCurrentUser() == null)
             showLoginActivity();
         else {
