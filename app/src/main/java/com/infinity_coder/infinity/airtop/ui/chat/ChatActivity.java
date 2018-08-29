@@ -131,8 +131,9 @@ public class ChatActivity extends MvpAppCompatActivity implements ChatView {
     @OnClick(R.id.btnSend)
     public void sendMessage() {
         presenter.addTextToMessage(inputField.getText().toString());
-        presenter.sendMessage();
-        inputField.getText().clear();
+        boolean isSent = presenter.sendMessage();
+        if(isSent)
+            inputField.getText().clear();
     }
 
     @Override

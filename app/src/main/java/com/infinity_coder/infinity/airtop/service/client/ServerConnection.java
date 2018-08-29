@@ -19,11 +19,12 @@ public class ServerConnection extends Thread{
 
     private DataWriter writer;
     private DataReader reader;
-    // private static final String HOST = "78.106.116.219";
-    private static final String HOST = "192.168.1.67";
+    private static final String HOST = "78.106.116.219";
+    // private static final String HOST = "192.168.1.67";
     private static final int PORT = 9090;
     private SocketAddress address = new InetSocketAddress(HOST, PORT);
     private boolean quit = true; // Check when programme need to close connection
+    private boolean reconnect;
     private final Object lock = new Object();
     private static ServerConnection instance;
 
@@ -33,12 +34,18 @@ public class ServerConnection extends Thread{
         Log.d("mLog", "Подключение клиента... ");
         writer = new DataWriter(this);
         reader = new DataReader(this);
+        this.reconnect = true;
         writer.start();
         reader.start();
     }
 
     public static synchronized ServerConnection getInstance(){
         if(instance == null) instance = new ServerConnection();
+        return instance;
+    }
+
+    public static synchronized ServerConnection getNewInstance(){
+        instance = new ServerConnection();
         return instance;
     }
 
@@ -88,18 +95,20 @@ public class ServerConnection extends Thread{
 
 
     // Safely closes an existing socket connection
-    private void closeConnection() {
+    public void closeConnection(boolean reconnect) {
         try {
             quit = true;
+            this.reconnect = reconnect;
             reader.closeConnection();
             writer.closeConnection();
             socket.close();
-            synchronized (lock){
-                lock.notify();
-            }
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public boolean isReconnect(){
+        return this.reconnect;
     }
 
 
@@ -114,7 +123,10 @@ public class ServerConnection extends Thread{
      * Automatically reconnect to server after closing the connection
      */
     public void reconnectToServer(){
-        closeConnection();
+        closeConnection(true);
+        synchronized (lock){
+            lock.notify();
+        }
     }
 }
 

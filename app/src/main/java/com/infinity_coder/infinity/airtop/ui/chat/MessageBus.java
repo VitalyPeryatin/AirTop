@@ -28,8 +28,8 @@ public class MessageBus {
         this.messageListener = null;
     }
 
-    public void onMessage(String nickname, Message message){
-        if(messageListener != null)
+    public void onMessage(String uuid, String nickname, Message message){
+        if(messageListener != null && uuid.equals(messageListener.getUuid()))
             messageListener.onMessage(nickname, message);
         else
             notification.onMessage(nickname, message);

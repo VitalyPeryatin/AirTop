@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.infinity_coder.infinity.airtop.App;
 import com.infinity_coder.infinity.airtop.R;
 import com.infinity_coder.infinity.airtop.data.db.model.User;
+import com.infinity_coder.infinity.airtop.service.ClientService;
 import com.infinity_coder.infinity.airtop.ui.auth.AuthActivity;
 import com.infinity_coder.infinity.airtop.ui.contacts.ContactsFragment;
 import com.infinity_coder.infinity.airtop.ui.settings.SettingsActivity;
@@ -45,6 +46,7 @@ public class MainActivity extends AppCompatActivity
     private static final int AUTH_REQUEST_CODE = 1;
     private TextView tvName;
     private TextView tvPhone;
+    private Intent intentClientService;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -58,6 +60,9 @@ public class MainActivity extends AppCompatActivity
         tvName = headerView.findViewById(R.id.tvHeaderName);
         tvPhone = headerView.findViewById(R.id.tvHeaderPhone);
 
+        intentClientService = new Intent(getBaseContext(), ClientService.class);
+        startService(intentClientService);
+        App.getInstance().setCurrentUser();
         if(App.getInstance().getCurrentUser() == null)
             showLoginActivity();
         else {
@@ -101,6 +106,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        stopService(intentClientService);
         unbinder.unbind();
     }
 

@@ -73,7 +73,8 @@ public class DataReader extends Thread{
                 try {
                     publishMessage(readData());
                 } catch (SocketException se) {
-                    serverConnection.reconnectToServer();
+                    if(serverConnection.isReconnect())
+                        serverConnection.reconnectToServer();
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -173,8 +174,9 @@ public class DataReader extends Thread{
                         MessageResponse messageResponse = (MessageResponse) msg.obj;
                         Message message = messageResponse.toMessageModel();
                         String nickname = messageResponse.getFromNickname();
+                        String uuid = messageResponse.getFromId();
                         chatInteractor.insertMessage(nickname, message);
-                        responseListeners.getMessageBus().onMessage(nickname, message);
+                        responseListeners.getMessageBus().onMessage(uuid, nickname, message);
                     }
                     else
                         Log.e("mLogError", "DataReader -> не верный тип объекта. Ожидалось: Message");

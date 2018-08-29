@@ -9,4 +9,5 @@ import com.infinity_coder.infinity.airtop.data.db.model.Message;
  */
 public interface OnMessageListener {
     void onMessage(String nickname, Message message);
+    String getUuid();
 }

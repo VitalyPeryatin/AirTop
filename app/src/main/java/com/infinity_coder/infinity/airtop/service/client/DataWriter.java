@@ -72,7 +72,8 @@ public class DataWriter extends Thread{
                 Thread.sleep(100);
                 outputStream.flush();
             } catch (Exception e) { // after something error on the client is reconnect to server
-                serverConnection.reconnectToServer();
+                if(serverConnection.isReconnect())
+                    serverConnection.reconnectToServer();
             }
         }
     }

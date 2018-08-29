@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="BookmarkManager">
-    <bookmark url="file://$PROJECT_DIR$/server.py" description="__requests = {" line="164" />
+    <bookmark url="file://$PROJECT_DIR$/server.py" description="__requests = {" line="7" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f078c7b4-81f1-47e5-9674-762d94eac7b4" name="Default" comment="" />
@@ -17,17 +17,29 @@
       <file leaf-file-name="decoder.py" pinned="false" current-in-tab="false">
         <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python36-32/Lib/json/decoder.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="164">
+            <state relative-caret-position="5763">
               <caret line="341" selection-start-line="341" selection-end-line="341" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="server.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="server.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/server.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="139">
-              <caret line="96" column="33" lean-forward="true" selection-start-line="96" selection-start-column="33" selection-end-line="96" selection-end-column="33" />
+            <state relative-caret-position="479">
+              <caret line="44" selection-start-line="44" selection-end-line="44" />
+              <folding>
+                <element signature="e#0#13#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="request_api.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/request_api.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="54">
+              <caret line="113" column="62" lean-forward="true" selection-start-line="113" selection-start-column="62" selection-end-line="113" selection-end-column="62" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
               </folding>
@@ -38,8 +50,8 @@
       <file leaf-file-name="json_reader.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/json_reader.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="241">
-              <caret line="28" column="59" lean-forward="true" selection-start-line="28" selection-start-column="59" selection-end-line="28" selection-end-column="59" />
+            <state relative-caret-position="493">
+              <caret line="30" column="61" selection-start-line="30" selection-start-column="61" selection-end-line="30" selection-end-column="61" />
               <folding>
                 <element signature="e#0#23#0" expanded="true" />
               </folding>
@@ -50,7 +62,7 @@
       <file leaf-file-name="typing.pyi" pinned="false" current-in-tab="false">
         <entry file="file://$APPLICATION_HOME_DIR$/helpers/typeshed/stdlib/3/typing.pyi">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="363">
+            <state relative-caret-position="5661">
               <caret line="336" column="8" selection-start-line="336" selection-start-column="8" selection-end-line="336" selection-end-column="8" />
             </state>
           </provider>
@@ -59,7 +71,7 @@
       <file leaf-file-name="cp1251.py" pinned="false" current-in-tab="false">
         <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python36-32/Lib/encodings/cp1251.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="147">
+            <state relative-caret-position="238">
               <caret line="14" selection-start-line="14" selection-end-line="14" />
             </state>
           </provider>
@@ -68,8 +80,8 @@
       <file leaf-file-name="threading.py" pinned="false" current-in-tab="false">
         <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python36-32/Lib/threading.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="139">
-              <caret line="863" selection-start-line="863" selection-end-line="863" />
+            <state relative-caret-position="15453">
+              <caret line="915" selection-start-line="915" selection-end-line="915" />
             </state>
           </provider>
         </entry>
@@ -77,8 +89,8 @@
       <file leaf-file-name="database_server.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/database_server.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="221">
-              <caret line="13" column="14" selection-start-line="13" selection-start-column="14" selection-end-line="13" selection-end-column="14" />
+            <state relative-caret-position="1632">
+              <caret line="96" column="15" selection-start-line="96" selection-start-column="15" selection-end-line="96" selection-end-column="15" />
             </state>
           </provider>
         </entry>
@@ -97,15 +109,6 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="39627">
               <caret line="2342" selection-start-line="2342" selection-end-line="2342" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="connection.py" pinned="false" current-in-tab="false">
-        <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python36-32/Lib/site-packages/pika/connection.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="21624">
-              <caret line="1281" selection-start-line="1281" selection-end-line="1281" />
             </state>
           </provider>
         </entry>
@@ -137,11 +140,12 @@
         <option value="$PROJECT_DIR$/db_begin.py" />
         <option value="$PROJECT_DIR$/my_exceptions.py" />
         <option value="$PROJECT_DIR$/test.py" />
-        <option value="$PROJECT_DIR$/request_api.py" />
         <option value="$PROJECT_DIR$/package_splitter.py" />
         <option value="$PROJECT_DIR$/database_server.py" />
         <option value="$PROJECT_DIR$/json_reader.py" />
+        <option value="$PROJECT_DIR$/requests.py" />
         <option value="$PROJECT_DIR$/server.py" />
+        <option value="$PROJECT_DIR$/request_api.py" />
       </list>
     </option>
   </component>
@@ -156,7 +160,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -168,6 +171,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -260,35 +264,24 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
-    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.13284865" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.12491738" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.32905984" />
       <window_info anchor="bottom" id="Event Log" order="7" sideWeight="0.41374752" side_tool="true" weight="0.25356126" />
-      <window_info anchor="bottom" id="Find" order="1" weight="0.32905984" />
       <window_info anchor="bottom" id="Version Control" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Python Console" order="7" weight="0.32905984" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.58625245" visible="true" weight="0.33475783" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.58625245" weight="0.33475783" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Terminal" order="7" weight="0.32905984" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.3988604" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
-      <window_info anchor="bottom" id="Version Control" order="7" show_stripe_button="false" />
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.12491738" />
-      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
-      <window_info anchor="bottom" id="TODO" order="6" weight="0.32905984" />
-      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.58625245" weight="0.33475783" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.3988604" />
       <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Event Log" order="7" sideWeight="0.41374752" side_tool="true" weight="0.25356126" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
-      <window_info id="Favorites" order="2" side_tool="true" />
-      <window_info anchor="bottom" id="Terminal" order="7" weight="0.32905984" />
-      <window_info anchor="bottom" id="Python Console" order="7" weight="0.32905984" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.32905984" />
     </layout>
   </component>
   <component name="VcsContentAnnotationSettings">
@@ -299,13 +292,13 @@
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/server.py</url>
-          <line>237</line>
-          <option name="timeStamp" value="269" />
+          <line>26</line>
+          <option name="timeStamp" value="271" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/json_reader.py</url>
-          <line>30</line>
-          <option name="timeStamp" value="270" />
+          <url>file://$PROJECT_DIR$/request_api.py</url>
+          <line>12</line>
+          <option name="timeStamp" value="272" />
         </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
@@ -318,11 +311,10 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="271" />
+      <option name="time" value="273" />
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/client_test.py" />
     <entry file="file://$PROJECT_DIR$/f1.py" />
     <entry file="file://$USER_HOME$/.PyCharmCE2018.1/system/python_stubs/-1182439902/_socket.py">
       <provider selected="true" editor-type-id="text-editor">
@@ -474,55 +466,65 @@
     <entry file="file://$PROJECT_DIR$/test.py" />
     <entry file="file://$PROJECT_DIR$/package_splitter.py" />
     <entry file="file://$PROJECT_DIR$/testdb.sqlite" />
-    <entry file="file://$PROJECT_DIR$/database_server.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="221">
-          <caret line="13" column="14" selection-start-line="13" selection-start-column="14" selection-end-line="13" selection-end-column="14" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python36-32/Lib/json/decoder.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="164">
+        <state relative-caret-position="5763">
           <caret line="341" selection-start-line="341" selection-end-line="341" />
         </state>
       </provider>
     </entry>
     <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python36-32/Lib/encodings/cp1251.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="147">
+        <state relative-caret-position="238">
           <caret line="14" selection-start-line="14" selection-end-line="14" />
         </state>
       </provider>
     </entry>
     <entry file="file://$APPLICATION_HOME_DIR$/helpers/typeshed/stdlib/3/typing.pyi">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="363">
+        <state relative-caret-position="5661">
           <caret line="336" column="8" selection-start-line="336" selection-start-column="8" selection-end-line="336" selection-end-column="8" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python36-32/Lib/threading.py">
+    <entry file="file://$PROJECT_DIR$/database_server.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="139">
-          <caret line="863" selection-start-line="863" selection-end-line="863" />
+        <state relative-caret-position="1632">
+          <caret line="96" column="15" selection-start-line="96" selection-start-column="15" selection-end-line="96" selection-end-column="15" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/json_reader.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="241">
-          <caret line="28" column="59" lean-forward="true" selection-start-line="28" selection-start-column="59" selection-end-line="28" selection-end-column="59" />
+        <state relative-caret-position="493">
+          <caret line="30" column="61" selection-start-line="30" selection-start-column="61" selection-end-line="30" selection-end-column="61" />
           <folding>
             <element signature="e#0#23#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python36-32/Lib/threading.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="15453">
+          <caret line="915" selection-start-line="915" selection-end-line="915" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/server.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="139">
-          <caret line="96" column="33" lean-forward="true" selection-start-line="96" selection-start-column="33" selection-end-line="96" selection-end-column="33" />
+        <state relative-caret-position="479">
+          <caret line="44" selection-start-line="44" selection-end-line="44" />
+          <folding>
+            <element signature="e#0#13#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/request_api.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="54">
+          <caret line="113" column="62" lean-forward="true" selection-start-line="113" selection-start-column="62" selection-end-line="113" selection-end-column="62" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
           </folding>

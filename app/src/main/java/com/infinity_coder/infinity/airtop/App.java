@@ -60,11 +60,6 @@ public class App extends Application implements Observer<User>{
         instance = this;
         responseListeners = new ResponseListeners();
         interactor = new UserInteractor();
-
-        Intent intent = new Intent(getBaseContext(), ClientService.class);
-        startService(intent);
-
-        setCurrentUser();
     }
 
     public AppPreference getAppPreference() {

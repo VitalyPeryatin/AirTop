@@ -71,7 +71,7 @@ public class ChatPresenter extends MvpPresenter<ChatView> implements OnMessageLi
             preferencesHelper.saveAdapterPosition(addresseePhone, position);
     }
 
-    public void sendMessage() {
+    public boolean sendMessage() {
         if(messageEditor.isNotEmptyMessage()) {
             // Save message in DB and display the message
 
@@ -82,7 +82,9 @@ public class ChatPresenter extends MvpPresenter<ChatView> implements OnMessageLi
             messageEditor.clear();
 
             ServerConnection.getInstance().sendRequest(request.toJson());
+            return true;
         }
+        return false;
     }
 
     // Listen events from server with messages throw MessageBus
@@ -90,6 +92,11 @@ public class ChatPresenter extends MvpPresenter<ChatView> implements OnMessageLi
     public void onMessage(String nickname, Message message) {
         if(message.addressId.equals(addressId))
             getViewState().displayMessage(message);
+    }
+
+    @Override
+    public String getUuid() {
+        return addressId;
     }
 
     public void onDestroy() {

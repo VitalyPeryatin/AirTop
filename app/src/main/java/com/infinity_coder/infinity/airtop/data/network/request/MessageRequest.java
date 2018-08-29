@@ -25,7 +25,7 @@ public class MessageRequest extends RequestModel {
     }
 
     public boolean isEmptyMessage(){
-        return text == null && image == null;
+        return (text == null || text.length() == 0) && image == null;
     }
 
     public void setImage(Bitmap image) {

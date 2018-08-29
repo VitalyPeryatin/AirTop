@@ -23,20 +23,18 @@ class JsonBuffer:
             completed_message = self.json_message[0:self.json_len]
             self.json_message = self.json_message[self.json_len:]
 
-            # TODO Возможно нужно будет убрать
             sub_str = completed_message[completed_message.rindex("}") + 1:]
             completed_message = completed_message[0:completed_message.rindex("}") + 1]
             self.json_message = sub_str + self.json_message
 
             self.q.put(completed_message)
-            sleep(0.1)
+            sleep(0.1) # TODO Убрать таймер если это возможно
             if '@' in self.json_message:
                 splitted_str = str(self.json_message).split("@", 1)
                 self.json_len = int(splitted_str[0])
                 self.json_message = splitted_str[1]
             else:
                 self.json_len = 0
-
 
     def read(self):
         return self.q.get()

@@ -44,4 +44,9 @@ public class MessageNotification implements OnMessageListener{
             notificationManager.notify(1, builder.build());
         }
     }
+
+    @Override
+    public String getUuid() {
+        return null;
+    }
 }

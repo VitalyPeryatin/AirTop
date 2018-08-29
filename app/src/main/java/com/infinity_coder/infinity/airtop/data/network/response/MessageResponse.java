@@ -28,6 +28,10 @@ public class MessageResponse implements ResponseModel {
         }
     }
 
+    public String getFromId() {
+        return fromId;
+    }
+
     private String saveImageToFolder() {
         try {
             File dir = new File(App.getInstance().getFilesDir(), IMAGE_FOLDER);

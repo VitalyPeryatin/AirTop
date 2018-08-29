@@ -17,7 +17,7 @@ public class ClientService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        ServerConnection.getInstance().start();
+        ServerConnection.getNewInstance().start();
     }
 
     @Override
@@ -29,5 +29,11 @@ public class ClientService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         return null;
+    }
+
+    @Override
+    public void onDestroy() {
+        ServerConnection.getInstance().closeConnection(false);
+        super.onDestroy();
     }
 }
