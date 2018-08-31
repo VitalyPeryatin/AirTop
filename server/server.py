@@ -2,12 +2,14 @@ import socket
 import threading
 
 from json_reader import JsonBuffer
-from request_api import RequestApi
+from request_api_rabbit import RequestApi
 
 
 class Server:
     connections_by_uuid = {}
     connections_by_socket = {}
+
+    dict_socket_rabbit = {}
 
     portion = 64
     CHARSET = "UTF-8"
@@ -53,6 +55,9 @@ class Server:
 
     def receiver(self, sock):
         request_api = RequestApi(self, sock)
+
+        self.dict_socket_rabbit[sock] = request_api
+
         json_buffer = JsonBuffer(sock, self.CHARSET)
         threading.Thread(target=self.listen_messages, args=(sock, json_buffer)).start()
         while True:
@@ -63,12 +68,12 @@ class Server:
                     request_api.execute(json_str)
 
             except (ConnectionResetError, ConnectionAbortedError):
-                request_api.close()
                 self.remove_connection(sock)
                 break
 
-    def add_connection(self, uuid, sock):
+    def add_connection(self, request_rabbit, uuid, sock):
         self.connections_by_uuid[uuid] = sock
+        self.dict_socket_rabbit[sock] = request_rabbit
         uuid_list = []
         if sock in self.connections_by_socket.keys() and self.connections_by_socket[sock] in self.connections_by_socket.values():
             uuid_list = self.connections_by_socket[sock].append(uuid)
@@ -80,6 +85,11 @@ class Server:
 
     def remove_connection(self, sock):
         uuids = self.connections_by_socket.get(sock)
+        request_rabbit = self.dict_socket_rabbit[sock]
+        if request_rabbit is not None:
+            request_rabbit.close()
+            self.dict_socket_rabbit[sock] = None
+
         if uuids is not None:
             for uuid in uuids:
                 self.connections_by_uuid[uuid] = None

@@ -1,6 +1,7 @@
 import json
 import threading
 import pika
+from pika.exceptions import RecursionError
 
 from database_server import DatabaseHelper
 
@@ -12,6 +13,7 @@ class RequestApi:
     def __init__(self, server_arg, sock):
         global server
         server = server_arg
+        self.connection = pika.BlockingConnection(pika.ConnectionParameters('localhost', socket_timeout=10))
         self.sock = sock
         self._TYPE_KEY = "TYPE"
         self._auth_users = {}
@@ -25,9 +27,9 @@ class RequestApi:
     def send_message(self, json_message):
         exchange_uuid = json.loads(json_message, encoding=server.CHARSET).get("exchangeUUID")
 
-        connection = pika.BlockingConnection(pika.ConnectionParameters('localhost', socket_timeout=150))
-        channel = connection.channel()
+        channel = self.connection.channel()
         channel.exchange_declare(exchange=exchange_uuid, exchange_type='fanout')
+        self.channel_message.queue_declare(queue=exchange_uuid)
         channel.basic_publish(exchange=exchange_uuid, routing_key=exchange_uuid, body=json_message)
 
     def create_user(self, json_user):
@@ -111,21 +113,26 @@ class RequestApi:
     def callback(ch, method, properties, body):
         json_str = str(body.decode())
         to_uuid = json.loads(json_str, encoding=server.CHARSET).get("toId")
+        print('Потребляет ' + str(to_uuid) + ': ' + json.loads(json_str, encoding=server.CHARSET).get("text"))
         address_sock = server.connections_by_uuid.get(to_uuid)
         send_json(address_sock, json_str)
         ch.basic_ack(delivery_tag=method.delivery_tag)
 
     def verify_user(self, json_str):
         uuid = eval(json_str).get("uuid")
-        server.add_connection(uuid, self.sock)
+        server.add_connection(self, uuid, self.sock)
 
-        connection = pika.BlockingConnection(pika.ConnectionParameters('localhost', socket_timeout=150))
-        self.channel_message = connection.channel()
-        self.channel_message.exchange_declare(exchange=uuid, exchange_type='fanout')
-        self.channel_message.queue_declare(queue=uuid)
-        self.channel_message.queue_bind(exchange=uuid, queue=uuid)
-        self.channel_message.basic_consume(self.callback, queue=uuid, no_ack=False)
-        self.channel_message.start_consuming()
+        print("User UUID: " + uuid)
+
+        try:
+            self.channel_message = self.connection.channel()
+            self.channel_message.exchange_declare(exchange=uuid, exchange_type='fanout')
+            self.channel_message.queue_declare(queue=uuid)
+            self.channel_message.queue_bind(exchange=uuid, queue=uuid)
+            self.channel_message.basic_consume(self.callback, queue=uuid, no_ack=False)
+            self.channel_message.start_consuming()
+        except RecursionError:
+            pass
 
     def send_address_by_uuid(self, json_str):
         uuid = eval(json_str).get("uuid")
@@ -136,8 +143,8 @@ class RequestApi:
     def update_user_info(self, json_dict):
         print(json_dict)
         uuid = json_dict.get('uuid')
-        connection = pika.BlockingConnection(pika.ConnectionParameters('localhost', socket_timeout=150))
-        channel = connection.channel()
+
+        channel = self.connection.channel()
         channel.exchange_declare(exchange='UserUpdate', exchange_type='direct')
         channel.basic_publish(exchange='UserUpdate', routing_key=uuid, body=str(json_dict))
 
@@ -148,8 +155,7 @@ class RequestApi:
         ch.basic_ack(delivery_tag=method.delivery_tag)
 
     def add_consumer(self, uuid):
-        connection = pika.BlockingConnection(pika.ConnectionParameters('localhost', socket_timeout=150))
-        channel = connection.channel()
+        channel = self.connection.channel()
         channel.exchange_declare(exchange='UserUpdate', exchange_type='direct')
         result = channel.queue_declare(exclusive=True)
         queue_name = result.method.queue
