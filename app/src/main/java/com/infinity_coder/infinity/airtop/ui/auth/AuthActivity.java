@@ -60,7 +60,7 @@ public class AuthActivity extends AppCompatActivity{
         if(users != null && users.size() > 0) {
             for (User user : users) {
                 VerifyUserRequest request = new VerifyUserRequest(user.uuid);
-                ServerConnection.getInstance().sendRequest(request.toJson());
+                ServerConnection.getInstance().sendRequest(request);
             }
         }
     }

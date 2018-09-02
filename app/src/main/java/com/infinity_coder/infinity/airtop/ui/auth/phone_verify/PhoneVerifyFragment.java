@@ -165,7 +165,7 @@ public class PhoneVerifyFragment extends Fragment implements OnPhoneVerifyListen
                         // Sgn in success, update UI wiith the signed-in user's information
                         Log.d("mLogAuth", "onComplete():Successful");
                         PhoneAuthRequest request = new PhoneAuthRequest(phone);
-                        ServerConnection.getInstance().sendRequest(request.toJson());
+                        ServerConnection.getInstance().sendRequest(request);
                     }
                 });
     }

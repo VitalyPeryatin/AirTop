@@ -105,7 +105,7 @@ public class UsernameSettingsActivity extends MvpAppCompatActivity implements Te
     public void onSendUsername(String username, String availableToUpdate) {
         String uuid = App.getInstance().getCurrentUser().uuid;
         UpdateUsernameRequest request = new UpdateUsernameRequest(uuid, username, availableToUpdate);
-        ServerConnection.getInstance().sendRequest(request.toJson());
+        ServerConnection.getInstance().sendRequest(request);
     }
 
     @Override

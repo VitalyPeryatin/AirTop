@@ -28,9 +28,7 @@ public class MessageEditor{
     }
 
     public void addImage(@NotNull Bitmap bitmap) {
-        messageRequest.setImage(bitmap);
-        Random random = new Random();
-        messageRequest.setImageName(random.nextInt(2_147_000_000) + ".jpeg");
+        messageRequest.setImage(bitmap, new Random().nextInt(2_147_000_000) + ".jpg");
     }
 
     public void setAddressId(@NotNull String id){

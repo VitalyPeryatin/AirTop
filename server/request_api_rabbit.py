@@ -112,17 +112,18 @@ class RequestApi:
     @staticmethod
     def callback(ch, method, properties, body):
         json_str = str(body.decode())
-        to_uuid = json.loads(json_str, encoding=server.CHARSET).get("toId")
-        print('Потребляет ' + str(to_uuid) + ': ' + json.loads(json_str, encoding=server.CHARSET).get("text"))
-        address_sock = server.connections_by_uuid.get(to_uuid)
-        send_json(address_sock, json_str)
+        try:
+            to_uuid = json.loads(json_str, encoding=server.CHARSET).get("toId")
+            address_sock = server.connections_by_uuid.get(to_uuid)
+            send_json(address_sock, json_str)
+        except:
+            print("Ошибка callback()")
+
         ch.basic_ack(delivery_tag=method.delivery_tag)
 
     def verify_user(self, json_str):
         uuid = eval(json_str).get("uuid")
         server.add_connection(self, uuid, self.sock)
-
-        print("User UUID: " + uuid)
 
         try:
             self.channel_message = self.connection.channel()
@@ -132,7 +133,7 @@ class RequestApi:
             self.channel_message.basic_consume(self.callback, queue=uuid, no_ack=False)
             self.channel_message.start_consuming()
         except RecursionError:
-            pass
+            print("Ошибка verify_user()")
 
     def send_address_by_uuid(self, json_str):
         uuid = eval(json_str).get("uuid")
@@ -141,7 +142,6 @@ class RequestApi:
         send_json(self.sock, response)
 
     def update_user_info(self, json_dict):
-        print(json_dict)
         uuid = json_dict.get('uuid')
 
         channel = self.connection.channel()

@@ -39,6 +39,7 @@ public class App extends Application implements Observer<User>{
     AuthPreference authPreference;
     private ResponseListeners responseListeners;
     private UserInteractor interactor;
+    public static String imagePath;
 
     public synchronized static App getInstance() {
         return instance;
@@ -60,6 +61,8 @@ public class App extends Application implements Observer<User>{
         instance = this;
         responseListeners = new ResponseListeners();
         interactor = new UserInteractor();
+        imagePath = getFilesDir() + "/Villon/Images/";
+
         setCurrentUser();
     }
 

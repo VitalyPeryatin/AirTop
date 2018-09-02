@@ -18,7 +18,7 @@ public class SearchUserPresenter extends MvpPresenter<SearchUserView> implements
         if(!username.startsWith("@"))
             username = "@".concat(username);
         SearchUserRequest request = new SearchUserRequest(username);
-        ServerConnection.getInstance().sendRequest(request.toJson());
+        ServerConnection.getInstance().sendRequest(request);
     }
 
     public void displaySearchableUsers(SearchUserResponse response){

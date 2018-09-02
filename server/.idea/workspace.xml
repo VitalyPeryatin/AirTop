@@ -5,12 +5,31 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f078c7b4-81f1-47e5-9674-762d94eac7b4" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/../.idea/caches/build_file_checksums.ser" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/caches/build_file_checksums.ser" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../app/src/main/java/com/infinity_coder/infinity/airtop/data/network/Image.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../app/src/main/java/com/infinity_coder/infinity/airtop/utils/RoundedTransformation.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/src/main/java/com/infinity_coder/infinity/airtop/App.java" beforeDir="false" afterPath="$PROJECT_DIR$/../app/src/main/java/com/infinity_coder/infinity/airtop/App.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/src/main/java/com/infinity_coder/infinity/airtop/data/db/interactors/ChatInteractor.java" beforeDir="false" afterPath="$PROJECT_DIR$/../app/src/main/java/com/infinity_coder/infinity/airtop/data/db/interactors/ChatInteractor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/src/main/java/com/infinity_coder/infinity/airtop/data/db/interactors/ContactsInteractor.java" beforeDir="false" afterPath="$PROJECT_DIR$/../app/src/main/java/com/infinity_coder/infinity/airtop/data/db/interactors/ContactsInteractor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/src/main/java/com/infinity_coder/infinity/airtop/data/db/model/Message.java" beforeDir="false" afterPath="$PROJECT_DIR$/../app/src/main/java/com/infinity_coder/infinity/airtop/data/db/model/Message.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/src/main/java/com/infinity_coder/infinity/airtop/data/network/request/MessageRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/../app/src/main/java/com/infinity_coder/infinity/airtop/data/network/request/MessageRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/src/main/java/com/infinity_coder/infinity/airtop/data/network/response/MessageResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/../app/src/main/java/com/infinity_coder/infinity/airtop/data/network/response/MessageResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/src/main/java/com/infinity_coder/infinity/airtop/service/client/DataReader.java" beforeDir="false" afterPath="$PROJECT_DIR$/../app/src/main/java/com/infinity_coder/infinity/airtop/service/client/DataReader.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/src/main/java/com/infinity_coder/infinity/airtop/service/client/ServerConnection.java" beforeDir="false" afterPath="$PROJECT_DIR$/../app/src/main/java/com/infinity_coder/infinity/airtop/service/client/ServerConnection.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/src/main/java/com/infinity_coder/infinity/airtop/ui/auth/AuthActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/../app/src/main/java/com/infinity_coder/infinity/airtop/ui/auth/AuthActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/src/main/java/com/infinity_coder/infinity/airtop/ui/auth/nickname/NicknameAuthFragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/../app/src/main/java/com/infinity_coder/infinity/airtop/ui/auth/nickname/NicknameAuthFragment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/src/main/java/com/infinity_coder/infinity/airtop/ui/auth/phone_verify/PhoneVerifyFragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/../app/src/main/java/com/infinity_coder/infinity/airtop/ui/auth/phone_verify/PhoneVerifyFragment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/src/main/java/com/infinity_coder/infinity/airtop/ui/chat/ChatActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/../app/src/main/java/com/infinity_coder/infinity/airtop/ui/chat/ChatActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/src/main/java/com/infinity_coder/infinity/airtop/ui/chat/ChatPresenter.java" beforeDir="false" afterPath="$PROJECT_DIR$/../app/src/main/java/com/infinity_coder/infinity/airtop/ui/chat/ChatPresenter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/src/main/java/com/infinity_coder/infinity/airtop/ui/chat/MessageRecyclerAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/../app/src/main/java/com/infinity_coder/infinity/airtop/ui/chat/MessageRecyclerAdapter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/src/main/java/com/infinity_coder/infinity/airtop/ui/searchUser/SearchUserPresenter.java" beforeDir="false" afterPath="$PROJECT_DIR$/../app/src/main/java/com/infinity_coder/infinity/airtop/ui/searchUser/SearchUserPresenter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/src/main/java/com/infinity_coder/infinity/airtop/ui/settings/updaters/bio/BioSettingsActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/../app/src/main/java/com/infinity_coder/infinity/airtop/ui/settings/updaters/bio/BioSettingsActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/src/main/java/com/infinity_coder/infinity/airtop/ui/settings/updaters/name/NameSettingsActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/../app/src/main/java/com/infinity_coder/infinity/airtop/ui/settings/updaters/name/NameSettingsActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/src/main/java/com/infinity_coder/infinity/airtop/ui/settings/updaters/username/UsernameSettingsActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/../app/src/main/java/com/infinity_coder/infinity/airtop/ui/settings/updaters/username/UsernameSettingsActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/src/main/java/com/infinity_coder/infinity/airtop/utils/MessageEditor.java" beforeDir="false" afterPath="$PROJECT_DIR$/../app/src/main/java/com/infinity_coder/infinity/airtop/utils/MessageEditor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/src/main/res/layout/template_message.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../app/src/main/res/layout/template_message.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/json_reader.py" beforeDir="false" afterPath="$PROJECT_DIR$/json_reader.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/request_api.py" beforeDir="false" afterPath="$PROJECT_DIR$/request_api_rabbit.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server.py" beforeDir="false" afterPath="$PROJECT_DIR$/server.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/villon_db.sqlite" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/request_api_rabbit.py" beforeDir="false" afterPath="$PROJECT_DIR$/request_api_rabbit.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -22,23 +41,23 @@
     <session id="1410635745">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="2" />
-          <entry key="project.open.time.6" value="1" />
-          <entry key="project.open.time.7" value="1" />
-          <entry key="project.opened" value="2" />
+          <entry key="project.closed" value="4" />
+          <entry key="project.open.time.6" value="2" />
+          <entry key="project.open.time.7" value="3" />
+          <entry key="project.opened" value="5" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="Python Console" value="8" />
           <entry key="dummy" value="14" />
-          <entry key="py" value="549" />
+          <entry key="py" value="623" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="PLAIN_TEXT" value="14" />
-          <entry key="Python" value="557" />
+          <entry key="Python" value="631" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
@@ -58,8 +77,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/server.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="210">
-              <caret line="67" column="49" lean-forward="true" selection-start-line="67" selection-start-column="49" selection-end-line="67" selection-end-column="49" />
+            <state relative-caret-position="1071">
+              <caret line="67" column="49" selection-start-line="67" selection-start-column="49" selection-end-line="67" selection-end-column="49" />
               <folding>
                 <element signature="e#0#13#0" expanded="true" />
               </folding>
@@ -70,7 +89,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$USER_HOME$/.PyCharmCE2018.2/system/python_stubs/-1182439902/builtins.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="148">
+            <state relative-caret-position="8075">
               <caret line="475" column="4" selection-start-line="475" selection-start-column="4" selection-end-line="475" selection-end-column="4" />
             </state>
           </provider>
@@ -79,8 +98,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/json_reader.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="410">
-              <caret line="36" column="61" selection-start-line="36" selection-start-column="61" selection-end-line="36" selection-end-column="61" />
+            <state relative-caret-position="561">
+              <caret line="34" column="61" selection-start-line="34" selection-start-column="61" selection-end-line="34" selection-end-column="61" />
             </state>
           </provider>
         </entry>
@@ -88,8 +107,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/request_api_rabbit.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="112">
-              <caret line="133" column="30" lean-forward="true" selection-start-line="133" selection-start-column="30" selection-end-line="133" selection-end-column="30" />
+            <state relative-caret-position="274">
+              <caret line="135" column="37" selection-start-line="135" selection-start-column="37" selection-end-line="135" selection-end-column="37" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
               </folding>
@@ -100,7 +119,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python36-32/Lib/site-packages/pika/adapters/blocking_connection.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="140">
+            <state relative-caret-position="30685">
               <caret line="1816" selection-start-line="1816" selection-end-line="1816" />
             </state>
           </provider>
@@ -109,7 +128,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/database_server.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="410">
+            <state relative-caret-position="1632">
               <caret line="96" column="15" selection-start-line="96" selection-start-column="15" selection-end-line="96" selection-end-column="15" />
             </state>
           </provider>
@@ -278,12 +297,12 @@
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.12491738" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.118308" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32905984" />
-      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.58625245" weight="0.17304964" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.58625245" weight="0.34468085" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.39858156" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -310,17 +329,17 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/request_api_rabbit.py</url>
-          <line>127</line>
+          <line>128</line>
           <option name="timeStamp" value="275" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/request_api_rabbit.py</url>
-          <line>131</line>
+          <line>132</line>
           <option name="timeStamp" value="276" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/request_api_rabbit.py</url>
-          <line>132</line>
+          <line>133</line>
           <option name="timeStamp" value="277" />
         </line-breakpoint>
       </breakpoints>
@@ -491,48 +510,48 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/database_server.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="410">
-          <caret line="96" column="15" selection-start-line="96" selection-start-column="15" selection-end-line="96" selection-end-column="15" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/.PyCharmCE2018.2/system/python_stubs/-1182439902/builtins.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="148">
-          <caret line="475" column="4" selection-start-line="475" selection-start-column="4" selection-end-line="475" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/json_reader.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="410">
-          <caret line="36" column="61" selection-start-line="36" selection-start-column="61" selection-end-line="36" selection-end-column="61" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python36-32/Lib/site-packages/pika/adapters/blocking_connection.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="140">
-          <caret line="1816" selection-start-line="1816" selection-end-line="1816" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/server.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="210">
-          <caret line="67" column="49" lean-forward="true" selection-start-line="67" selection-start-column="49" selection-end-line="67" selection-end-column="49" />
+        <state relative-caret-position="1071">
+          <caret line="67" column="49" selection-start-line="67" selection-start-column="49" selection-end-line="67" selection-end-column="49" />
           <folding>
             <element signature="e#0#13#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$USER_HOME$/.PyCharmCE2018.2/system/python_stubs/-1182439902/builtins.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="8075">
+          <caret line="475" column="4" selection-start-line="475" selection-start-column="4" selection-end-line="475" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/json_reader.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="561">
+          <caret line="34" column="61" selection-start-line="34" selection-start-column="61" selection-end-line="34" selection-end-column="61" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python36-32/Lib/site-packages/pika/adapters/blocking_connection.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="30685">
+          <caret line="1816" selection-start-line="1816" selection-end-line="1816" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/database_server.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1632">
+          <caret line="96" column="15" selection-start-line="96" selection-start-column="15" selection-end-line="96" selection-end-column="15" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/request_api_rabbit.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="112">
-          <caret line="133" column="30" lean-forward="true" selection-start-line="133" selection-start-column="30" selection-end-line="133" selection-end-column="30" />
+        <state relative-caret-position="274">
+          <caret line="135" column="37" selection-start-line="135" selection-start-column="37" selection-end-line="135" selection-end-column="37" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
           </folding>

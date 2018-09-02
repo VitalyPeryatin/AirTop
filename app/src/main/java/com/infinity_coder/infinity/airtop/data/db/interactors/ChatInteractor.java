@@ -51,7 +51,7 @@ public class ChatInteractor extends BaseInteractor {
             if(message.text != null)
                 contact.lastMessage = message.text;
             else{
-                if(message.imagePath != null)
+                if(message.imageName != null)
                     contact.lastMessage = "Photo";
                 else
                     contact.lastMessage = "Empty";
@@ -68,7 +68,7 @@ public class ChatInteractor extends BaseInteractor {
             future.get(1, TimeUnit.SECONDS);
             if(getUsernameById(uuid) == null){
                 AddressRequest request = new AddressRequest(uuid);
-                ServerConnection.getInstance().sendRequest(request.toJson());
+                ServerConnection.getInstance().sendRequest(request);
             }
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
             e.printStackTrace();

@@ -95,7 +95,7 @@ public class BioSettingsActivity extends MvpAppCompatActivity implements BioSett
 
         if(bio.length() > 0) {
             UpdateBioRequest request = new UpdateBioRequest(uuid, bio);
-            ServerConnection.getInstance().sendRequest(request.toJson());
+            ServerConnection.getInstance().sendRequest(request);
         }
     }
 

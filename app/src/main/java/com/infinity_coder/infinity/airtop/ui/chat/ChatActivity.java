@@ -147,11 +147,8 @@ public class ChatActivity extends MvpAppCompatActivity implements ChatView {
     @Override
     public void displayMessage(Message message){
         messageAdapter.addItem(message);
-        messageAdapter.notifyDataSetChanged();
         msgRecycler.scrollToPosition(messageAdapter.getItemCount() - 1);
     }
-
-
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {

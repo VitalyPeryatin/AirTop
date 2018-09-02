@@ -14,9 +14,7 @@ class JsonBuffer:
     def post(self, json_part):
         if self.json_len == 0:
             try:
-                print("JSON: " + str(json_part))
                 splitted_str = str(json_part).split("@", 1)
-                print("Строки: " + splitted_str[0] + "\n" + splitted_str[1])
                 self.json_len = int(splitted_str[0])
                 json_part = splitted_str[1]
             except:

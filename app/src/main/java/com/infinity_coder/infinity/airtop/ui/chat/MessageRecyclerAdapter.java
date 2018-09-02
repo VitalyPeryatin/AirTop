@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,9 +13,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.infinity_coder.infinity.airtop.App;
 import com.infinity_coder.infinity.airtop.R;
 import com.infinity_coder.infinity.airtop.data.db.interactors.ChatInteractor;
 import com.infinity_coder.infinity.airtop.data.db.model.Message;
+import com.infinity_coder.infinity.airtop.data.network.Image;
+import com.infinity_coder.infinity.airtop.utils.RoundedTransformation;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -22,6 +26,10 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.infinity_coder.infinity.airtop.ui.chat.MessageRecyclerAdapter.RecyclerViewHolder.MAX_HEIGHT;
+import static com.infinity_coder.infinity.airtop.ui.chat.MessageRecyclerAdapter.RecyclerViewHolder.MAX_WIDTH;
+import static com.infinity_coder.infinity.airtop.ui.chat.MessageRecyclerAdapter.RecyclerViewHolder.RATIO;
 
 /**
  *  Adapter for data management in recycler view (list of current messages)
@@ -49,10 +57,10 @@ public class MessageRecyclerAdapter extends RecyclerView.Adapter<MessageRecycler
     public void onBindViewHolder(@NonNull RecyclerViewHolder recyclerViewHolder, int position) {
         Message message = messages.get(position);
 
+        int radius = (int) recyclerViewHolder.msgCardView.getRadius();
         setText(recyclerViewHolder.textView, message.text);
-        setImage(recyclerViewHolder.imageView, message.imagePath);
+        setImage(recyclerViewHolder.imageView, message.getImage(), radius);
         setMessageStyleByRoute(recyclerViewHolder.msgCardView, message.route);
-
     }
 
     private void setText(TextView textView, String text){
@@ -66,16 +74,38 @@ public class MessageRecyclerAdapter extends RecyclerView.Adapter<MessageRecycler
         }
     }
 
-    private void setImage(ImageView imageView, String imagePath){
-        if(imagePath != null) {
-            File file = new File(imagePath);
-            Picasso.get().load(file).noFade().into(imageView);
+    private void setImage(ImageView imageView, Image image, int radius){
+        if(image.getName() != null) {
+            setImageViewParams(imageView, image);
+            File file = new File(App.imagePath + image.getName());
+            Picasso.get()
+                    .load(file)
+                    .transform(new RoundedTransformation(radius))
+                    .noFade()
+                    .fit()
+                    .into(imageView);
             imageView.setVisibility(View.VISIBLE);
         }
         else {
             imageView.setImageBitmap(null);
             imageView.setVisibility(View.GONE);
         }
+    }
+
+    private void setImageViewParams(ImageView imageView, Image image){
+        float height = image.getHeight();
+        float width = image.getWidth();
+        int maxHeightPx = convertDpToPx(MAX_HEIGHT);
+        int maxWidthPx = convertDpToPx(MAX_WIDTH);
+        if(height / width >= RATIO){
+            imageView.getLayoutParams().height = maxHeightPx;
+            imageView.getLayoutParams().width = (int) (maxWidthPx * (height / maxHeightPx));
+        }
+        else{
+            imageView.getLayoutParams().width = maxWidthPx;
+            imageView.getLayoutParams().height = (int) (maxHeightPx * (maxWidthPx / width));
+        }
+        imageView.requestLayout();
     }
 
     private void setMessageStyleByRoute(CardView cardView, String route){
@@ -102,19 +132,33 @@ public class MessageRecyclerAdapter extends RecyclerView.Adapter<MessageRecycler
 
     public void addItem(Message message){
         messages.add(message);
+        notifyDataSetChanged();
     }
 
-    public static class RecyclerViewHolder extends RecyclerView.ViewHolder{
+    public class RecyclerViewHolder extends RecyclerView.ViewHolder{
         @BindView(R.id.textView)
         TextView textView;
         @BindView(R.id.msgCardView)
         CardView msgCardView;
-        @BindView(R.id.imageView)
+        @BindView(R.id.imageViewMsg)
         ImageView imageView;
+
+        static final int MAX_HEIGHT = 336;
+        static final int MAX_WIDTH = 296;
+        static final int RATIO = MAX_HEIGHT / MAX_WIDTH;
+
 
         RecyclerViewHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+
+            imageView.setMaxHeight(convertDpToPx(MAX_HEIGHT));
+            imageView.setMaxWidth(convertDpToPx((MAX_WIDTH)));
         }
+    }
+
+    private int convertDpToPx(int dp){
+        DisplayMetrics metrics = App.getInstance().getBaseContext().getResources().getDisplayMetrics();
+        return dp * (metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT);
     }
 }

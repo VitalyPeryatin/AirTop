@@ -106,7 +106,7 @@ public class NameSettingsActivity extends MvpAppCompatActivity implements NameSe
         String fullName = (firstName + " " + lastName).trim();
         if(firstName.length() > 0) {
             UpdateNameRequest request = new UpdateNameRequest(uuid, fullName);
-            ServerConnection.getInstance().sendRequest(request.toJson());
+            ServerConnection.getInstance().sendRequest(request);
         }
     }
 

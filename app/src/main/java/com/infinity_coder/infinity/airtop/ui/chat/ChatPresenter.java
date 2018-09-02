@@ -81,7 +81,7 @@ public class ChatPresenter extends MvpPresenter<ChatView> implements OnMessageLi
             getViewState().displayMessage(message);
             messageEditor.clear();
 
-            ServerConnection.getInstance().sendRequest(request.toJson());
+            ServerConnection.getInstance().sendRequest(request);
             return true;
         }
         return false;

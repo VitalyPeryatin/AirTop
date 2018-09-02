@@ -98,7 +98,7 @@ public class NicknameAuthFragment extends Fragment implements OnNicknameAuthList
             String nickname = (firstName + " " + lastName).trim();
             String phone = sPref.getCurrentPhone();
             NicknameAuthRequest request = new NicknameAuthRequest(phone, nickname);
-            ServerConnection.getInstance().sendRequest(request.toJson());
+            ServerConnection.getInstance().sendRequest(request);
         }
         else{
             Toast.makeText(parentActivity, "Короткое имя", Toast.LENGTH_SHORT).show();

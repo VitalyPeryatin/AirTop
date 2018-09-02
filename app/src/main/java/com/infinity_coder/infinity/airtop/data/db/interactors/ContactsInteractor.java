@@ -84,8 +84,8 @@ public class ContactsInteractor extends BaseInteractor {
             ContactDao contactDao = database.addresseeDao();
             ArrayList<Message> messages = (ArrayList<Message>) messageDao.getMessagesByUUID(contact.uuid);
             for (Message message : messages) {
-                if(message.imagePath != null){
-                    File file = new File(message.imagePath);
+                if(message.imageName != null){
+                    File file = new File(App.getInstance().imagePath, message.imageName);
                     file.delete();
                 }
             }

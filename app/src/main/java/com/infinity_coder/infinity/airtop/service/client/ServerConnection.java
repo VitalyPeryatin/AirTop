@@ -3,6 +3,8 @@ package com.infinity_coder.infinity.airtop.service.client;
 
 import android.util.Log;
 
+import com.infinity_coder.infinity.airtop.data.network.request.RequestModel;
+
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
@@ -19,8 +21,8 @@ public class ServerConnection extends Thread{
 
     private DataWriter writer;
     private DataReader reader;
-    private static final String HOST = "78.106.116.219";
-    // private static final String HOST = "192.168.1.67";
+    // private static final String HOST = "78.106.116.219";
+    private static final String HOST = "192.168.1.67";
     private static final int PORT = 9090;
     private SocketAddress address = new InetSocketAddress(HOST, PORT);
     private boolean quit = true; // Check when programme need to close connection
@@ -87,10 +89,19 @@ public class ServerConnection extends Thread{
      * Pass message to DataWriter (class for sending processed messages)
      * @param json request from user
      */
-    public void sendRequest(String json){
+    /*public void sendRequest(String json){
         while(writer == null)
             Thread.yield();
         writer.sendMessage(json);
+    }*/
+
+    /**
+     * Pass message to DataWriter (class for sending processed messages)
+     */
+    public void sendRequest(RequestModel request){
+        while(writer == null)
+            Thread.yield();
+        new Thread(() -> writer.sendMessage(request.toJson())).start();
     }
 
 

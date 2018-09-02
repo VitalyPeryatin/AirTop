@@ -1,22 +1,21 @@
 package com.infinity_coder.infinity.airtop.data.network.request;
 
 import android.graphics.Bitmap;
-import android.os.Environment;
-import android.util.Base64;
+import android.support.annotation.Nullable;
 
-import com.infinity_coder.infinity.airtop.App;
 import com.infinity_coder.infinity.airtop.data.db.model.Message;
+import com.infinity_coder.infinity.airtop.data.network.Image;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 
 public class MessageRequest extends RequestModel {
-    private String text, fromId, toId, encodedImage, imageName, imagePath, fromNickname;
-    private Bitmap image;
-    private static final String IMAGE_FOLDER = "MyApplication/Images";
-    private static final String SEPARATOR = "/";
+    private String text, fromId, toId, fromNickname;
+    @Nullable
+    private Image image;
 
     public MessageRequest(){}
 
@@ -28,17 +27,14 @@ public class MessageRequest extends RequestModel {
         return (text == null || text.length() == 0) && image == null;
     }
 
-    public void setImage(Bitmap image) {
-        this.image = image;
+    public void setImage(Bitmap bitmap, String name) {
+        image = new Image();
+        this.image.setImage(bitmap, name);
     }
 
     public void setAddressee(String id) {
         exchangeUUID = id;
         this.toId = id;
-    }
-
-    public void setImageName(String imageName) {
-        this.imageName = imageName;
     }
 
     public void setSender(String id) {
@@ -50,55 +46,34 @@ public class MessageRequest extends RequestModel {
     }
 
     private void encode() {
-        if(image != null)
-            encodeImage();
-    }
-
-    private void encodeImage(){
-        this.imagePath = Environment.getExternalStorageState() + SEPARATOR + IMAGE_FOLDER + SEPARATOR + imageName;
-
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        this.image.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-        this.imagePath = saveImageToFolder();
-        this.encodedImage = Base64.encodeToString(baos.toByteArray(), Base64.DEFAULT);
-    }
-
-    @SuppressWarnings("ResultOfMethodCallIgnored")
-    private String saveImageToFolder() {
-        try {
-            File dir = new File(App.getInstance().getFilesDir(), IMAGE_FOLDER);
-            File file = new File(App.getInstance().getFilesDir() + SEPARATOR + IMAGE_FOLDER, imageName);
-            if (!dir.exists())
-                dir.mkdirs();
-            if (!file.exists())
-                file.createNewFile();
-            FileOutputStream stream = new FileOutputStream(file);
-            image.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-            stream.close();
-            return file.getAbsolutePath();
+        if(image != null) {
+            image.encodeImage();
+            image.saveImageToFolder();
         }
-        catch (Exception e){
-            e.printStackTrace();
-        }
-        return null;
     }
 
     public Message toMessageModel(){
-        encode();
-
         Message message = new Message();
         message.text = text;
         message.addressId = toId;
         message.senderId = fromId;
         message.route = Message.ROUTE_OUT;
-        message.imageName = imageName;
-        message.imagePath = imagePath;
+        if(image != null) {
+            message.setImage(image);
+        }
         return message;
     }
 
     @Override
     public String toJson(){
-        encode();
-        return super.toJson();
+        ExecutorService executor = Executors.newCachedThreadPool();
+        Future<String> future = executor.submit(() -> {
+            encode();
+            return MessageRequest.super.toJson();
+        });
+        try {
+            return future.get();
+        } catch (InterruptedException | ExecutionException e) { e.printStackTrace(); }
+        return null;
     }
 }
